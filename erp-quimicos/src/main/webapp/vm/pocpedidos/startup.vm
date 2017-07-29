@@ -461,14 +461,15 @@
 															<thead>
 																<tr>
 																	<td class="grid" id="td_eliminar" style="background-color: rgb(180, 180, 180); border-botton: 0px none;" width="25"><div class="delete">&nbsp;#</div></td>
-																	<td class="grid" id="td_sku" style="background-color: rgb(180, 180, 180); border-botton: 0px none;" width="116">&nbsp;C&oacute;digo</td>
-																	<td class="grid" id="td_nombre" style="background-color: rgb(180, 180, 180);"  width="200">&nbsp;Descripci&oacute;n</td>
+																	<td class="grid" id="td_sku" style="background-color: rgb(180, 180, 180); border-botton: 0px none;" width="69">&nbsp;C&oacute;digo</td>
+																	<td class="grid" id="td_nombre" style="background-color: rgb(180, 180, 180);"  width="120">&nbsp;Descripci&oacute;n</td>
 																	<td class="grid" style="background-color:rgb(180,180,180);" width="90">&nbsp;Unidad</td>
 																	<td class="grid" style="background-color:rgb(180,180,180);" width="100">&nbsp;Presentaci&oacute;n</td>
 																	<td class="grid" style="background-color:rgb(180,180,180);" width="80">&nbsp;Cantidad</td>
 																	<td class="grid" style="background-color:rgb(180,180,180);" width="90">&nbsp;Precio&nbsp;unitario</td>
 																	<td class="grid" style="background-color:rgb(180,180,180);" width="90">&nbsp;Importe</td>
-																	
+																	<td class="grid" style="background-color:rgb(180,180,180);" width="40">&nbsp;%&nbsp;DSTO</td>
+                                                                                                                                        <td class="grid" style="background-color:rgb(180,180,180);" width="75">&nbsp;&dollar;DSTO</td>
 																	<td class="grid" style="background-color:rgb(180, 180,180);" width="60">&nbsp;%&nbsp;IEPS</td>
 																	<td class="grid" style="background-color:rgb(180, 180,180);" width="80">&nbsp;Monto&nbsp;IEPS</td>
 																	

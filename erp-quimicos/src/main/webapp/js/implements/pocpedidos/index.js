@@ -2156,12 +2156,12 @@ $(function() {
 					trr += '<input type="hidden" name="iddetcot" id="iddetcot" value="'+ id_det_cot +'">';
 					
 				trr += '</td>';
-				trr += '<td class="grid1" style="font-size: 11px;  border:1px solid #C1DAD7;" width="116">';
+				trr += '<td class="grid1" style="font-size: 11px;  border:1px solid #C1DAD7;" width="69">';
 					trr += '<input type="hidden" 	name="idproducto" id="idprod" value="'+ id_prod +'">';
-					trr += '<input type="text" 		name="sku" value="'+ sku +'" id="skuprod" class="borde_oculto" readOnly="true" style="width:110px;">';
+					trr += '<input type="text" 		name="sku" value="'+ sku +'" id="skuprod" class="borde_oculto" readOnly="true" style="width:100%;">';
 				trr += '</td>';
-				trr += '<td class="grid1" style="font-size: 11px;  border:1px solid #C1DAD7;" width="200">';
-					trr += '<input type="text" 		name="nombre" 	value="'+ titulo +'" id="nom" class="borde_oculto" readOnly="true" style="width:196px;">';
+				trr += '<td class="grid1" style="font-size: 11px;  border:1px solid #C1DAD7;" width="120">';
+					trr += '<input type="text" 		name="nombre" 	value="'+ titulo +'" id="nom" class="borde_oculto" readOnly="true" style="width:100%;">';
 				trr += '</td>';
 				trr += '<td class="grid1" style="font-size: 11px;  border:1px solid #C1DAD7;" width="90">';
 					trr += '<select name="select_umedida" class="select_umedida'+ tr +'" style="width:86px;"></select>';
@@ -2177,7 +2177,7 @@ $(function() {
 				trr += '</td>';
 				trr += '<td class="grid2" style="font-size: 11px;  border:1px solid #C1DAD7;" width="90">';
 					trr += '<input type="text" name="costo" value="'+ precioCambiado +'" class="costo'+ tr +'" id="cost" style="width:86px; text-align:right;">';
-					trr += '<input type="hidden" 	name="vdescto" id="vdescto" value="'+vdescto+'">';
+					
 					trr += '<input type="hidden" 	name="pu_descto" id="pu_descto" value="0">';
 					trr += '<input type="hidden" 	name="id_mon_pre" id="id_moneda" value="'+id_moneda+'">';
 					trr += '<input type="hidden" 	name="pre_original" id="prec_original" value="'+precioOriginal+'">';
@@ -2195,6 +2195,14 @@ $(function() {
 					trr += '<input type="hidden" name="ret_importe" class="ret_importe'+ tr +'" id="ret_importe" value="0">';
 				trr += '</td>';
 				
+                                trr += '<td class="grid2" style="font-size: 11px;  border:1px solid #C1DAD7;" width="40">';
+                                trr += '<input type="text" name="vdescto" id="vdescto" value="'+vdescto+'" style="width:100%; text-align:right;">';
+                                trr += '</td>';
+                                
+                                trr += '<td class="grid2" style="font-size: 11px;  border:1px solid #C1DAD7;" width="75">';
+                                trr += '<input type="text" name="mdescto" id="pdescto" value="0.00" style="width:100%; text-align:right;">';
+                                trr += '</td>';
+                                
 				trr += '<td class="grid2" style="font-size:11px;  border:1px solid #C1DAD7;" width="60">';
 					trr += '<input type="hidden" name="idIeps"     value="'+ id_ieps +'" id="idIeps">';
 					trr += '<input type="text" name="tasaIeps" value="'+ tasa_ieps +'" class="borde_oculto" id="tasaIeps" style="width:56px; text-align:right;" readOnly="true">';
