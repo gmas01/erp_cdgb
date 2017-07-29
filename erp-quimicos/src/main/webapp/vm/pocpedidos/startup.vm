@@ -468,8 +468,8 @@
 																	<td class="grid" style="background-color:rgb(180,180,180);" width="80">&nbsp;Cantidad</td>
 																	<td class="grid" style="background-color:rgb(180,180,180);" width="90">&nbsp;Precio&nbsp;unitario</td>
 																	<td class="grid" style="background-color:rgb(180,180,180);" width="90">&nbsp;Importe</td>
-																	<td class="grid" style="background-color:rgb(180,180,180);" width="40">&nbsp;%&nbsp;DSTO</td>
-                                                                                                                                        <td class="grid" style="background-color:rgb(180,180,180);" width="75">&nbsp;&dollar;DSTO</td>
+																	<td class="grid" style="background-color:rgb(180,180,180);" width="40">&nbsp;%&nbsp;DCTO</td>
+                                                                                                                                        <td class="grid" style="background-color:rgb(180,180,180);" width="75">&nbsp;&dollar;DCTO</td>
 																	<td class="grid" style="background-color:rgb(180, 180,180);" width="60">&nbsp;%&nbsp;IEPS</td>
 																	<td class="grid" style="background-color:rgb(180, 180,180);" width="80">&nbsp;Monto&nbsp;IEPS</td>
 																	

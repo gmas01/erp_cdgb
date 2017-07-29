@@ -2200,7 +2200,7 @@ $(function() {
                                 trr += '</td>';
                                 
                                 trr += '<td class="grid2" style="font-size: 11px;  border:1px solid #C1DAD7;" width="75">';
-                                trr += '<input type="text" name="mdescto" id="pdescto" value="0.00" style="width:100%; text-align:right;">';
+                                trr += '<input type="text" name="mdescto" id="mdescto" value="0.00" style="width:100%; text-align:right;">';
                                 trr += '</td>';
                                 
 				trr += '<td class="grid2" style="font-size:11px;  border:1px solid #C1DAD7;" width="60">';
