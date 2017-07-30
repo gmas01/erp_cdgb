@@ -351,8 +351,8 @@
 																	<select name="select_condiciones_original" style="display:none"></select>
 																</td>
 																<td width="25"></td>
-																<td width="93"><span id="permite_descto">Aplicar&nbsp;Descuento</span></td>
-																<td width="45"><input type="checkbox" name="check_descto" id="permite_descto"></td>
+																<td width="93">&nbsp;&nbsp;</td>
+																<td width="45">&nbsp;&nbsp;</td>
 																<td width="20"></td>
 															</tr>
                                                             
@@ -384,9 +384,9 @@
 																	<select name="vendedor_original" style="display:none"></select>
 																</td>
 																<td width="25"></td>
-																<td width="93"><span id="permite_descto">%&nbsp;del&nbsp;Descuento</span></td>
-																<td width="45"><input type="text" name="valor_descto" style="width:45px;" maxlength="7" id="permite_descto"></td>
-																<td width="20"><div class="interrogacion"><IMG SRC="../../img/help-16x16.png" ALIGN="top" rel="warning_valordescto"></div></td>
+																<td width="93">&nbsp;&nbsp;</td>
+																<td width="45">&nbsp;&nbsp;</td>
+																<td width="20">&nbsp;&nbsp;</div></td>
                                                             </tr>
                                                             
                                                             <tr><td colspan="20" height="5"></td></tr>
@@ -491,8 +491,8 @@
                                                 </tr>
                                                 
                                                 <tr class="gral" valign="top">
-                                                    <td width="125"><input type="text" name="etiqueta_motivo_descto" value="Motivo&nbsp;del&nbsp;Descuento" class="borde_oculto" style="width:120px;"></td>
-                                                    <td width="500"><input type="text" name="motivo_descuento" style="width:500px;"></td>
+                                                    <td width="125"></td>
+                                                    <td width="500"></td>
                                                     <td width="10"></td>
                                                     <td width="140"></td>
                                                     <td width="325" rowspan="2" align="right" valign="top" style="font-weight:bold;">
