@@ -855,9 +855,9 @@ public class PocPedidosController {
             @RequestParam(value="select_almacen", required=false) String select_almacen,
             @RequestParam(value="id_df", required=true) String id_df,
             @RequestParam(value="check_enviar_obser", required=false) String check_enviar_obser,
-            @RequestParam(value="pdescto", required=true) String permitir_descto,
-            @RequestParam(value="motivo_descuento", required=true) String motivo_descuento,
-            @RequestParam(value="valor_descto", required=true) String porcentaje_descto,
+            @RequestParam(value="pdescto", required=false) String permitir_descto,
+            @RequestParam(value="motivo_descuento", required=false) String motivo_descuento,
+            @RequestParam(value="valor_descto", required=false) String porcentaje_descto,
             
             @RequestParam(value="eliminado", required=false) String[] eliminado,
             @RequestParam(value="iddetalle", required=false) String[] iddetalle,
@@ -866,7 +866,7 @@ public class PocPedidosController {
             @RequestParam(value="id_presentacion", required=false) String[] id_presentacion,
             @RequestParam(value="id_imp_prod", required=false) String[] id_impuesto,
             @RequestParam(value="valor_imp", required=false) String[] valor_imp,
-            @RequestParam(value="vdescto", required=false) String[] vdescto,
+            @RequestParam(value="vdescto", required=true) String[] vdescto,
             @RequestParam(value="idIeps", required=false) String[] idIeps,
             @RequestParam(value="tasaIeps", required=false) String[] tasaIeps,
             @RequestParam(value="ret_id", required=false) String[] ret_id,
@@ -960,8 +960,8 @@ public class PocPedidosController {
             pc.trans = transporte.toUpperCase();
             pc.delivery_place = lugar_entrega.toUpperCase();
             pc.allow_desc = permitir_descto;
-            pc.razon_desc = motivo_descuento.toUpperCase();
-            pc.perc_desc = porcentaje_descto;
+            pc.razon_desc = "IT DOES NOT MATTER";//motivo_descuento.toUpperCase();
+            pc.perc_desc = "0";//porcentaje_descto;
             
             if( id_pedido==0 ){
                 pc.cmd = "new";
