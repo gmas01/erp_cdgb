@@ -2271,7 +2271,18 @@ $(function() {
 						$ret_importe.val(parseFloat(parseFloat($campoImporte.val()) * parseFloat(parseFloat($ret_tasa.val())/100)).toFixed(4));
 					}
                                         
-                                        $montoDesc.val(parseFloat(parseFloat($campoImporte.val()) * (parseFloat($valorDesc.val())/100)).toFixed(2));
+                                        //$montoDesc.val(parseFloat(parseFloat($campoImporte.val()) * (parseFloat($valorDesc.val())/100)).toFixed(2));
+                                        
+                                        var percent = parseFloat($valorDesc.val())/100;
+                                        if (percent >= 1)
+                                        {
+                                            $valorDesc.val(0);
+                                            $montoDesc.val(0);
+                                        }
+                                        else
+                                        {
+                                            $montoDesc.val(parseFloat(parseFloat($campoImporte.val()) * percent).toFixed(2));
+                                        }
 					
 				}else{
 					$campoImporte.val('');
@@ -2363,7 +2374,18 @@ $(function() {
 						$ret_importe.val(parseFloat(parseFloat($campoImporte.val()) * parseFloat(parseFloat($ret_tasa.val())/100)).toFixed(4));
 					}
                                         
-                                        $montoDesc.val(parseFloat(parseFloat($campoImporte.val()) * (parseFloat($valorDesc.val())/100)).toFixed(2));
+                                        //$montoDesc.val(parseFloat(parseFloat($campoImporte.val()) * (parseFloat($valorDesc.val())/100)).toFixed(2));
+                                        
+                                        var percent = parseFloat($valorDesc.val())/100;
+                                        if (percent >= 1)
+                                        {
+                                            $valorDesc.val(0);
+                                            $montoDesc.val(0);
+                                        }
+                                        else
+                                        {
+                                            $montoDesc.val(parseFloat(parseFloat($campoImporte.val()) * percent).toFixed(2));
+                                        }
 					
 				}else{
 					$campoImporte.val('');
