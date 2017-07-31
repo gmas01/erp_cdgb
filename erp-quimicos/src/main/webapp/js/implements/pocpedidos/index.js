@@ -2397,8 +2397,18 @@ $(function() {
                                 if ($(this).val() == '') $(this).val(' ');
                                 
                                 if( ($(this).val().trim()!= '') && ($campoImporte.val().trim() != ''))
-                                {	
-                                    $montoDesc.val(parseFloat(parseFloat($campoImporte.val()) * (parseFloat($(this).val())/100)).toFixed(2));
+                                {
+                                    var percent = parseFloat($(this).val())/100;
+                                    if (percent >= 1)
+                                    {
+                                        $(this).val(0);
+                                        $montoDesc.val(0);
+                                    }
+                                    else
+                                    {
+                                        $montoDesc.val(parseFloat(parseFloat($campoImporte.val()) * percent).toFixed(2));
+                                    }
+
                                 }
                                 
                                 //Buscar cuantos puntos tiene  cantidad
