@@ -1877,13 +1877,6 @@ $(function() {
 		//Suma del subtotal + totalImpuesto + sumaIeps - impuestoRetenido
 		var sumaTotal = 0;
 		
-		/*
-		//si valor del impuesto es null o vacio, se le asigna un 0
-		if( $valor_impuesto.val()== null || $valor_impuesto.val()== ''){
-			$valor_impuesto.val(0);
-		}
-		*/
-		
 		$grid_productos.find('tr').each(function (index){
 			if(( $(this).find('#cost').val().trim() != '') && ( $(this).find('#cant').val().trim() != '' )){
 				//Acumula los importes sin IVA, sin IEPS en la variable subtotal
@@ -2118,7 +2111,7 @@ $(function() {
                                 trr += '</td>';
                                 
                                 trr += '<td class="grid2" style="font-size: 11px;  border:1px solid #C1DAD7;" width="75">';
-                                trr += '<input type="text" name="mdescto" id="mdescto" value="" class="borde_oculto" readOnly="true" style="width:100%; text-align:right;">';
+                                trr += '<input type="text" name="mdescto" id="mdescto" value="0.00" class="borde_oculto" readOnly="true" style="width:100%; text-align:right;">';
                                 trr += '</td>';
                                 
 				trr += '<td class="grid2" style="font-size:11px;  border:1px solid #C1DAD7;" width="60">';
@@ -2255,6 +2248,9 @@ $(function() {
 				
 				var $ret_tasa = $(this).parent().parent().find('#ret_tasa');
 				var $ret_importe = $(this).parent().parent().find('#ret_importe');
+                                
+                                var $valorDesc = $(this).parent().parent().find('#vdescto');
+                                var $montoDesc = $(this).parent().parent().find('#mdescto');
 				
 				if ($campoCantidad.val() == ''){
 					$campoCantidad.val(' ');
@@ -2274,6 +2270,8 @@ $(function() {
 						//Calcular la retencion de la partida
 						$ret_importe.val(parseFloat(parseFloat($campoImporte.val()) * parseFloat(parseFloat($ret_tasa.val())/100)).toFixed(4));
 					}
+                                        
+                                        $montoDesc.val(parseFloat(parseFloat($campoImporte.val()) * (parseFloat($valorDesc.val())/100)).toFixed(2));
 					
 				}else{
 					$campoImporte.val('');
@@ -2339,6 +2337,9 @@ $(function() {
 				
 				var $ret_tasa = $(this).parent().parent().find('#ret_tasa');
 				var $ret_importe = $(this).parent().parent().find('#ret_importe');
+                                
+                                var $valorDesc = $(this).parent().parent().find('#vdescto');
+                                var $montoDesc = $(this).parent().parent().find('#mdescto');
 				
 				if ($campoPrecioU.val().trim() == ''){
 					$campoPrecioU.val(' ');
@@ -2361,6 +2362,8 @@ $(function() {
 						//Calcular la retencion de la partida
 						$ret_importe.val(parseFloat(parseFloat($campoImporte.val()) * parseFloat(parseFloat($ret_tasa.val())/100)).toFixed(4));
 					}
+                                        
+                                        $montoDesc.val(parseFloat(parseFloat($campoImporte.val()) * (parseFloat($valorDesc.val())/100)).toFixed(2));
 					
 				}else{
 					$campoImporte.val('');
@@ -2379,11 +2382,24 @@ $(function() {
 					$calcula_totales();
 				}
 			});
+                        
+                        //Al iniciar el campo tiene un  caracter en blanco, al obtener el foco se elimina el  espacio por comillas
+			$grid_productos.find('#vdescto').focus(function(e){
+				if($(this).val() == ' '){
+					$(this).val('');
+				}
+			});
 			
                         $grid_productos.find('#vdescto').blur(function(){
 				var $montoDesc = $(this).parent().parent().find('#mdescto');
                                 var $campoImporte = $(this).parent().parent().find('#import');
-                                $montoDesc.val(parseFloat(parseFloat($campoImporte.val()) * (parseFloat($(this).val())/100)).toFixed(2));
+                                
+                                if ($(this).val() == '') $(this).val(' ');
+                                
+                                if( ($(this).val().trim()!= '') && ($campoImporte.val().trim() != ''))
+                                {	
+                                    $montoDesc.val(parseFloat(parseFloat($campoImporte.val()) * (parseFloat($(this).val())/100)).toFixed(2));
+                                }
                                 
                                 //Buscar cuantos puntos tiene  cantidad
 				var coincidencias = $(this).val().match(/\./g);
