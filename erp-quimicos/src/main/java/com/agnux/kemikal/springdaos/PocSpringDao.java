@@ -282,6 +282,8 @@ public class PocSpringDao implements PocInterfaceDao{
             + "(CASE WHEN inv_prod_presentaciones.id IS NULL THEN 0 ELSE inv_prod_presentaciones.id END) as id_presentacion,"
             + "(CASE WHEN inv_prod_presentaciones.titulo IS NULL THEN '' ELSE inv_prod_presentaciones.titulo END) as presentacion,"
             + "poc_pedidos_detalle.cantidad,"
+            + "poc_pedidos_detalle.descto as descto,"
+            + "(poc_pedidos_detalle.cantidad * poc_pedidos_detalle.precio_unitario * (poc_pedidos_detalle.descto/100)) AS mdescto, "
             + "poc_pedidos_detalle.precio_unitario,"
             + "(poc_pedidos_detalle.cantidad * poc_pedidos_detalle.precio_unitario) AS importe, "
             + "(CASE WHEN poc_pedidos_detalle.gral_ieps_id>0 THEN ((poc_pedidos_detalle.cantidad * poc_pedidos_detalle.precio_unitario) * poc_pedidos_detalle.valor_ieps) ELSE 0 END) AS importe_ieps,"
@@ -332,6 +334,8 @@ public class PocSpringDao implements PocInterfaceDao{
                     row.put("importe",StringHelper.roundDouble(rs.getDouble("importe"),4) );
                     row.put("gral_imp_id",String.valueOf(rs.getInt("gral_imp_id")));
                     row.put("valor_imp",StringHelper.roundDouble(rs.getDouble("valor_imp"),2));
+                    row.put("vdescto",StringHelper.roundDouble(rs.getDouble("descto"),2));
+                    row.put("mdescto",StringHelper.roundDouble(rs.getDouble("mdescto"),2));
                     
                     row.put("valor_check",rs.getString("valor_check"));
                     row.put("valor_selecionado",String.valueOf(rs.getInt("valor_selecionado")));
