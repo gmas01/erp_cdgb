@@ -4344,7 +4344,8 @@ $(function() {
 								var $ret_tasa = $(this).parent().parent().find('#ret_tasa');
 								var $ret_importe = $(this).parent().parent().find('#ret_importe');
 								
-			
+			                                        var $valorDesc = $(this).parent().parent().find('#vdescto');
+                                                                var $montoDesc = $(this).parent().parent().find('#mdescto');
 								
 								if ($campoCantidad.val().trim() == ''){
 									$campoCantidad.val(' ');
@@ -4371,6 +4372,18 @@ $(function() {
 										$ret_importe.val(parseFloat(parseFloat($campoImporte.val()) * parseFloat(parseFloat($ret_tasa.val())/100)).toFixed(4));
 									}
 									
+                                                                        var percent = parseFloat($valorDesc.val())/100;
+                                                                        
+                                                                        if (percent >= 1)
+                                                                        {
+                                                                            $valorDesc.val(0);
+                                                                            $montoDesc.val(0);
+                                                                        }
+                                                                        else
+                                                                        {
+                                                                            $montoDesc.val(parseFloat(parseFloat($campoImporte.val()) * percent).toFixed(2));
+                                                                        }
+
 												
 								}else{
 									$campoImporte.val(0);
@@ -4402,7 +4415,9 @@ $(function() {
 								var $ret_tasa = $(this).parent().parent().find('#ret_tasa');
 								var $ret_importe = $(this).parent().parent().find('#ret_importe');
 								
-						
+						                var $valorDesc = $(this).parent().parent().find('#vdescto');
+                                                                var $montoDesc = $(this).parent().parent().find('#mdescto');
+                                
 								if ($campoPrecioU.val().trim() == ''){
 									$campoPrecioU.val(' ');
 								}else{
@@ -4430,6 +4445,18 @@ $(function() {
 										$ret_importe.val(parseFloat(parseFloat($campoImporte.val()) * parseFloat(parseFloat($ret_tasa.val())/100)).toFixed(4));
 									}
 									
+                                                                        var percent = parseFloat($valorDesc.val())/100;
+
+                                                                        if (percent >= 1)
+                                                                        {
+                                                                            $valorDesc.val(0);
+                                                                            $montoDesc.val(0);
+                                                                        }
+                                                                        else
+                                                                        {
+                                                                            $montoDesc.val(parseFloat(parseFloat($campoImporte.val()) * percent).toFixed(2));
+                                                                        }
+
 											
 								}else{
 									$campoImporte.val(0);
