@@ -4167,12 +4167,12 @@ $(function() {
 									trr += '<input type="hidden" name="iddetcot" id="iddetcot" value="'+ prod['id_cot_det'] +'">';
 									
 							trr += '</td>';
-							trr += '<td class="grid1" style="font-size:11px;  border:1px solid #C1DAD7;" width="116">';
+							trr += '<td class="grid1" style="font-size:11px;  border:1px solid #C1DAD7;" width="69">';
 									trr += '<input type="hidden" name="idproducto" id="idprod" value="'+ prod['inv_prod_id'] +'">';
-									trr += '<input type="text" name="sku" value="'+ prod['codigo'] +'" id="skuprod" class="borde_oculto" readOnly="true" style="width:110px;">';
+									trr += '<input type="text" name="sku" value="'+ prod['codigo'] +'" id="skuprod" class="borde_oculto" readOnly="true" style="width:100%;">';
 							trr += '</td>';
-							trr += '<td class="grid1" style="font-size:11px;  border:1px solid #C1DAD7;" width="200">';
-								trr += '<input type="text" 	name="nombre" 	value="'+ prod['titulo'] +'" 	id="nom" class="borde_oculto" readOnly="true" style="width:196px;">';
+							trr += '<td class="grid1" style="font-size:11px;  border:1px solid #C1DAD7;" width="120">';
+								trr += '<input type="text" 	name="nombre" 	value="'+ prod['titulo'] +'" 	id="nom" class="borde_oculto" readOnly="true" style="width:100%;">';
 							trr += '</td>';
 							trr += '<td class="grid1" style="font-size:11px;  border:1px solid #C1DAD7;" width="90">';
 								trr += '<select name="select_umedida" class="select_umedida'+ tr +'" style="width:86px;"></select>';
@@ -4221,6 +4221,14 @@ $(function() {
 								trr += '<input type="hidden" name="ret_tasa" 	id="ret_tasa" value="'+  prod['ret_tasa'] +'">';
 								trr += '<input type="hidden" name="ret_importe" id="ret_importe" value="'+ importeRetencionIva +'">';
 							trr += '</td>';
+                                                        
+                                                        trr += '<td class="grid2" style="font-size: 11px;  border:1px solid #C1DAD7;" width="40">';
+                                                        trr += '<input type="text" name="vdescto" id="vdescto" value="'+ prod['vdescto'] +'" style="width:100%; text-align:right;">';
+                                                        trr += '</td>';
+                                
+                                                        trr += '<td class="grid2" style="font-size: 11px;  border:1px solid #C1DAD7;" width="75">';
+                                                        trr += '<input type="text" name="mdescto" id="mdescto" value="0.00" class="borde_oculto" readOnly="true" style="width:100%; text-align:right;">';
+                                                        trr += '</td>';
 							
 							trr += '<td class="grid2" style="font-size: 11px;  border:1px solid #C1DAD7;" width="60">';
 								trr += '<input type="hidden" name="idIeps"     value="'+ prod['ieps_id'] +'" id="idIeps">';
