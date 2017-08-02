@@ -4223,7 +4223,7 @@ $(function() {
 							trr += '</td>';
                                                         
                                                         trr += '<td class="grid2" style="font-size: 11px;  border:1px solid #C1DAD7;" width="40">';
-                                                        trr += '<input type="text" name="vdescto" id="vdescto" value="'+ prod['vdescto'] +'" style="width:100%; text-align:right;">';
+                                                        trr += '<input type="text" class="vdescto'+ tr +'" name="vdescto" id="vdescto" value="'+ prod['vdescto'] +'" style="width:100%; text-align:right;">';
                                                         trr += '</td>';
                                 
                                                         trr += '<td class="grid2" style="font-size: 11px;  border:1px solid #C1DAD7;" width="75">';
@@ -4467,7 +4467,41 @@ $(function() {
 								$calcula_totales();
 							});
 							
+                                                        $grid_productos.find('.vdescto'+ tr).blur(function(){
+                                                           var $montoDesc = $(this).parent().parent().find('#mdescto');
+                                                           var $campoImporte = $(this).parent().parent().find('#import');
+
+                                                          if ($(this).val() == '') $(this).val(' ');
+
+                                                          if( ($(this).val().trim()!= '') && ($campoImporte.val().trim() != ''))
+                                                          {
+                                                              var percent = parseFloat($(this).val())/100;
+                                                              if (percent >= 1)
+                                                              {
+                                                                  $(this).val(0);
+                                                                  $montoDesc.val(0);
+                                                              }
+                                                              else
+                                                              {
+                                                                  $montoDesc.val(parseFloat(parseFloat($campoImporte.val()) * percent).toFixed(2));
+                                                              }
+                                                          }
+
+                                                          //Buscar cuantos puntos tiene  cantidad
+                                                          var coincidencias = $(this).val().match(/\./g);
+                                                          var numPuntos = coincidencias ? coincidencias.length : 0;
+                                                          if(parseInt(numPuntos)>1){
+                                                              jAlert('El valor ingresado para Cantidad es incorrecto, tiene mas de un punto('+$(this).val()+').', 'Atencion!', function(r) {
+                                                                  $(this).focus();
+                                                              });
+                                                          }else{
+                                                              //Llamada a la funcion que calcula totales
+                                                              $calcula_totales();
+                                                          }
+                                                       });
+                                                        
 							//validar campo costo, solo acepte numeros y punto
+                                                        $permitir_solo_numeros( $grid_productos.find('#vdescto') )
 							$permitir_solo_numeros( $grid_productos.find('#cost') );
 							$permitir_solo_numeros( $grid_productos.find('#cant') );
 							
