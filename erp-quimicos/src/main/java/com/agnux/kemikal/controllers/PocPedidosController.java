@@ -959,7 +959,7 @@ public class PocPedidosController {
             pc.pedido_id = id_pedido.toString();
             pc.trans = transporte.toUpperCase();
             pc.delivery_place = lugar_entrega.toUpperCase();
-            pc.allow_desc = permitir_descto;
+            pc.allow_desc = "true"; // hardcode to abide with store procedure
             pc.razon_desc = "IT DOES NOT MATTER";//motivo_descuento.toUpperCase();
             pc.perc_desc = "0";//porcentaje_descto;
             
