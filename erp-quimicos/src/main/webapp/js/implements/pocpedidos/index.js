@@ -45,11 +45,7 @@ $(function() {
 	$('#barra_titulo').find('#td_titulo').append('Pedidos de Clientes');
 	
 	//barra para el buscador 
-	//$('#barra_buscador').css({'height':'0px'});
 	$('#barra_buscador').append($('#lienzo_recalculable').find('.tabla_buscador'));
-	//$('#barra_buscador').find('.tabla_buscador').css({'display':'none'});
-	//$('#barra_buscador').hide();
-	
 	
 	var $cadena_busqueda = "";
 	var $busqueda_folio = $('#barra_buscador').find('.tabla_buscador').find('input[name=busqueda_folio]');
@@ -166,17 +162,6 @@ $(function() {
 		};
 		$busqueda_folio.focus();
 	});
-	/*
-	//desencadena evento del $campo_ejecutar al pulsar Enter en $campo
-	$(this).aplicarEventoKeypressEjecutaTrigger = function($campo, $campo_ejecutar){
-		$campo.keypress(function(e){
-			if(e.which == 13){
-				$campo_ejecutar.trigger('click');
-				return false;
-			}
-		});
-	}
-	*/
 	
 	//aplicar evento Keypress para que al pulsar enter ejecute la busqueda
 	$(this).aplicarEventoKeypressEjecutaTrigger($busqueda_folio, $buscar);
@@ -363,10 +348,7 @@ $(function() {
 				return false;
 			}
 		});
-	}
-	
-
-												
+	}												
 	
 	//Buscador de Unidades(Vehiculo)
 	$busca_unidades= function($id_vehiculo, $no_economico, $marca_vehiculo, $busca_vehiculo){
@@ -2829,6 +2811,18 @@ $(function() {
 		var $cerrar_plugin = $('#forma-pocpedidos-window').find('#close');
 		var $cancelar_plugin = $('#forma-pocpedidos-window').find('#boton_cancelar');
 		var $submit_actualizar = $('#forma-pocpedidos-window').find('#submit');
+                
+                var $select_metodo_pago00 = $('#forma-pocpedidos-window').find('#select_metodo_pago00');
+                var $select_metodo_pago01 = $('#forma-pocpedidos-window').find('#select_metodo_pago01');
+                var $select_metodo_pago02 = $('#forma-pocpedidos-window').find('#select_metodo_pago02');
+                
+                var $mp_import00 = $('#forma-pocpedidos-window').find('#importe00');
+                var $mp_import01 = $('#forma-pocpedidos-window').find('#importe01');
+                var $mp_import02 = $('#forma-pocpedidos-window').find('#importe02');
+                
+                $mp_import00.val("0.00");
+                $mp_import01.val("0.00");
+                $mp_import02.val("0.00");
 		
 		$pestana_transportista.parent().hide();
 		
@@ -2840,15 +2834,18 @@ $(function() {
 		$descargarpdf.hide();
 		$cancelado .hide();
 		$btn_autorizar.hide();
-		
+
+                $permitir_solo_numeros($mp_import00);
+                $permitir_solo_numeros($mp_import01);
+                $permitir_solo_numeros($mp_import02);
+                
 		$permitir_solo_numeros($no_cuenta);
 		$no_cuenta.attr('disabled','-1');
 		$etiqueta_digit.attr('disabled','-1');
 		$folio.css({'background' : '#F0F0F0'});
-		//$nocliente.css({'background' : '#F0F0F0'});
+
 		$dir_cliente.css({'background' : '#F0F0F0'});
-		//$remolque2.css({'background' : '#F0F0F0'});
-		//$remolque2.attr('readonly',true);
+
 		
 		$aplicar_readonly_input($remolque2);
 		$aplicar_readonly_input($rem_dir);
@@ -3084,6 +3081,11 @@ $(function() {
 				hmtl_metodo += '<option value="' + metodo['id'] + '"  >' + metodo['titulo'] + '</option>';
 			});
 			$select_metodo_pago.append(hmtl_metodo);
+                        $select_metodo_pago.hide(); 
+                        $etiqueta_digit.hide();
+                        $select_metodo_pago00.append(hmtl_metodo);
+                        $select_metodo_pago01.append(hmtl_metodo);
+                        $select_metodo_pago02.append(hmtl_metodo);
 			
 			//carga select de almacenes
 			$select_almacen.children().remove();
@@ -3496,13 +3498,22 @@ $(function() {
 		
 		
 		
-		$submit_actualizar.bind('click',function(){
+		$submit_actualizar.bind('click',function(){                    
 			var trCount = $("tr", $grid_productos).size();
 			$total_tr.val(trCount);
 			if(parseInt(trCount) > 0){
+                                var t = quitar_comas($total.val());
 				$subtotal.val(quitar_comas($subtotal.val()));
 				$impuesto.val(quitar_comas($impuesto.val()));
-				$total.val(quitar_comas($total.val()));
+				$total.val(t);
+                                
+                                var sumatoria_CDGB = parseFloat($mp_import00.val()) + parseFloat($mp_import01.val()) + parseFloat($mp_import02.val());
+                                if (parseFloat(sumatoria_CDGB) != parseFloat(t))
+                                {
+                                    jAlert('Sumatoria de metodos de pago incorrecta!', function(r) { $mp_import00.focus(); });
+				    return false;      
+                                }
+                                    
 				return true;
 			}else{
 				//jAlert("No hay datos para actualizar", 'Atencion!');
@@ -5105,18 +5116,12 @@ $(function() {
 
 						$sku_producto.attr('disabled','-1'); //deshabilitar
 						$nombre_producto.attr('disabled','-1'); //deshabilitar
-						//$nocliente.attr('disabled','-1'); //deshabilitar
-						//$razon_cliente.attr('disabled','-1'); //deshabilitar
-						//$dir_cliente.attr('disabled','-1'); //deshabilitar
+
 						$observaciones.attr("readonly", true);
 						$tipo_cambio.attr("readonly", true);
 						$orden_compra.attr("readonly", true);
 						$transporte.attr("readonly", true);
 						$lugar_entrega.attr("readonly", true);
-						//$fecha_compromiso.attr('disabled','-1'); //deshabilitar
-						//$select_moneda.attr('disabled','-1'); //deshabilitar
-						//$select_condiciones.attr('disabled','-1'); //deshabilitar
-						//$select_vendedor.attr('disabled','-1'); //deshabilitar
 						$grid_productos.find('a[href*=elimina_producto]').hide();
 						$grid_productos.find('#cant').attr("readonly", true);//establece solo lectura campos cantidad del grid
 						$grid_productos.find('#cost').attr("readonly", true);//establece solo lectura campos costo del grid

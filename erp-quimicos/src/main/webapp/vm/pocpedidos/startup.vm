@@ -331,17 +331,17 @@
                                                             
 															<tr>
 																<td width="10"></td>
-																<td width="80">M&eacute;todo&nbsp;de&nbsp;pago</td>
+																<td width="80"></td>
 																<td width="190" colspan="3">
 																	<select name="select_metodo_pago" style="width:190px"></select>
 																</td>
 																<td width="10"></td>
 																<td width="175" colspan="3">
-																	<input type="text" name="etiqueta_digit" value="Ingrese los ultimos&nbsp;4&nbsp;Digitos&nbsp;de&nbsp;la Tarjeta" class="borde_oculto" readOnly="true" style="width:195px;">
+																	<input type="hidden" name="etiqueta_digit" value="Ingrese los ultimos&nbsp;4&nbsp;Digitos&nbsp;de&nbsp;la Tarjeta" class="borde_oculto" readOnly="true" style="width:195px;">
 																</td>
 																<td>&nbsp;&nbsp;</td>
 																<td>
-																	<input type="text" name="no_cuenta" style="width:75px;" maxlength="4" readOnly="true">
+																	<input type="hidden" name="no_cuenta" style="width:75px;" maxlength="4" readOnly="true">
 																</td>
 																<td width="30"><div class="interrogacion"><IMG SRC="../../img/help-16x16.png" ALIGN="top" rel="warning_nocuenta"></div></td>
 																<td width="90" colspan="2">T&eacute;rminos&nbsp;de&nbsp;pago</td>
@@ -538,7 +538,47 @@
                                                     
                                                     </td>
                                                 </tr>
-												
+                                                <tr>
+                                                    <td colspan="4" width="625"  align="left" valign="top">
+                                                    <div id="metodos">
+                                                    <table border ="0">
+					            <tr>
+                                                      <td width="90">Metodo&nbsp;de&nbsp;pago</td>
+						      <td width="190"><select id="select_metodo_pago00" name="select_metodo_pago00" style="width:100%"></select></td>
+                                                      <td width="24">&nbsp;</td>
+                                                      <td width="44">Importe</td>
+						      <td width="100"><input type="text" id="importe00" name="importe00" style="text-align:right; width:100%" ></td> 
+
+                                                      <td width="24">&nbsp;</td>
+                                                      <td width="44">AMEX</td>
+						      <td width="100"><input type="checkbox" name="amex00"></td>                                   
+                                                    </tr>
+                                                    <tr>
+                                                      <td width="90">Metodo&nbsp;de&nbsp;pago</td>
+						      <td width="190"><select id="select_metodo_pago01" name="select_metodo_pago01" style="width:100%"></select></td>
+                                                      <td width="24">&nbsp;</td>
+                                                      <td width="44">Importe</td>
+						      <td width="100"><input type="text" id="importe01" name="importe01" style="text-align:right; width:100%" ></td>  
+
+                                                      <td width="24">&nbsp;</td>
+                                                      <td width="44">AMEX</td>
+						      <td width="100"><input type="checkbox" name="amex01"></td>                                                                  
+                                                    </tr>
+                                                    <tr>
+                                                      <td width="90">Metodo&nbsp;de&nbsp;pago</td>
+						      <td width="190"><select id="select_metodo_pago02" name="select_metodo_pago02" style="width:100%"></select></td>
+                                                      <td width="24">&nbsp;</td>
+                                                      <td width="44">Importe</td>
+						      <td width="100"><input type="text" id="importe02" name="importe02" style="text-align:right; width:100%" ></td>  
+
+                                                      <td width="24">&nbsp;</td>
+                                                      <td width="44">AMEX</td>
+						      <td width="100"><input type="checkbox" name="amex02"></td>                                                                  
+                                                    </tr>
+                                                    </table>
+                                                    </div>
+                                                    </td>
+                                                </tr>
                                                 <tr>
                                                     <td colspan="4" width="625"  align="left" valign="top">
 														
