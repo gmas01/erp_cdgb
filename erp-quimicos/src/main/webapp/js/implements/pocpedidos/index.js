@@ -3507,6 +3507,25 @@ $(function() {
 				$impuesto.val(quitar_comas($impuesto.val()));
 				$total.val(t);
                                 
+                                var verify_points = function(o){
+                                    //Buscar cuantos puntos tiene  cantidad
+				    var coincidencias = $(o).val().match(/\./g);
+				    var numPuntos = coincidencias ? coincidencias.length : 0;
+				    if ( parseInt(numPuntos) > 1 )
+                                    {
+					jAlert('El valor ingresado para Cantidad es incorrecto, tiene mas de un punto('+$(o).val()+').', 'Atencion!', function(r) { 
+						$(o).focus();
+					});
+                                        return false;
+				    }
+                                    
+                                    return true;
+                                }
+                                
+                                if (!verify_points($mp_import00)) return false;
+                                if (!verify_points($mp_import01)) return false;
+                                if (!verify_points($mp_import02)) return false;
+                                
                                 var sumatoria_CDGB = parseFloat($mp_import00.val()) + parseFloat($mp_import01.val()) + parseFloat($mp_import02.val());
                                 if (parseFloat(sumatoria_CDGB) != parseFloat(t))
                                 {

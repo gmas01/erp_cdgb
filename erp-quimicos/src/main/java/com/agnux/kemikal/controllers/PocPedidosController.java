@@ -906,6 +906,14 @@ public class PocPedidosController {
             @RequestParam(value="dest_dir_alterna", required=false) String dest_dir_alterna,
             @RequestParam(value="observaciones_transportista", required=false) String observaciones_transportista,
             
+            @RequestParam(value="select_metodo_pago00", required=true) Integer attrib_00,
+            @RequestParam(value="select_metodo_pago01", required=true) Integer attrib_01,
+            @RequestParam(value="select_metodo_pago02", required=true) Integer attrib_02,
+            @RequestParam(value="amex00", required=false) String enable_00,
+            @RequestParam(value="amex01", required=false) String enable_01,
+            @RequestParam(value="amex02", required=false) String enable_02,
+            
+            
             @ModelAttribute("user") UserSessionData user
         ) {
             
@@ -1000,6 +1008,13 @@ public class PocPedidosController {
                 id_df="1";//si viene cero, le asignamos uno para indicar que debe tomar la direccion de la tabla cxc_clie.
             }
             pc.cust_df_id = id_df;
+            
+            pc.attrib_00 = attrib_00.toString();
+            pc.attrib_01 = attrib_01.toString();
+            pc.attrib_02 = attrib_02.toString();
+            pc.enable_00 = (enable_00 == null) ? "false" : "true";
+            pc.enable_01 = (enable_01 == null) ? "false" : "true";
+            pc.enable_02 = (enable_02 == null) ? "false" : "true";
             
             succes = this.getPocDao().poc_val_cusorder(
                 new Integer(id_usuario),

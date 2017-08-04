@@ -35,6 +35,12 @@ public class PotCatCusorder {
     public String purch_order;
     public String account;
     public String no_cot;
+    public String attrib_00;
+    public String enable_00;
+    public String attrib_01;
+    public String enable_01;
+    public String attrib_02;
+    public String enable_02;
     public String matrix;
 
     public String conform_cat_store() {
@@ -63,7 +69,13 @@ public class PotCatCusorder {
                 "'" + delivery_place + "'," +
                 "'" + purch_order + "'," +
                 "'" + account + "'," +
-                "'" + no_cot + "'," +
-                " array["+ matrix +"]);";
+                "'" + no_cot + "',"
+                + attrib_00 + ","
+                + enable_00 + ","
+                + attrib_01 + ","
+                + enable_01 + ","
+                + attrib_02 + ","
+                + enable_02 + ","
+                + " array["+ matrix +"]);";
     }
 }
