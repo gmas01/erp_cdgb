@@ -48,6 +48,8 @@ public interface PocInterfaceDao{
     
     public ArrayList<HashMap<String, String>> getValoriva(Integer id_sucursal);
     public ArrayList<HashMap<String, String>> getValorivaById(Integer idImpto);
+    
+    public ArrayList<HashMap<String, String>> getPocPedido_DatosMetodos(Integer id_pedido);
 
     //Metodos para aplicativo pedidos y autorizacion de pedidos
     public ArrayList<HashMap<String, Object>> getPocPedidos_PaginaGrid(String data_string,int offset, int pageSize, String orderBy , String asc);
