@@ -371,10 +371,10 @@
                                                                 <td width="70"></td>
                                                                 
                                                                 <td width="30"></td>
-																<td width="75">Fecha&nbsp;Compromiso</td>
+																<td width="75">&nbsp;</td>
 																<td>&nbsp;&nbsp;</td>
 																<td>
-																	<input type="text" name="fecha_compromiso" style="width:75px;" readOnly="true">
+																	<input type="hidden" value="2099-12-31" name="fecha_compromiso" style="width:75px;" readOnly="true" style="display:none">
 																	<input type="text" name="fecha_compromiso_original" style="display:none">
 																</td>
 																<td width="30"><div class="interrogacion"><IMG SRC="../../img/help-16x16.png" ALIGN="top" rel="warning_fcompromiso"></div></td>

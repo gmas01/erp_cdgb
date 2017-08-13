@@ -848,7 +848,7 @@ public class PocPedidosController {
             @RequestParam(value="vendedor", required=true) String id_agente,
             @RequestParam(value="select_condiciones", required=true) String select_condiciones,
             @RequestParam(value="orden_compra", required=true) String orden_compra,
-            @RequestParam(value="fecha_compromiso", required=true) String fecha_compromiso,
+            @RequestParam(value="fecha_compromiso", required=false) String fecha_compromiso,
             @RequestParam(value="lugar_entrega", required=true) String lugar_entrega,
             @RequestParam(value="transporte", required=true) String transporte,
             @RequestParam(value="accion_proceso", required=true) String accion_proceso,
