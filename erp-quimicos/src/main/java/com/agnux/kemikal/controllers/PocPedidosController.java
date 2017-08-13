@@ -49,6 +49,9 @@ import org.springframework.web.servlet.ModelAndView;
 @SessionAttributes({"user"})
 @RequestMapping("/pocpedidos/")
 public class PocPedidosController {
+    
+    private final String title = "Remisiones de Clientes";
+    
     ResourceProject resource = new ResourceProject();
     private static final Logger log  = Logger.getLogger(PocPedidosController.class.getName());
     
@@ -92,7 +95,7 @@ public class PocPedidosController {
         infoConstruccionTabla.put("estado", "Estado:100");
         infoConstruccionTabla.put("fecha_creacion","Fecha creacion:110");
         
-        ModelAndView x = new ModelAndView("pocpedidos/startup", "title", "Pedidos de Clientes");
+        ModelAndView x = new ModelAndView("pocpedidos/startup", "title", this.title);
         x = x.addObject("layoutheader", resource.getLayoutheader());
         x = x.addObject("layoutmenu", resource.getLayoutmenu());
         x = x.addObject("layoutfooter", resource.getLayoutfooter());
