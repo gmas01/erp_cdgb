@@ -52,13 +52,15 @@
 										</ul>
 									</li>
 
-									<li class="accessible">
-										<a href="http://jdsharp.us" class="accessible">Pedidos &raquo;</a>
+									
+                                                                     <!--CAMBIO MENU DE PEDIDOS A REVISIONES SOLO CDGB GMAS-12/JUN/2017 -->
+                                                                         <li class="accessible">
+										<a href="http://jdsharp.us" class="accessible">Remisiones &raquo;</a>
 										<ul>
 											<li>
 												<a href="#" class="sub">Procesos &raquo;</a>
 												<ul>
-													<li class="topline"><a href="../pocpedidos/startup.agnux">Pedido</a></li>
+													<li class="topline"><a href="../pocpedidos/startup.agnux">Remisi&oacute;n</a></li>
 													<li class="topline"><a href="../pocpedidosautoriza/startup.agnux">Autorizaci&oacute;n</a></li>
 												</ul>
 											</li>
@@ -66,14 +68,16 @@
 											<li>
 												<a href="#" class="sub">Reportes&raquo;</a>
 												<ul>
-													<li class="topline"><a href="../reppedidos/startup.agnux">Pedidos</a></li>
+													<li class="topline"><a href="../reppedidos/startup.agnux">Remisiones</a></li>
 													<li class="topline"><a href="../reparticulosreservados/startup.agnux">Art&iacute;culos Reservados</a></li>
-													<!--<li class="topline"><a href="#">Estadístico de Pedidos por Artículo</a></li>-->
+													<!--<li class="topline"><a href="#">Estadístico de Remisiones por Artículo</a></li>-->
 												</ul>
 											</li>
 
 										</ul>
 									</li>
+                                                                    
+
 									
 									<li class="accessible">
 										<a href="#" class="accessible">Facturaci&oacute;n &raquo;</a>
@@ -89,7 +93,7 @@
 													<!--<li class="topline"><a href="../facturas/startup.agnux">Consulta Cancelaci&oacute;n</a></li>-->
 													
 													<li class="topline"><a href="../facdevoluciones/startup.agnux">Devoluci&oacute;n</a></li>
-													<li class="topline"><a href="../remisiones/startup.agnux">Remisiones</a></li>
+												<!--	<li class="topline"><a href="../remisiones/startup.agnux">Remisiones</a></li>  -->
 													
 													<li class="topline"><a href="../facnomina/startup.agnux">N&oacute;mina</a></li>
 													<!--
@@ -109,9 +113,11 @@
 												<a href="#" class="sub">Reportes &raquo;</a>
 												<ul>
 													<li class="topline"><a href="../repfacturacion/startup.agnux">Facturaci&oacute;n</a></li>
-													<li class="topline"><a href="../repremision/startup.agnux">Remisiones</a></li>
+												<!--
+                                                                                                    	<li class="topline"><a href="../repremision/startup.agnux">Remisiones</a></li>
 													<li class="topline"><a href="../repremisionfacturada/startup.agnux">Remisiones Facturadas</a></li>
-													<!--
+												-->
+                                                                                                	<!--
 													<li class="topline"><a href="#">Documentos</a></li>
 													<li class="topline"><a href="#">Estad&iacute;stico de Ventas</a></li>
 													-->
