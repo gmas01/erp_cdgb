@@ -1075,39 +1075,8 @@ $(function() {
 		var tr = $("tr", $grid).size();
 		tr;
 		
-		//$('tr:first', $grid).css({background : '#FBD850'});
 		$('tr:eq(0)', $grid).find('td').css({background : '#FBD850'});
-		
 		$('tr:eq(0)', $grid).focus();
-		
-		
-		//$('tr:first' , $grid).find('td').css({background : '#FBD850'});
-		
-		//alert($('tr:first' , $grid).find('td:eq(0)').find('#direccion').val());
-		
-		
-		//.css({background : '#FBD850'});
-		/*
-		$('tr:odd' , $grid).keypress(function () {
-			$(this).find('td').css({'background-color': '#FBD850'});
-		}, function() {
-			$(this).find('td').css({'background-color':'#e7e8ea'});
-		});
-		
-		$('tr:even' , $grid).keypress(function () {
-			$(this).find('td').css({'background-color':'#FBD850'});
-		}, function() {
-			$(this).find('td').css({'background-color':'#FFFFFF'});
-		});
-		*/
-		
-		
-		/*
-		$grid.find('tr').each(function (index){
-			$(this).find('td').css({'background':'#FBD850'});
-		});
-		*/
-		
 		
 		$campo_sku.onkeyup(function(e){
 			if(e.which == 13){
@@ -1115,18 +1084,6 @@ $(function() {
 				return false;
 			}
 		});
-			/*
-		var oTable = $('#example').dataTable( {
-			"sScrollY": 200,
-			"sScrollX": "100%",
-			"sScrollXInner": "110%"
-		} );
-		
-		var keys = new KeyTable( {
-			"table": document.getElementById('example'),
-			"datatable": oTable
-		} );
-		*/
 	}
 	
 	
@@ -1297,7 +1254,6 @@ $(function() {
 	
 	//buscador de clientes
 	$busca_clientes = function($select_moneda,$select_condiciones,$select_vendedor, $select_metodo_pago, array_monedas, array_condiciones, array_vendedores, array_metodos_pago, $no_cuenta, $etiqueta_digit, razon_social_cliente, numero_control ){
-		//limpiar_campos_grids();
 		$(this).modalPanel_Buscacliente();
 		var $dialogoc =  $('#forma-buscacliente-window');
 		//var $dialogoc.prependTo('#forma-buscaproduct-window');
@@ -1305,9 +1261,6 @@ $(function() {
 		$('#forma-buscacliente-window').css({"margin-left": -200, 	"margin-top": -180});
 		
 		var $tabla_resultados = $('#forma-buscacliente-window').find('#tabla_resultado');
-		
-		//var $busca_cliente_modalbox = $('#forma-buscacliente-window').find('a[href*=busca_cliente_modalbox]');
-		//var $cancelar_plugin_busca_cliente = $('#forma-buscacliente-window').find('a[href*=cencela]');
 		var $busca_cliente_modalbox = $('#forma-buscacliente-window').find('#busca_cliente_modalbox');
 		var $cancelar_plugin_busca_cliente = $('#forma-buscacliente-window').find('#cencela');
 		
@@ -1403,8 +1356,6 @@ $(function() {
 					$tabla_resultados.append(trr);
 				});
 				
-				//$tabla_resultados.find('tr').focus();
-				
 				$tabla_resultados.find('tr:odd').find('td').css({'background-color' : '#e7e8ea'});
 				$tabla_resultados.find('tr:even').find('td').css({'background-color' : '#FFFFFF'});
 				
@@ -1450,9 +1401,6 @@ $(function() {
 					//asignar el enfoque al campo Razon social del cliente
 					$('#forma-pocpedidos-window').find('input[name=razoncliente]').focus();
 				});
-				
-				
-				//$aplicarEventoSeleccionarTrkeypress($tabla_resultados);
 			});
 		});//termina llamada json
 		
@@ -1466,7 +1414,6 @@ $(function() {
 		$(this).aplicarEventoKeypressEjecutaTrigger($select_filtro_por, $busca_cliente_modalbox);
 		
 		$cancelar_plugin_busca_cliente.click(function(event){
-			//event.preventDefault();
 			var remove = function() {$(this).remove();};
 			$('#forma-buscacliente-overlay').fadeOut(remove);
 			$('#forma-pocpedidos-window').find('input[name=razoncliente]').focus();
@@ -1479,10 +1426,8 @@ $(function() {
 	
 	//buscador de productos
 	$busca_productos = function(sku_buscar, descripcion){
-		//limpiar_campos_grids();
 		$(this).modalPanel_Buscaproducto($('#forma-pocpedidos-window').find('input[name=nombre_producto]'));
 		var $dialogoc =  $('#forma-buscaproducto-window');
-		//var $dialogoc.prependTo('#forma-buscaproduct-window');
 		$dialogoc.append($('div.buscador_productos').find('table.formaBusqueda_productos').clone());
 		
 		$('#forma-buscaproducto-window').css({"margin-left": -200, 	"margin-top": -180});
@@ -1492,9 +1437,6 @@ $(function() {
 		var $campo_sku = $('#forma-buscaproducto-window').find('input[name=campo_sku]');
 		var $select_tipo_producto = $('#forma-buscaproducto-window').find('select[name=tipo_producto]');
 		var $campo_descripcion = $('#forma-buscaproducto-window').find('input[name=campo_descripcion]');
-		
-		//var $buscar_plugin_producto = $('#forma-buscaproducto-window').find('a[href*=busca_producto_modalbox]');
-		//var $cancelar_plugin_busca_producto = $('#forma-buscaproducto-window').find('a[href*=cencela]');
 		var $buscar_plugin_producto = $('#forma-buscaproducto-window').find('#busca_producto_modalbox');
 		var $cancelar_plugin_busca_producto = $('#forma-buscaproducto-window').find('#cencela');
 		
@@ -1521,12 +1463,6 @@ $(function() {
 			$select_tipo_producto.children().remove();
 			var prod_tipos_html = '<option value="0">[--Seleccionar Tipo--]</option>';
 			$.each(data['prodTipos'],function(entryIndex,pt){
-				/*
-				if(parseInt( pt['id']) == 1 ){
-					prod_tipos_html += '<option value="' + pt['id'] + '"  selected="yes">' + pt['titulo'] + '</option>';
-				}else{
-					prod_tipos_html += '<option value="' + pt['id'] + '"  >' + pt['titulo'] + '</option>';
-				}*/
 				prod_tipos_html += '<option value="' + pt['id'] + '"  >' + pt['titulo'] + '</option>';
 			});
 			$select_tipo_producto.append(prod_tipos_html);
@@ -1542,7 +1478,6 @@ $(function() {
 		
 		//click buscar productos
 		$buscar_plugin_producto.click(function(event){
-			//event.preventDefault();
 			var input_json = document.location.protocol + '//' + document.location.host + '/'+controller+'/getBuscadorProductos.json';
 			$arreglo = {	'sku':$campo_sku.val(),
 							'tipo':$select_tipo_producto.val(),
@@ -1575,7 +1510,6 @@ $(function() {
 				$('tr:odd' , $tabla_resultados).hover(function () {
 					$(this).find('td').css({background : '#FBD850'});
 				}, function() {
-					//$(this).find('td').css({'background-color':'#DDECFF'});
 					$(this).find('td').css({'background-color':'#e7e8ea'});
 				});
 				$('tr:even' , $tabla_resultados).hover(function () {
@@ -1609,7 +1543,6 @@ $(function() {
 		$(this).aplicarEventoKeypressEjecutaTrigger($campo_descripcion, $buscar_plugin_producto);
 		
 		$cancelar_plugin_busca_producto.click(function(event){
-			//event.preventDefault();
 			var remove = function() {$(this).remove();};
 			$('#forma-buscaproducto-overlay').fadeOut(remove);
 			$('#forma-pocpedidos-window').find('input[name=nombre_producto]').focus();
@@ -1690,7 +1623,6 @@ $(function() {
 								$('#forma-buscapresentacion-window').css({"margin-left": -200, "margin-top": -180});
 								
 								var $tabla_resultados = $('#forma-buscapresentacion-window').find('#tabla_resultado');
-								//var $cancelar_plugin_busca_lotes_producto = $('#forma-buscapresentacion-window').find('a[href*=cencela]');
 								var $cancelar_plugin_busca_lotes_producto = $('#forma-buscapresentacion-window').find('#cencela');
 								$tabla_resultados.children().remove();
 								
@@ -1834,8 +1766,6 @@ $(function() {
 		var $campo_impuesto = $('#forma-pocpedidos-window').find('input[name=impuesto]');
 		var $campo_impuesto_retenido = $('#forma-pocpedidos-window').find('input[name=impuesto_retenido]');
 		var $campo_total = $('#forma-pocpedidos-window').find('input[name=total]');
-		//var $campo_tc = $('#forma-pocpedidos-window').find('input[name=tc]');
-		//var $valor_impuesto = $('#forma-pocpedidos-window').find('input[name=valorimpuesto]');
 		var $grid_productos = $('#forma-pocpedidos-window').find('#grid_productos');
 		var $grid_warning = $('#forma-pocpedidos-window').find('#div_warning_grid').find('#grid_warning');
 		
@@ -2286,14 +2216,6 @@ $(function() {
 					patron = /^-?[0-9]+([,\.][0-9]{0,4})?$/;
 				}
 				
-				/*
-				if(!patron.test($(this).val())){
-					//alert("Si valido"+$(this).val());
-				}else{
-					
-				}
-				*/
-				
 				//Buscar cuantos puntos tiene  cantidad
 				var coincidencias = $(this).val().match(/\./g);
 				var numPuntos = coincidencias ? coincidencias.length : 0;
@@ -2543,7 +2465,6 @@ $(function() {
 				//Calcula el importe
 				$campoImporte.val(parseFloat($campoPrecioU.val()) * parseFloat($campoCantidad.val()));
 				//Redondea el importe en dos decimales
-				//$(this).parent().parent().find('#import').val(Math.round(parseFloat($(this).parent().parent().find('#import').val())*100)/100);
 				$campoImporte.val( parseFloat($campoImporte.val()).toFixed(4));
 				
 				//Calcular el importe del IEPS
@@ -2610,16 +2531,9 @@ $(function() {
 									$tr.find('input[name=statusreg]').val('1&&&'+quitar_comas($tr.find('input[name=costo]').val())+'&&&'+entry['Data']['ident']);
 									$tr.find('input[name=reqauth]').val('true');
 									$tr.find('input[name=precio]').css({'background':'#ffffff'});
-									//cont_check++;
 								}
 							}
 						});
-						
-						/*
-						if(parseInt(cont_check)<=0){
-							$('#forma-cotizacions-window').find('#btn_autorizar').hide();
-						}
-						*/
 						
 						jAlert('Precios autorizados!', 'Atencion!', function(r) {
 							
@@ -2667,9 +2581,6 @@ $(function() {
 		
 		$idauth.focus();
 	}
-	
-	
-	
 	
 	
 	//nuevo pedido
@@ -3742,6 +3653,14 @@ $(function() {
 			var $cancelar_plugin = $('#forma-pocpedidos-window').find('#boton_cancelar');
 			var $submit_actualizar = $('#forma-pocpedidos-window').find('#submit');
 			
+            var $select_metodo_pago00 = $('#forma-pocpedidos-window').find('#select_metodo_pago00');
+            var $select_metodo_pago01 = $('#forma-pocpedidos-window').find('#select_metodo_pago01');
+            var $select_metodo_pago02 = $('#forma-pocpedidos-window').find('#select_metodo_pago02');
+                
+            var $mp_import00 = $('#forma-pocpedidos-window').find('#importe00');
+            var $mp_import01 = $('#forma-pocpedidos-window').find('#importe01');
+            var $mp_import02 = $('#forma-pocpedidos-window').find('#importe02');
+			
 			$pestana_transportista.parent().hide();
 			
 			$busca_cliente.hide();
@@ -4079,8 +3998,40 @@ $(function() {
 					});
 					$select_almacen.append(hmtl_alm);
 					
-					
-					
+					{
+					    $select_metodo_pago00.children().remove();
+					    $select_metodo_pago01.children().remove();
+					    $select_metodo_pago02.children().remove();
+					    var hmtl_metodo00="";
+					    var hmtl_metodo01="";
+					    var hmtl_metodo02="";
+					    $.each(entry['MetodosPago'],function( entryIndex, r ){
+							if ( entry['datosMetodos'][0]['attrib_00'] == r['id'] ) {
+								hmtl_metodo00 += '<option value="' + r['id'] + '" selected="yes" >' + r['titulo'] + '</option>';
+							}
+							else {
+								hmtl_metodo00 += '<option value="' + r['id'] + '"  >' + r['titulo'] + '</option>';
+							}
+							
+							if ( entry['datosMetodos'][0]['attrib_01'] == r['id'] ) {
+								hmtl_metodo01 += '<option value="' + r['id'] + '" selected="yes" >' + r['titulo'] + '</option>';
+							}
+							else {
+								hmtl_metodo01 += '<option value="' + r['id'] + '"  >' + r['titulo'] + '</option>';
+							}
+							
+							if ( entry['datosMetodos'][0]['attrib_02'] == r['id'] ) {
+								hmtl_metodo02 += '<option value="' + r['id'] + '" selected="yes" >' + r['titulo'] + '</option>';
+							}
+							else {
+								hmtl_metodo02 += '<option value="' + r['id'] + '"  >' + r['titulo'] + '</option>';
+							}
+					    });
+				    	$select_metodo_pago00.append(hmtl_metodo00);
+				    	$select_metodo_pago01.append(hmtl_metodo01);
+				    	$select_metodo_pago02.append(hmtl_metodo02);
+			        }
+			        		
 					var valor_metodo = entry['datosPedido'][0]['metodo_pago_id'];
 					
 					//carga select de metodos de pago

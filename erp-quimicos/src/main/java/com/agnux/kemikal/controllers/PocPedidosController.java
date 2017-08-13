@@ -234,6 +234,7 @@ public class PocPedidosController {
         HashMap<String,ArrayList<HashMap<String, String>>> jsonretorno = new HashMap<String,ArrayList<HashMap<String, String>>>();
         ArrayList<HashMap<String, String>> datosPedido = new ArrayList<HashMap<String, String>>();
         ArrayList<HashMap<String, String>> datosGrid = new ArrayList<HashMap<String, String>>();
+        ArrayList<HashMap<String, String>> datosMetodos = new ArrayList<HashMap<String, String>>();
         ArrayList<HashMap<String, String>> valorIva = new ArrayList<HashMap<String, String>>();
         ArrayList<HashMap<String, String>> tipoCambioActual = new ArrayList<HashMap<String, String>>();
         ArrayList<HashMap<String, String>> arrayExtra = new ArrayList<HashMap<String, String>>();
@@ -264,6 +265,7 @@ public class PocPedidosController {
         if( !id_pedido.equals("0")  ){
             datosPedido = this.getPocDao().getPocPedido_Datos(Integer.parseInt(id_pedido));
             datosGrid = this.getPocDao().getPocPedido_DatosGrid(Integer.parseInt(id_pedido));
+            datosMetodos = this.getPocDao().getPocPedido_DatosMetodos(Integer.parseInt(id_pedido));
             System.out.println("proceso_flujo_id="+datosPedido.get(0).get("proceso_flujo_id"));
             //1;"COTIZACION",  4;"PEDIDO"
             if(Integer.parseInt(datosPedido.get(0).get("proceso_flujo_id"))!=1 && Integer.parseInt(datosPedido.get(0).get("proceso_flujo_id"))!=4){
@@ -309,6 +311,7 @@ public class PocPedidosController {
         arrayExtra.add(0,extra);
         jsonretorno.put("datosPedido", datosPedido);
         jsonretorno.put("datosGrid", datosGrid);
+        jsonretorno.put("datosMetodos", datosMetodos);
         jsonretorno.put("iva", valorIva);
         jsonretorno.put("Tc", tipoCambioActual);
         jsonretorno.put("Extras", arrayExtra);
