@@ -1853,14 +1853,27 @@ public class FacturasSpringDao implements FacturasInterfaceDao{
         return ref_id;
     }
 
-    
+    @Override
+    public String q_serie_folio(final Integer usr_id) {
+        String SQL = "select fac_cfds_conf_folios.serie as serie, " +
+            "fac_cfds_conf_folios.folio_actual::character varying as folio " +
+            "FROM gral_suc AS SUC " +
+            "LEFT JOIN fac_cfds_conf ON fac_cfds_conf.gral_suc_id = SUC.id " +
+            "LEFT JOIN fac_cfds_conf_folios ON fac_cfds_conf_folios.fac_cfds_conf_id = fac_cfds_conf.id " +
+            "LEFT JOIN gral_usr_suc AS USR_SUC ON USR_SUC.gral_suc_id = SUC.id " +
+            "WHERE fac_cfds_conf_folios.proposito = \'FAC\' " +
+            "AND USR_SUC.gral_usr_id=" + usr_id;
+        Logger.getLogger(FacturasSpringDao.class.getName()).log(Level.INFO, SQL);
+        Map<String, Object> map_iva = this.getJdbcTemplate().queryForMap(SQL);
+        return (map_iva.get("serie").toString() + map_iva.get("folio").toString());
+    }
     
     @Override
     public String getSerieFolioFacturaByIdPrefactura(Integer id_prefactura, Integer idEmp) {
         String sql_to_query="";
         
         //obtener tipo de facturacion
-        String tipo_facturacion = getTipoFacturacion(idEmp);
+ /*       String tipo_facturacion = getTipoFacturacion(idEmp);
         
         if(tipo_facturacion.equals("cfd")){
             //para facturacion tipo CFD
@@ -1873,14 +1886,13 @@ public class FacturasSpringDao implements FacturasInterfaceDao{
         }
         
         if(tipo_facturacion.equals("cfditf")){
-            //para facturacion tipo CFDI Timbre Fiscal
+            //para facturacion tipo CFDI Timbre Fiscal*/
             sql_to_query = "SELECT fac_docs.serie_folio FROM erp_prefacturas  JOIN  fac_docs ON fac_docs.proceso_id=erp_prefacturas.proceso_id WHERE erp_prefacturas.id="+id_prefactura+" AND fac_docs.cancelado=false ORDER BY fac_docs.id DESC LIMIT 1;";
-        }
-        
+       // }
+        Logger.getLogger(FacturasSpringDao.class.getName()).log(Level.INFO, sql_to_query);
         //System.out.println("GetSerieFolio:"+sql_to_query);
         Map<String, Object> map_iva = this.getJdbcTemplate().queryForMap(sql_to_query);
-        String serie_folio = map_iva.get("serie_folio").toString();
-        return serie_folio;
+        return map_iva.get("serie_folio").toString();
     }
     
     

@@ -29,6 +29,7 @@ public interface FacturasInterfaceDao {
     public ArrayList<HashMap<String, Integer>> getFactura_AnioInforme();
     
     public String getSerieFolioFactura(Integer id_factura, Integer idEmp);
+    public String q_serie_folio(final Integer usr_id);
     public String getSerieFolioFacturaByIdPrefactura(Integer id_prefactura, Integer idEmp);
     public Integer getIdPrefacturaByIdFactura(Integer id_factura);
     public String getRefIdFactura(Integer id_factura, Integer idEmp);
