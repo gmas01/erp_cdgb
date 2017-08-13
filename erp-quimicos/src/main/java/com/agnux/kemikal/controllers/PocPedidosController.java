@@ -915,6 +915,11 @@ public class PocPedidosController {
             @RequestParam(value="select_metodo_pago00", required=true) Integer attrib_00,
             @RequestParam(value="select_metodo_pago01", required=true) Integer attrib_01,
             @RequestParam(value="select_metodo_pago02", required=true) Integer attrib_02,
+            
+            @RequestParam(value="importe00", required=true) String importe00,
+            @RequestParam(value="importe01", required=true) String importe01,
+            @RequestParam(value="importe02", required=true) String importe02,
+            
             @RequestParam(value="amex00", required=false) String enable_00,
             @RequestParam(value="amex01", required=false) String enable_01,
             @RequestParam(value="amex02", required=false) String enable_02,
@@ -1021,6 +1026,10 @@ public class PocPedidosController {
             pc.enable_00 = (enable_00 == null) ? "false" : "true";
             pc.enable_01 = (enable_01 == null) ? "false" : "true";
             pc.enable_02 = (enable_02 == null) ? "false" : "true";
+            pc.importe_00 = importe00;
+            pc.importe_01 = importe01;
+            pc.importe_02 = importe02;
+            
             
             succes = this.getPocDao().poc_val_cusorder(
                 new Integer(id_usuario),

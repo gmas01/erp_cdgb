@@ -42,6 +42,9 @@ public class PotCatCusorder {
     public String attrib_02;
     public String enable_02;
     public String matrix;
+    public String importe_00;
+    public String importe_01;
+    public String importe_02;
 
     public String conform_cat_store() {
         return "select poc_cat_cusorder from poc_cat_cusorder("
@@ -76,6 +79,9 @@ public class PotCatCusorder {
                 + enable_01 + ","
                 + attrib_02 + ","
                 + enable_02 + ","
+                + importe_00 + ","
+                + importe_01 + ","
+                + importe_02 + ","
                 + " array["+ matrix +"]);";
     }
 }
