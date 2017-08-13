@@ -59,7 +59,7 @@
 		<table class="table_acciones" style="display:none" border="0">
 			<tr>
 				<td width="15" height="30"></td>
-				<td height="30"><a href="new_item" class="tooltip"><div class="onmouseOutNewItem" id="nItem"></div><span>Crear Nuevo Pedido</span></a></td>
+				<td height="30"><a href="new_item" class="tooltip"><div class="onmouseOutNewItem" id="nItem"></div><span>Crear Nueva Remision</span></a></td>
 				<td width="15" height="30"></td>
 				<td height="30"><a href="visualiza_buscador" class="tooltip"><div class="onmouseOutVisualizaBuscador" id="vbuscador"></div><span>Busqueda</span></a> </td>
 			</tr>
@@ -168,7 +168,7 @@
 					
                     <div id="div_two" title="" class="pocpedidos_div_two">
                         <div class="columns on-2">
-                            <div class="fixed column" id="titulo_plugin" style="width:1020px; padding-left:6px;"><strong>Pedidos de Clientes</strong></div>
+                            <div class="fixed column" id="titulo_plugin" style="width:1020px; padding-left:6px;"><strong>Remisiones de Clientes</strong></div>
                             <div class="fixed column" style="width:20px; height:25px;">
                                 <div id="close" style="height:25px; background-image:url('../../img/modalbox/close.png'); background-color:; background-position:top; cursor:pointer; background-repeat:no-repeat;"></div>
                             </div>
@@ -180,7 +180,7 @@
                         <div class="columns" >
                             <div class=" fixed column">
                                 <ul class="pestanas">
-                                    <li><a href="#tabx-1"><strong>Pedido</strong></a></li>
+                                    <li><a href="#tabx-1"><strong>Remisi&oacute;n</strong></a></li>
                                     <li><a href="#tabx-2"><strong>Transportista</strong></a></li>
                                 </ul>
                             </div>
@@ -213,7 +213,7 @@
                                                                 <td width="15"><div class="interrogacion"><IMG SRC="../../img/help-16x16.png" ALIGN="top" rel="warning_nocliente"></div></td>
                                                                 <td width="90"><a href="busca_cliente">(Buscar&nbsp;)</a></td>
                                                                 <td width="15"></td>
-                                                                <td width="90"><span>Folio&nbsp;del&nbsp;Pedido</span></td>
+                                                                <td width="90"><span>Folio&nbsp;de&nbsp;Remisi&oacute;n</span></td>
                                                                 <td width="75"><input type="text" name="folio" style="width:75px;" readOnly="true"></td>
                                                                 <td width="15"></td>
                                                             </tr>
@@ -443,7 +443,7 @@
 																<td width="17"></td>
                                                                 <td width="110" align="right">
 																	<input type="button" id="cancelar_pedido" value="Cancelar Pedido" style="width:110px; font-weight: bold;">
-																	<input type="text" name="cancelado" value="PEDIDO CANCELADO" class="borde_oculto" style="width:110px; font-size:11px; font-weight:bold;" readOnly="true">
+																	<input type="text" name="cancelado" value="REMISI&Oacute;N CANCELADA" class="borde_oculto" style="width:110px; font-size:11px; font-weight:bold;" readOnly="true">
 																</td>
 																<td width="17"></td>
                                                                 <td width="110" align="right">
