@@ -333,7 +333,7 @@
 																<td width="10"></td>
 																<td width="80"></td>
 																<td width="190" colspan="3">
-																	<select name="select_metodo_pago" style="width:190px"></select>
+																	<select name="select_metodo_pago" style="width:190;display:none""></select>
 																</td>
 																<td width="10"></td>
 																<td width="175" colspan="3">
