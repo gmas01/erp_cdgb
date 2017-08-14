@@ -3661,6 +3661,10 @@ $(function() {
             var $mp_import01 = $('#forma-pocpedidos-window').find('#importe01');
             var $mp_import02 = $('#forma-pocpedidos-window').find('#importe02');
 			
+			var $amex00 = $('#forma-pocpedidos-window').find('#amex00');
+			var $amex01 = $('#forma-pocpedidos-window').find('#amex01');
+			var $amex02 = $('#forma-pocpedidos-window').find('#amex02');
+
 			$pestana_transportista.parent().hide();
 			
 			$busca_cliente.hide();
@@ -3999,9 +4003,13 @@ $(function() {
 					$select_almacen.append(hmtl_alm);
 					
 					{
-                                            $mp_import00.val(entry['datosMetodos'][0]['importe_00']);
-                                            $mp_import01.val(entry['datosMetodos'][0]['importe_01']);
-                                            $mp_import02.val(entry['datosMetodos'][0]['importe_02']);
+						$amex00.attr('checked',  (entry['datosMetodos'][0]['enable_00'] == 'true')? true:false );
+			            $amex01.attr('checked',  (entry['datosMetodos'][0]['enable_01'] == 'true')? true:false );
+			            $amex02.attr('checked',  (entry['datosMetodos'][0]['enable_02'] == 'true')? true:false );
+						
+                        $mp_import00.val(entry['datosMetodos'][0]['importe_00']);
+                        $mp_import01.val(entry['datosMetodos'][0]['importe_01']);
+                        $mp_import02.val(entry['datosMetodos'][0]['importe_02']);
                                             
 					    $select_metodo_pago00.children().remove();
 					    $select_metodo_pago01.children().remove();
