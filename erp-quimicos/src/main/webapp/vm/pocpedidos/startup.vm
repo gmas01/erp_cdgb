@@ -378,7 +378,7 @@
 																	<input type="text" name="fecha_compromiso_original" style="display:none">
 																</td>
 																<td width="30"><div class="interrogacion"><IMG SRC="../../img/help-16x16.png" ALIGN="top" rel="warning_fcompromiso"></div></td>
-																<td width="55">Vendedor</td>
+																<td width="55">Medico</td>
 																<td width="180" colspan="3">
 																	<select name="vendedor" style="width:180px"></select>
 																	<select name="vendedor_original" style="display:none"></select>
