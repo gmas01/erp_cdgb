@@ -2234,7 +2234,7 @@ public class PocSpringDao implements PocInterfaceDao{
 
     @Override
     public ArrayList<HashMap<String, String>> getPocPedido_DatosMetodos(Integer id_pedido){
-        String sql = "select attrib_00, enable_00, attrib_01, enable_01, attrib_02, enable_02 from poc_pedidos_extra WHERE pedido_id=?";
+        String sql = "select attrib_00, enable_00, attrib_01, enable_01, attrib_02, enable_02, importe_00, importe_01, importe_02 from poc_pedidos_extra WHERE pedido_id=?";
         ArrayList<HashMap<String, String>> hm = (ArrayList<HashMap<String, String>>) this.jdbcTemplate.query(
             sql,
             new Object[]{new Integer(id_pedido)}, new RowMapper(){
@@ -2247,6 +2247,9 @@ public class PocSpringDao implements PocInterfaceDao{
                     row.put("enable_01",String.valueOf(rs.getBoolean("enable_01")));
                     row.put("attrib_02",String.valueOf(rs.getInt("attrib_02")));
                     row.put("enable_02",String.valueOf(rs.getBoolean("enable_02")));
+                    row.put("importe_00",String.valueOf(rs.getDouble("importe_00")));
+                    row.put("importe_01",String.valueOf(rs.getDouble("importe_01")));
+                    row.put("importe_02",String.valueOf(rs.getDouble("importe_02")));
                     return row;
                 }
             }

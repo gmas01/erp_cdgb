@@ -3999,6 +3999,10 @@ $(function() {
 					$select_almacen.append(hmtl_alm);
 					
 					{
+                                            $mp_import00.val(entry['datosMetodos'][0]['importe_00']);
+                                            $mp_import01.val(entry['datosMetodos'][0]['importe_01']);
+                                            $mp_import02.val(entry['datosMetodos'][0]['importe_02']);
+                                            
 					    $select_metodo_pago00.children().remove();
 					    $select_metodo_pago01.children().remove();
 					    $select_metodo_pago02.children().remove();
