@@ -73,6 +73,19 @@ $(function() {
 		$(this).removeClass("onmouseOverLimpiar").addClass("onmouseOutLimpiar");
 	});
 	
+        var verify_points = function(o){
+            //Buscar cuantos puntos tiene  cantidad
+            var coincidencias = $(o).val().match(/\./g);
+            var numPuntos = coincidencias ? coincidencias.length : 0;
+            if ( parseInt(numPuntos) > 1 )
+            {
+                jAlert('El valor ingresado para Cantidad es incorrecto, tiene mas de un punto('+$(o).val()+').', 'Atencion!', function(r) { 
+                $(o).focus();
+                });
+                return false;
+            }
+            return true;
+        };
 	
 	var to_make_one_search_string = function(){
 		var valor_retorno = "";
@@ -3418,21 +3431,6 @@ $(function() {
 				$impuesto.val(quitar_comas($impuesto.val()));
 				$total.val(t);
                                 
-                                var verify_points = function(o){
-                                    //Buscar cuantos puntos tiene  cantidad
-				    var coincidencias = $(o).val().match(/\./g);
-				    var numPuntos = coincidencias ? coincidencias.length : 0;
-				    if ( parseInt(numPuntos) > 1 )
-                                    {
-					jAlert('El valor ingresado para Cantidad es incorrecto, tiene mas de un punto('+$(o).val()+').', 'Atencion!', function(r) { 
-						$(o).focus();
-					});
-                                        return false;
-				    }
-                                    
-                                    return true;
-                                }
-                                
                                 if (!verify_points($mp_import00)) return false;
                                 if (!verify_points($mp_import01)) return false;
                                 if (!verify_points($mp_import02)) return false;
@@ -5413,6 +5411,19 @@ $(function() {
 						$grid_productos.find('tr').each(function (index){
 							$(this).find('#cost').val(quitar_comas( $(this).find('#cost').val() ));
 						});
+						
+					    if (!verify_points($mp_import00)) return false;
+                        if (!verify_points($mp_import01)) return false;
+                        if (!verify_points($mp_import02)) return false;
+                        
+                        var t = quitar_comas($total.val());
+                        var sumatoria_CDGB = parseFloat($mp_import00.val()) + parseFloat($mp_import01.val()) + parseFloat($mp_import02.val());
+                        if (parseFloat(sumatoria_CDGB) != parseFloat(t))
+                        {
+                            jAlert('Sumatoria de metodos de pago incorrecta!', function(r) { $mp_import00.focus(); });
+				            return false;      
+                        }
+                                
 						return true;
 					}else{
 						jAlert('No hay datos para actualizar', 'Atencion!', function(r) { 
