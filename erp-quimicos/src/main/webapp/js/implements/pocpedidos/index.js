@@ -4007,9 +4007,9 @@ $(function() {
 			            $amex01.attr('checked',  (entry['datosMetodos'][0]['enable_01'] == 'true')? true:false );
 			            $amex02.attr('checked',  (entry['datosMetodos'][0]['enable_02'] == 'true')? true:false );
 						
-                        $mp_import00.val(entry['datosMetodos'][0]['importe_00']);
-                        $mp_import01.val(entry['datosMetodos'][0]['importe_01']);
-                        $mp_import02.val(entry['datosMetodos'][0]['importe_02']);
+                        $mp_import00.val(parseFloat(entry['datosMetodos'][0]['importe_00']).toFixed(2));
+                        $mp_import01.val(parseFloat(entry['datosMetodos'][0]['importe_01']).toFixed(2));
+                        $mp_import02.val(parseFloat(entry['datosMetodos'][0]['importe_02']).toFixed(2));
                                             
 					    $select_metodo_pago00.children().remove();
 					    $select_metodo_pago01.children().remove();
