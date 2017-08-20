@@ -157,7 +157,7 @@ public class PdfPocPedidoFormato1 {
             
             
             String datosCliente = Datos_Pedido.get("razon_social").toUpperCase()+"\n"
-                                + Datos_Pedido.get("calle").toUpperCase()+" "+ Datos_Pedido.get("numero")+", "+ Datos_Pedido.get("colonia").toUpperCase()+"                                                                                                                                                                   FECHA "+ Datos_Pedido.get("fecha_expedicion")+"\n"
+                                + Datos_Pedido.get("calle").toUpperCase()+" "+ Datos_Pedido.get("numero")+", "+ Datos_Pedido.get("colonia").toUpperCase()+",\n"
                                 + Datos_Pedido.get("municipio").toUpperCase()+", "+ Datos_Pedido.get("Estado").toUpperCase()+", "+ Datos_Pedido.get("pais").toUpperCase()+", "+ "C.P. "+ Datos_Pedido.get("cp")+"       TEL. "+Datos_Pedido.get("telefono")+"\n"
                                 + "R.F.C.: "+Datos_Pedido.get("rfc")+"\n\n";
             
@@ -624,65 +624,65 @@ public class PdfPocPedidoFormato1 {
             tablaDatosExtras.setKeepTogether(true);
             
             //FILA 1
-    //       cell = new PdfPCell(new Paragraph("Orden de compra:", smallFont));
-    //        cell.setBorderWidthTop(0);
-    //        cell.setBorderWidthBottom(0);
-    //        cell.setBorderWidthLeft(0);
-    //        cell.setBorderWidthRight(0);
-    //        tablaDatosExtras.addCell(cell);
+            cell = new PdfPCell(new Paragraph("Orden de compra:", smallFont));
+            cell.setBorderWidthTop(0);
+            cell.setBorderWidthBottom(0);
+            cell.setBorderWidthLeft(0);
+            cell.setBorderWidthRight(0);
+            tablaDatosExtras.addCell(cell);
             
-    //        cell = new PdfPCell(new Paragraph(Datos_Pedido.get("orden_compra"), smallFont));
-    //        cell.setBorderWidthTop(0);
-    //        cell.setBorderWidthBottom(1);
-    //        cell.setBorderWidthLeft(0);
-    //        cell.setBorderWidthRight(0);
-    //        tablaDatosExtras.addCell(cell);
+            cell = new PdfPCell(new Paragraph(Datos_Pedido.get("orden_compra"), smallFont));
+            cell.setBorderWidthTop(0);
+            cell.setBorderWidthBottom(1);
+            cell.setBorderWidthLeft(0);
+            cell.setBorderWidthRight(0);
+            tablaDatosExtras.addCell(cell);
             
-    //        cell = new PdfPCell(new Paragraph("", smallFont));
-    //        cell.setBorderWidthTop(0);
-    //        cell.setBorderWidthBottom(0);
-    //        cell.setBorderWidthLeft(0);
-    //        cell.setBorderWidthRight(0);
-    //        tablaDatosExtras.addCell(cell);
+            cell = new PdfPCell(new Paragraph("", smallFont));
+            cell.setBorderWidthTop(0);
+            cell.setBorderWidthBottom(0);
+            cell.setBorderWidthLeft(0);
+            cell.setBorderWidthRight(0);
+            tablaDatosExtras.addCell(cell);
             
-    //        cell = new PdfPCell(new Paragraph("Fecha de compromiso:", smallFont));
-    //        cell.setBorderWidthTop(0);
-    //        cell.setBorderWidthBottom(0);
-    //        cell.setBorderWidthLeft(0);
-    //        cell.setBorderWidthRight(0);
-    //        tablaDatosExtras.addCell(cell);
+            cell = new PdfPCell(new Paragraph("Fecha de compromiso:", smallFont));
+            cell.setBorderWidthTop(0);
+            cell.setBorderWidthBottom(0);
+            cell.setBorderWidthLeft(0);
+            cell.setBorderWidthRight(0);
+            tablaDatosExtras.addCell(cell);
             
-    //        cell = new PdfPCell(new Paragraph(Datos_Pedido.get("fecha_compromiso"), smallFont));
-    //        cell.setBorderWidthTop(0);
-    //        cell.setBorderWidthBottom(1);
-    //        cell.setBorderWidthLeft(0);
-    //        cell.setBorderWidthRight(0);
-    //        tablaDatosExtras.addCell(cell);
+            cell = new PdfPCell(new Paragraph(Datos_Pedido.get("fecha_compromiso"), smallFont));
+            cell.setBorderWidthTop(0);
+            cell.setBorderWidthBottom(1);
+            cell.setBorderWidthLeft(0);
+            cell.setBorderWidthRight(0);
+            tablaDatosExtras.addCell(cell);
             
-    //        cell = new PdfPCell(new Paragraph("", smallFont));
-    //        cell.setBorderWidthTop(0);
-    //        cell.setBorderWidthBottom(0);
-    //        cell.setBorderWidthLeft(0);
-    //        cell.setBorderWidthRight(0);
-    //        tablaDatosExtras.addCell(cell);
+            cell = new PdfPCell(new Paragraph("", smallFont));
+            cell.setBorderWidthTop(0);
+            cell.setBorderWidthBottom(0);
+            cell.setBorderWidthLeft(0);
+            cell.setBorderWidthRight(0);
+            tablaDatosExtras.addCell(cell);
             
-    //        cell = new PdfPCell(new Paragraph("", smallFont));
-    //        cell.setBorderWidthTop(0);
-    //        cell.setBorderWidthBottom(0);
-    //        cell.setBorderWidthLeft(0);
-    //        cell.setBorderWidthRight(0);
-    //        tablaDatosExtras.addCell(cell);
+            cell = new PdfPCell(new Paragraph("", smallFont));
+            cell.setBorderWidthTop(0);
+            cell.setBorderWidthBottom(0);
+            cell.setBorderWidthLeft(0);
+            cell.setBorderWidthRight(0);
+            tablaDatosExtras.addCell(cell);
             
-    //        cell = new PdfPCell(new Paragraph("", smallFont));
-    //        cell.setBorderWidthTop(0);
-    //        cell.setBorderWidthBottom(0);
-    //        cell.setBorderWidthLeft(0);
-    //        cell.setBorderWidthRight(0);
-    //        tablaDatosExtras.addCell(cell);
+            cell = new PdfPCell(new Paragraph("", smallFont));
+            cell.setBorderWidthTop(0);
+            cell.setBorderWidthBottom(0);
+            cell.setBorderWidthLeft(0);
+            cell.setBorderWidthRight(0);
+            tablaDatosExtras.addCell(cell);
             
             
             //FILA 2
-            cell = new PdfPCell(new Paragraph("Médico:", smallFont));
+            cell = new PdfPCell(new Paragraph("Agente vendedor:", smallFont));
             cell.setBorderWidthTop(0);
             cell.setBorderWidthBottom(0);
             cell.setBorderWidthLeft(0);
@@ -705,56 +705,56 @@ public class PdfPocPedidoFormato1 {
             tablaDatosExtras.addCell(cell);
             
             //cell = new PdfPCell(new Paragraph("Solicitado por:", smallFont));
-           cell = new PdfPCell(new Paragraph("", smallFont));
-           cell.setBorderWidthTop(0);
-           cell.setBorderWidthBottom(0);
+            cell = new PdfPCell(new Paragraph("", smallFont));
+            cell.setBorderWidthTop(0);
+            cell.setBorderWidthBottom(0);
             cell.setBorderWidthLeft(0);
             cell.setBorderWidthRight(0);
             tablaDatosExtras.addCell(cell);
             
-           cell = new PdfPCell(new Paragraph("", smallFont));
-           cell.setBorderWidthTop(0);
+            cell = new PdfPCell(new Paragraph("", smallFont));
+            cell.setBorderWidthTop(0);
             cell.setBorderWidthBottom(0);
             cell.setBorderWidthLeft(0);
             cell.setBorderWidthRight(0);
             tablaDatosExtras.addCell(cell);
             
             //FILA 3
-       //    cell = new PdfPCell(new Paragraph("Transporte:", smallFont));
-       //     cell.setBorderWidthTop(0);
-       //     cell.setBorderWidthBottom(0);
-       //     cell.setBorderWidthLeft(0);
-       //     cell.setBorderWidthRight(0);
-      //      tablaDatosExtras.addCell(cell);
+            cell = new PdfPCell(new Paragraph("Transporte:", smallFont));
+            cell.setBorderWidthTop(0);
+            cell.setBorderWidthBottom(0);
+            cell.setBorderWidthLeft(0);
+            cell.setBorderWidthRight(0);
+            tablaDatosExtras.addCell(cell);
             
-      //      cell = new PdfPCell(new Paragraph(Datos_Pedido.get("transporte"), smallFont));
-      //      cell.setBorderWidthTop(0);
-      //      cell.setBorderWidthBottom(1);
-      //      cell.setBorderWidthLeft(0);
-      //      cell.setBorderWidthRight(0);
-      //      cell.setColspan(4);
-      //      tablaDatosExtras.addCell(cell);
+            cell = new PdfPCell(new Paragraph(Datos_Pedido.get("transporte"), smallFont));
+            cell.setBorderWidthTop(0);
+            cell.setBorderWidthBottom(1);
+            cell.setBorderWidthLeft(0);
+            cell.setBorderWidthRight(0);
+            cell.setColspan(4);
+            tablaDatosExtras.addCell(cell);
             
-       //     cell = new PdfPCell(new Paragraph("", smallFont));
-       //     cell.setBorderWidthTop(0);
-       //     cell.setBorderWidthBottom(0);
-       //     cell.setBorderWidthLeft(0);
-      //      cell.setBorderWidthRight(0);
-      //      tablaDatosExtras.addCell(cell);
+            cell = new PdfPCell(new Paragraph("", smallFont));
+            cell.setBorderWidthTop(0);
+            cell.setBorderWidthBottom(0);
+            cell.setBorderWidthLeft(0);
+            cell.setBorderWidthRight(0);
+            tablaDatosExtras.addCell(cell);
             
-      //      cell = new PdfPCell(new Paragraph("Lugar de entrega:", smallFont));
-      //      cell.setBorderWidthTop(0);
-      //      cell.setBorderWidthBottom(0);
-      //      cell.setBorderWidthLeft(0);
-      //      cell.setBorderWidthRight(0);
-      //      tablaDatosExtras.addCell(cell);
+            cell = new PdfPCell(new Paragraph("Lugar de entrega:", smallFont));
+            cell.setBorderWidthTop(0);
+            cell.setBorderWidthBottom(0);
+            cell.setBorderWidthLeft(0);
+            cell.setBorderWidthRight(0);
+            tablaDatosExtras.addCell(cell);
             
-      //      cell = new PdfPCell(new Paragraph(Datos_Pedido.get("lugar_entrega"), smallFont));
-      //      cell.setBorderWidthTop(0);
-      //      cell.setBorderWidthBottom(1);
-      //      cell.setBorderWidthLeft(0);
-      //      cell.setBorderWidthRight(0);
-      //      tablaDatosExtras.addCell(cell);
+            cell = new PdfPCell(new Paragraph(Datos_Pedido.get("lugar_entrega"), smallFont));
+            cell.setBorderWidthTop(0);
+            cell.setBorderWidthBottom(1);
+            cell.setBorderWidthLeft(0);
+            cell.setBorderWidthRight(0);
+            tablaDatosExtras.addCell(cell);
             
             document.add(tablaDatosExtras);
             
@@ -766,13 +766,13 @@ public class PdfPocPedidoFormato1 {
             tabla_conceptos = new PdfPTable(medidas);
             tabla_conceptos.setKeepTogether(true);
             
-     //       cell = new PdfPCell(new Paragraph("", smallFont));
-     //       cell.setBorder(0);
-     //       cell.setColspan(8);
-     //       cell.setFixedHeight(10);
-     //       tabla_conceptos.addCell(cell);
+            cell = new PdfPCell(new Paragraph("", smallFont));
+            cell.setBorder(0);
+            cell.setColspan(8);
+            cell.setFixedHeight(10);
+            tabla_conceptos.addCell(cell);
             
-     //       cell = new PdfPCell(new Paragraph("Nombre y Firma de Autorización por credito y cobranza:", smallFont));
+            cell = new PdfPCell(new Paragraph("Nombre y Firma de Autorización por credito y cobranza:", smallFont));
             cell.setBorderWidthTop(0);
             cell.setBorderWidthBottom(0);
             cell.setBorderWidthLeft(0);
@@ -783,7 +783,7 @@ public class PdfPocPedidoFormato1 {
             
             cell = new PdfPCell(new Paragraph(Datos_Pedido.get("nombre_autorizo_pedido"), smallFont));
             cell.setBorderWidthTop(0);
-            cell.setBorderWidthBottom(0);
+            cell.setBorderWidthBottom(1);
             cell.setBorderWidthLeft(0);
             cell.setBorderWidthRight(0);
             cell.setColspan(3);
@@ -900,74 +900,59 @@ public class PdfPocPedidoFormato1 {
             table.addCell(cell);
             
             
-       //GMAS1908217     cell = new PdfPCell(new Paragraph("FOLIO PEDIDO",smallBoldFont));
-       //     cell.setUseAscender(true);
-       //     cell.setHorizontalAlignment(Element.ALIGN_CENTER);
-      //      cell.setUseDescender(true);
-      //      cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
-      //      cell.setBackgroundColor(BaseColor.BLACK);
-      //      table.addCell(cell);
+            cell = new PdfPCell(new Paragraph("FOLIO PEDIDO",smallBoldFont));
+            cell.setUseAscender(true);
+            cell.setHorizontalAlignment(Element.ALIGN_CENTER);
+            cell.setUseDescender(true);
+            cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
+            cell.setBackgroundColor(BaseColor.BLACK);
+            table.addCell(cell);
             
-      //GMAS1908217      cell = new PdfPCell(new Paragraph(temp[1],smallFont));
+            cell = new PdfPCell(new Paragraph(temp[1],smallFont));
             //cell = new PdfPCell(new Paragraph("cadena posicion1",sont));
-      //      cell.setUseAscender(true);
-      //      cell.setHorizontalAlignment(Element.ALIGN_CENTER);
-      //      cell.setUseDescender(true);
-      //      cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
-      //      table.addCell(cell);
+            cell.setUseAscender(true);
+            cell.setHorizontalAlignment(Element.ALIGN_CENTER);
+            cell.setUseDescender(true);
+            cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
+            table.addCell(cell);
             
             
-     //GMAS1908217       cell = new PdfPCell(new Paragraph("NO.CLIENTE",smallBoldFont));// AQUI HIBA EL FOLIO
-     //       cell.setUseAscender(true);
-     //       cell.setHorizontalAlignment(Element.ALIGN_CENTER);
-     //       cell.setUseDescender(true);
-     //       cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
-     //       cell.setBackgroundColor(BaseColor.WHITE);
-     //       table.addCell(cell);
+            cell = new PdfPCell(new Paragraph("NO.CLIENTE",smallBoldFont));// AQUI HIBA EL FOLIO
+            cell.setUseAscender(true);
+            cell.setHorizontalAlignment(Element.ALIGN_CENTER);
+            cell.setUseDescender(true);
+            cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
+            cell.setBackgroundColor(BaseColor.BLACK);
+            table.addCell(cell);
             
-   //GMAS1908217         cell = new PdfPCell(new Paragraph(temp[0],smallFont));
+            cell = new PdfPCell(new Paragraph(temp[0],smallFont));
             //cell = new PdfPCell(new Paragraph("cadena posicion2",sont));
-   //         cell.setUseAscender(true);
-   //         cell.setHorizontalAlignment(Element.ALIGN_CENTER);
-   //         cell.setUseDescender(true);
-   //         cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
-   //         table.addCell(cell);
+            cell.setUseAscender(true);
+            cell.setHorizontalAlignment(Element.ALIGN_CENTER);
+            cell.setUseDescender(true);
+            cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
+            table.addCell(cell);
             
             //celda vacia
-            cell = new PdfPCell(new Paragraph(" ", smallFont));
-            cell.setBorder(0);
-           table.addCell(cell);
-                      
-            //OTRA Celda vacia
-            cell = new PdfPCell(new Paragraph(" ", smallFont));
-            cell.setBorder(0);
+//            cell = new PdfPCell(new Paragraph(" ", smallFont));
+//            cell.setBorder(1);
+//            table.addCell(cell);
+            
+            cell = new PdfPCell(new Paragraph("LUGAR Y FECHA",smallBoldFont));
+            cell.setUseAscender(true);
+            cell.setHorizontalAlignment(Element.ALIGN_CENTER);
+            cell.setUseDescender(true);
+            cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
+            cell.setBackgroundColor(BaseColor.BLACK);
             table.addCell(cell);
             
-            //OTRA Celda vacia 3
-            cell = new PdfPCell(new Paragraph(" ", smallFont));
-            cell.setBorder(0);
-            table.addCell(cell);
-            
-            //OTRA Celda vacia 4
-            cell = new PdfPCell(new Paragraph(" ", smallFont));
-            cell.setBorder(0);
-            table.addCell(cell);
-            
-   //GMAS1908217         cell = new PdfPCell(new Paragraph("LUGAR Y FECHA",smallBoldFont));
-   //         cell.setUseAscender(true);
-   //         cell.setHorizontalAlignment(Element.ALIGN_CENTER);
-   //         cell.setUseDescender(true);
-   //         cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
-   //         cell.setBackgroundColor(BaseColor.BLACK);
-   //         table.addCell(cell);
-            
-   //GMAS1908217         cell = new PdfPCell(new Paragraph(temp[2],smallFont));
+            cell = new PdfPCell(new Paragraph(temp[2],smallFont));
             //cell = new PdfPCell(new Paragraph("cadena osicion2",sont));
-   //         cell.setUseAscender(true);
-   //         cell.setHorizontalAlignment(Element.ALIGN_CENTER);
-   //         cell.setUseDescender(true);
-   //         cell.setVerticalAlignment(Element.ALIGN_TOP);
-   //         table.addCell(cell);
+            cell.setUseAscender(true);
+            cell.setHorizontalAlignment(Element.ALIGN_CENTER);
+            cell.setUseDescender(true);
+            cell.setVerticalAlignment(Element.ALIGN_TOP);
+            table.addCell(cell);
             
             /*
             cell = new PdfPCell(new Paragraph("LUGAR DE ENTREGA",smallBoldFont));
