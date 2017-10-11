@@ -10,7 +10,7 @@
 		
         <!--  js for this catalogo -->
         <script type="text/javascript" src="../../js/components/jquery-form/jquery-form.js"></script>
-        <script type="text/javascript" src="../../js/implements/reppedidos/index.js" ></script>
+        <script type="text/javascript" src="../../js/implements/reppedidoscaja/index.js" ></script>
         <script type="text/javascript" src="../../js/components/formatearnumeros/agrega_comas.js"></script>
         <script type="text/javascript" src="../../js/components/modalbox/carteras/modalboxBuscacliente.js"></script>
         <link rel="stylesheet" href="../../css/modalbox/carteras/formaBuscaclientes.css" type="text/css" />
@@ -39,9 +39,9 @@
 							<td width="10">&nbsp;&nbsp;&nbsp;&nbsp;</td>
 							<td width="100">Opciones</td>
 							<td width="20"></td>
-							<td width="150">M&eacute;dico</td>
-							<td width="20"></td>
-							<td width="200">Cliente</td>
+							<td width="150">M&eacute;dico</td>     
+							<td width="20"></td>                       
+							<td width="200">Cliente</td>           
 							<td width="20">&nbsp;</td>
 							<td width="25"></td>
 							<td></td>
@@ -57,13 +57,15 @@
 							<td width="10">&nbsp;&nbsp;&nbsp;&nbsp;</td>
 							<td width="130"><SELECT NAME="opciones" style="width:130px;" title="Filtros para el reporte de pedidos"></SELECT></td>
 							<td width="20"></td>
+
 							<td width="100"><SELECT NAME="agente" style="width:150px;" title="Seleccion de Medico"></SELECT></td>
 							<td width="20"></td>
 							<td width="10">
 								<INPUT TYPE="text" name="nombrecliente" style="width:200px;">
 							</td>
-							<td width="10"><a href="busca_cliente" style="font-size:13px;">(Buscar)</a></td>
-							<td></td>
+							<td width="10"><a href="busca_cliente" style="font-size:13px;">(Buscar)</a></td>     
+							
+                                                            <td></td>
 							<td width="25"><IMG SRC="../../img/catalogo/calendario.png" ALIGN="top"></td>
 							<td width="90"><INPUT TYPE="text" name="fecha_inicial" style="width:90px;" readOnly="true"></td>
 							<td width="15"></td>

@@ -103,6 +103,7 @@ public class CxcSpringDao implements CxcInterfaceDao{
 				+"cxc_clie.numero_control, "
 				+"cxc_clie.razon_social, "
 				+"cxc_clie.rfc, "
+                                +"cxc_clie.clave_comercial, "
 				+"cxc_clie_clases.titulo AS tipo_cliente, "
                                 +"(CASE WHEN cxc_clie.telefono1='' OR cxc_clie.telefono1 IS NULL THEN cxc_clie.telefono2 ELSE cxc_clie.telefono1 END) AS tel "
 			+"FROM cxc_clie "
@@ -123,6 +124,7 @@ public class CxcSpringDao implements CxcInterfaceDao{
                     row.put("numero_control",rs.getString("numero_control"));
                     row.put("razon_social",rs.getString("razon_social"));
                     row.put("rfc",rs.getString("rfc"));
+                    row.put("clave_comercial",rs.getString("clave_comercial"));
                     row.put("tipo_cliente",rs.getString("tipo_cliente"));
                     row.put("tel",rs.getString("tel"));
                     return row;

@@ -55,7 +55,7 @@
 			</tr>
 			<tr>
 				<td width="10">&nbsp;&nbsp;&nbsp;&nbsp;</td>
-				<td width="70">Folio&nbsp;Pedido</td>
+				<td width="70">Folio&nbsp;Rem.</td>
 				<td width="15"></td>
 				
 				<td width="200">Cliente</td>
@@ -64,7 +64,7 @@
 				<td width="15"></td>
 				<td width="150">Nombre Producto</td>
 				<td width="15"></td>
-				<td width="150">Agente</td>
+				<td width="150">M&eacute;dico</td>
 				<td width="20">&nbsp;</td>
 				<td width="25"></td>
 				<td colspan="3">Fecha de creaci&oacute;n</td>
@@ -88,7 +88,7 @@
 				<td width="15"></td>
 				<td id="td_agente">
 					<select name="busqueda_select_agente" style="width:150px;">
-						<option value="0" selected="yes">[-Seleccionar Agente-]</option>
+						<option value="0" selected="yes">[-Seleccionar Medico-]</option>
 					</select>
 				</td>
 				<td width="20">&nbsp;</td>
@@ -191,7 +191,7 @@
 															<td width="15"></td>
 															<td width="90" align="right"></td>
 															<td width="35"></td>
-															<td width="85">Folio&nbsp;del&nbsp;Pedido&nbsp;</td>
+															<td width="85">Folio&nbsp;de&nbsp;Remisi&oacute;n&nbsp;</td>
 															<td width="120"><input type="text" name="folio_pedido" style="width:120px;" readOnly="true"></td>
 															<td width="15"></td>
 														</tr>
@@ -307,7 +307,7 @@
 																<input type="hidden" name="orden_compra_original">
 															</td>
 															<td width="30"><div class="interrogacion"><img src="../../img/help-16x16.png" ALIGN="top" rel="warning_oc"></div></td>
-															<td width="55">Vendedor</td>
+															<td width="55">M&eacute;dico</td>
 															<td width="250" colspan="3">
 																<select name="vendedor" style="width:250px"></select>
 																<select name="vendedor_original" style="display:none"></select>
@@ -326,12 +326,12 @@
 															</td>
 															<td width="10"></td>
 															<td width="175" colspan="3">
-																<input type="text" name="digit" value="Ingrese los ultimos&nbsp;4&nbsp;D&iacute;gitos&nbsp;de&nbsp;la Tarjeta" class="borde_oculto" readOnly="true" style="width:195px;">
+															<!--	<input type="text" name="digit" value="Ingrese los ultimos&nbsp;4&nbsp;D&iacute;gitos&nbsp;de&nbsp;la Tarjeta" class="borde_oculto" readOnly="true" style="width:195px;"> -->
 															</td>
 															<td>&nbsp;&nbsp;</td>
 															<td>
-																<input type="text" name="no_cuenta" style="width:75px;" maxlength="20" readOnly="true">
-															</td>
+															<!--	<input type="text" name="no_cuenta" style="width:75px;" maxlength="20" readOnly="true">
+ -->															</td>
 															<td width="30"><div class="interrogacion"><img src="../../img/help-16x16.png" ALIGN="top" rel="warning_digitos"></div></td>
 															<td width="90" colspan="2">T&eacute;rminos&nbsp;de&nbsp;pago</td>
 															<td>&nbsp;&nbsp;</td>
@@ -398,7 +398,7 @@
 																<td class="grid" id="td_nombre" style="background-color: rgb(180, 180, 180);"  width="202">&nbsp;Descripci&oacute;n</td>
 																<td class="grid" style="background-color: rgb(180, 180, 180);" width="90">&nbsp;Unidad</td>
 																<td class="grid" style="background-color: rgb(180, 180, 180);" width="100">&nbsp;Presentaci&oacute;n</td>
-																<td class="grid" style="background-color: rgb(180, 180, 180);" width="80">&nbsp;Cant.&nbsp;Pedido</td>
+																<td class="grid" style="background-color: rgb(180, 180, 180);" width="80">&nbsp;Cant.&nbsp;Remision</td>
 																<td class="grid" style="background-color: rgb(180, 180, 180);" width="80">&nbsp;Cant.&nbsp;Facturado</td>
 																<td class="grid" style="background-color: rgb(180, 180, 180);" width="80">&nbsp;Cant.&nbsp;Pendiente</td>
 																<td class="grid" style="background-color: rgb(180, 180, 180);" width="80">&nbsp;Precio&nbsp;unitario</td>

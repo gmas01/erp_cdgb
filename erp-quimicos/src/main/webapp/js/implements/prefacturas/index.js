@@ -105,7 +105,7 @@ $(function() {
 	$.post(input_json_lineas,$arreglo,function(data){
 		//Alimentando los campos select_agente
 		$busqueda_select_agente.children().remove();
-		var agente_hmtl = '<option value="0">[-Seleccionar Agente-]</option>';
+		var agente_hmtl = '<option value="0">[-Seleccionar Medico-]</option>';
 		$.each(data['Agentes'],function(entryIndex,agente){
 			agente_hmtl += '<option value="' + agente['id'] + '" >' + agente['nombre_vendedor'] + '</option>';
 		});
@@ -127,7 +127,7 @@ $(function() {
 		
 		//Recargar select de agentes
 		$busqueda_select_agente.children().remove();
-		var agente_hmtl = '<option value="0">[-Seleccionar Agente-]</option>';
+		var agente_hmtl = '<option value="0">[-Seleccionar Medico-]</option>';
 		$.each(arrayAgentes,function(entryIndex,agente){
 			agente_hmtl += '<option value="' + agente['id'] + '" >' + agente['nombre_vendedor'] + '</option>';
 		});
@@ -462,7 +462,7 @@ $(function() {
 			}
 		});
 		if(hmtl_vendedor == ''){
-			hmtl_vendedor = '<option value="0">[-Seleccionar Agente-]</option>';
+			hmtl_vendedor = '<option value="0">[-Seleccionar Medico-]</option>';
 		}
 		$select_vendedor.append(hmtl_vendedor);
 	}

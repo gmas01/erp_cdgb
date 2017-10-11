@@ -6,6 +6,8 @@ package com.agnux.kemikal.interfacedaos;
 import com.agnux.kemikal.controllers.PotCatCusorder;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 /**
  *
  * @author Noé Martinez
@@ -87,6 +89,10 @@ public interface PocInterfaceDao{
     //metodo para alimentar el select de los estados de los pedidos
     public ArrayList<HashMap<String,String>> getEstadoPedido();
     
+    //metodos para generar reporte Pedidos Caja
+      
+    public ArrayList<HashMap<String,String>>getReportePedidosCaja(Integer opcion, Integer agente, String cliente, String fecha_inicial, String fecha_final,Integer id_empresa);
+  
     //reporte de Articulos Reservados   pocDao(Proceso Comercial).
     public ArrayList<HashMap<String, String>> getReporteArticulosReservados( Integer id_empresa, Integer id_usuario, String folio_pedido, String codigo, String descripcion);
 

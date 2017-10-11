@@ -14,6 +14,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
+import java.util.logging.Level;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 /**
@@ -1114,7 +1115,8 @@ public class PocSpringDao implements PocInterfaceDao{
             where=" AND cxc_clie.curp ilike '%"+cadena.toUpperCase()+"%'";
 	}
 	if(filtro == 5){
-            where=" AND cxc_clie.alias ilike '%"+cadena.toUpperCase()+"%'";
+            //GMAS07OCT2017where=" AND cxc_clie.alias ilike '%"+cadena.toUpperCase()+"%'";
+            where=" AND cxc_clie.clave_comercial ilike '%"+cadena.toUpperCase()+"%'";
 	}
 
 	String sql_query = ""
@@ -2566,45 +2568,45 @@ public class PocSpringDao implements PocInterfaceDao{
             where+=" AND cxc_clie.razon_social ILIKE '%"+cliente+"%'";
         }
 
-        String sql_to_query = ""
-                + "SELECT "
-                        + "folio,"
-                        + "orden_compra,"
-                        + "fecha_factura,"
-                        + "cliente,"
-                        + "moneda_factura,"
-                        + "simbolo_moneda,"
-                        + "subtotal,"
-                        + "(subtotal*tipo_cambio) AS subtotal_mn, "
-                        + "monto_ieps,"
-                        + "(monto_ieps*tipo_cambio) AS monto_ieps_mn, "
-                        + "impuesto,"
-                        + "impuesto*tipo_cambio AS impuesto_mn, "
-                        + "total,"
-                        + "total*tipo_cambio AS total_mn "
-                + "FROM ( "
-                        + "SELECT  "
-                                + "poc_pedidos.id, "
-                                + "poc_pedidos.folio, "
-                                + "(CASE WHEN poc_pedidos.orden_compra IS NULL THEN '' ELSE poc_pedidos.orden_compra END) AS orden_compra,  "
-                                + "to_char(poc_pedidos.momento_creacion,'dd/mm/yyyy') as fecha_factura, "
-                                + "(CASE WHEN poc_pedidos.cancelado=FALSE THEN cxc_clie.razon_social ELSE 'CANCELADA' END) AS cliente, "
-                                + "poc_pedidos.moneda_id, "
-                                + "gral_mon.descripcion_abr AS moneda_factura, "
-                                + "gral_mon.simbolo AS simbolo_moneda, "
-                                + "(CASE WHEN poc_pedidos.cancelado=FALSE THEN poc_pedidos.subtotal ELSE 0.0 END) AS subtotal,  "
-                                + "(CASE WHEN poc_pedidos.cancelado=FALSE THEN poc_pedidos.monto_ieps ELSE 0.0 END) AS monto_ieps,  "
-                                + "(CASE WHEN poc_pedidos.cancelado=FALSE THEN poc_pedidos.impuesto ELSE 0.0 END) AS impuesto, "
-                                + "(CASE WHEN poc_pedidos.cancelado=FALSE THEN poc_pedidos.total ELSE 0.0 END) AS total,  "
-                                + "(CASE WHEN poc_pedidos.moneda_id=1 THEN 1 ELSE poc_pedidos.tipo_cambio END) AS tipo_cambio   "
-                        + "FROM poc_pedidos "
-                        + "JOIN erp_proceso ON erp_proceso.id=poc_pedidos.proceso_id "
-                        + "JOIN cxc_clie ON cxc_clie.id = poc_pedidos.cxc_clie_id   "
-                        + "JOIN gral_mon ON gral_mon.id = poc_pedidos.moneda_id  "
-                        + "WHERE erp_proceso.empresa_id="+id_empresa+" "+where+" "
-                        + "AND (to_char(poc_pedidos.momento_creacion,'yyyymmdd')::integer BETWEEN  to_char('"+fecha_inicial+"'::timestamp with time zone,'yyyymmdd')::integer AND to_char('"+fecha_final+"'::timestamp with time zone,'yyyymmdd')::integer) "
-                + ") AS sbt "
-                + "ORDER BY id";
+            String sql_to_query = ""
+                    + "SELECT "
+                            + "folio,"
+                            + "orden_compra,"
+                            + "fecha_factura,"
+                            + "cliente,"
+                            + "moneda_factura,"
+                            + "simbolo_moneda,"
+                            + "subtotal,"
+                            + "(subtotal*tipo_cambio) AS subtotal_mn, "
+                            + "monto_ieps,"
+                            + "(monto_ieps*tipo_cambio) AS monto_ieps_mn, "
+                            + "impuesto,"
+                            + "impuesto*tipo_cambio AS impuesto_mn, "
+                            + "total,"
+                            + "total*tipo_cambio AS total_mn "
+                    + "FROM ( "
+                            + "SELECT  "
+                                    + "poc_pedidos.id, "
+                                    + "poc_pedidos.folio, "
+                                    + "(CASE WHEN poc_pedidos.orden_compra IS NULL THEN '' ELSE poc_pedidos.orden_compra END) AS orden_compra,  "
+                                    + "to_char(poc_pedidos.momento_creacion,'dd/mm/yyyy') as fecha_factura, "
+                                    + "(CASE WHEN poc_pedidos.cancelado=FALSE THEN cxc_clie.razon_social ELSE 'CANCELADA' END) AS cliente, "
+                                    + "poc_pedidos.moneda_id, "
+                                    + "gral_mon.descripcion_abr AS moneda_factura, "
+                                    + "gral_mon.simbolo AS simbolo_moneda, "
+                                    + "(CASE WHEN poc_pedidos.cancelado=FALSE THEN poc_pedidos.subtotal ELSE 0.0 END) AS subtotal,  "
+                                    + "(CASE WHEN poc_pedidos.cancelado=FALSE THEN poc_pedidos.monto_ieps ELSE 0.0 END) AS monto_ieps,  "
+                                    + "(CASE WHEN poc_pedidos.cancelado=FALSE THEN poc_pedidos.impuesto ELSE 0.0 END) AS impuesto, "
+                                    + "(CASE WHEN poc_pedidos.cancelado=FALSE THEN poc_pedidos.total ELSE 0.0 END) AS total,  "
+                                    + "(CASE WHEN poc_pedidos.moneda_id=1 THEN 1 ELSE poc_pedidos.tipo_cambio END) AS tipo_cambio   "
+                            + "FROM poc_pedidos "
+                            + "JOIN erp_proceso ON erp_proceso.id=poc_pedidos.proceso_id "
+                            + "JOIN cxc_clie ON cxc_clie.id = poc_pedidos.cxc_clie_id   "
+                            + "JOIN gral_mon ON gral_mon.id = poc_pedidos.moneda_id  "
+                            + "WHERE erp_proceso.empresa_id="+id_empresa+" "+where+" "
+                            + "AND (to_char(poc_pedidos.momento_creacion,'yyyymmdd')::integer BETWEEN  to_char('"+fecha_inicial+"'::timestamp with time zone,'yyyymmdd')::integer AND to_char('"+fecha_final+"'::timestamp with time zone,'yyyymmdd')::integer) "
+                    + ") AS sbt "
+                    + "ORDER BY id";
 
         //System.out.println("Buscando facturas: "+sql_to_query);
         ArrayList<HashMap<String, String>> hm_facturas = (ArrayList<HashMap<String, String>>) this.jdbcTemplate.query(
@@ -2634,6 +2636,129 @@ public class PocSpringDao implements PocInterfaceDao{
         return hm_facturas;
     }
 
+     //obtiene REPORTE DE CAJA
+    @Override
+    public ArrayList<HashMap<String, String>> getReportePedidosCaja(Integer opcion, Integer agente, String cliente, String fecha_inicial, String fecha_final,Integer id_empresa) {
+        String where="";
+
+        if (opcion!=0){
+            where+=" AND erp_proceso.proceso_flujo_id="+opcion;
+        }
+
+        if (agente!=0){
+            where+=" AND poc_pedidos.cxc_agen_id="+agente;
+        }
+
+        if (!cliente.equals("")){
+            where+=" AND cxc_clie.razon_social ILIKE '%"+cliente+"%'";
+        }
+                    
+            String sql_to_query = ""            
+            + "SELECT "
+                    + "folio, "
+                    + "orden_compra, "
+                    + "fecha_factura, "
+                    + "cliente, "
+                    + "moneda_factura, "
+                    + "simbolo_moneda, "
+                    + "subtotal, "
+                    + "(subtotal*tipo_cambio) AS subtotal_mn, "
+                    + "monto_ieps, "
+                    + "(monto_ieps*tipo_cambio) AS monto_ieps_mn, "
+                    + "impuesto, "
+                    + "impuesto*tipo_cambio AS impuesto_mn, " 
+                    + "total, "
+                    + "total*tipo_cambio AS total_mn, " 
+                    + "(efectivo_00 + efectivo_01 + efectivo_02) AS efectivo, " 
+                    + "(transfer_00 + transfer_01 + transfer_02) AS transfer, "
+                    + "(amex_00 + amex_01 + amex_02) AS amex, " 
+                    + "(tcredito_00 + tcredito_01 + tcredito_02) AS tcredito, " 
+                    + "(tdebito_00 + tdebito_01 + tdebito_02) AS tdebito, " 
+                    + "(otros_00 + otros_01 + otros_02) AS otros "
+       
+            + "FROM ( SELECT  poc_pedidos.id, poc_pedidos.folio, " 
+                                + "(CASE WHEN poc_pedidos.orden_compra IS NULL THEN '' ELSE poc_pedidos.orden_compra END) AS orden_compra, "  
+                                + "to_char(poc_pedidos.momento_creacion,'dd/mm/yyyy') as fecha_factura, "
+                                + "(CASE WHEN poc_pedidos.cancelado=FALSE THEN cxc_clie.razon_social ELSE 'CANCELADA' END) AS cliente, " 
+                                + "poc_pedidos.moneda_id, " 
+                                + "gral_mon.descripcion_abr AS moneda_factura,"
+                                + "gral_mon.simbolo AS simbolo_moneda,"
+
+                                + "(CASE WHEN poc_pedidos_extra.attrib_00 = 1 THEN poc_pedidos_extra.importe_00 ELSE 0.0 END) AS efectivo_00, "
+                                + "(CASE WHEN poc_pedidos_extra.attrib_00 = 5 THEN poc_pedidos_extra.importe_00 ELSE 0.0 END) AS transfer_00, "
+                                + "(CASE WHEN (poc_pedidos_extra.attrib_00 = 2 and poc_pedidos_extra.enable_00=TRUE) THEN poc_pedidos_extra.importe_00 ELSE 0.0 END) AS amex_00, "
+                                + "(CASE WHEN (poc_pedidos_extra.attrib_00 = 2 and poc_pedidos_extra.enable_00=FALSE) THEN poc_pedidos_extra.importe_00 ELSE 0.0 END) AS tcredito_00, "
+                                + "(CASE WHEN poc_pedidos_extra.attrib_00 = 3 THEN poc_pedidos_extra.importe_00 ELSE 0.0 END) AS tdebito_00, "
+                                + "(CASE WHEN poc_pedidos_extra.attrib_00 = 7 THEN poc_pedidos_extra.importe_00 ELSE 0.0 END) AS otros_00, "
+                                
+                                + "(CASE WHEN poc_pedidos_extra.attrib_01 = 1 THEN poc_pedidos_extra.importe_01 ELSE 0.0 END) AS efectivo_01, "
+                                + "(CASE WHEN poc_pedidos_extra.attrib_01 = 5 THEN poc_pedidos_extra.importe_01 ELSE 0.0 END) AS transfer_01, "
+                                + "(CASE WHEN (poc_pedidos_extra.attrib_01 = 2 and poc_pedidos_extra.enable_01=TRUE) THEN poc_pedidos_extra.importe_01 ELSE 0.0 END) AS amex_01, "
+                                + "(CASE WHEN (poc_pedidos_extra.attrib_01 = 2 and poc_pedidos_extra.enable_01=FALSE) THEN poc_pedidos_extra.importe_01 ELSE 0.0 END) AS tcredito_01, "
+                                + "(CASE WHEN poc_pedidos_extra.attrib_01 = 3 THEN poc_pedidos_extra.importe_01 ELSE 0.0 END) AS tdebito_01, "
+                                + "(CASE WHEN poc_pedidos_extra.attrib_01 = 7 THEN poc_pedidos_extra.importe_01 ELSE 0.0 END) AS otros_01, "
+                    
+
+                                + "(CASE WHEN poc_pedidos_extra.attrib_02 = 1 THEN poc_pedidos_extra.importe_02 ELSE 0.0 END) AS efectivo_02, "
+                                + "(CASE WHEN poc_pedidos_extra.attrib_02 = 5 THEN poc_pedidos_extra.importe_02 ELSE 0.0 END) AS transfer_02, "
+                                + "(CASE WHEN (poc_pedidos_extra.attrib_02 = 2 and poc_pedidos_extra.enable_02=TRUE) THEN poc_pedidos_extra.importe_02 ELSE 0.0 END) AS amex_02, "
+                                + "(CASE WHEN (poc_pedidos_extra.attrib_02 = 2 and poc_pedidos_extra.enable_02=FALSE) THEN poc_pedidos_extra.importe_02 ELSE 0.0 END) AS tcredito_02, "
+                                + "(CASE WHEN poc_pedidos_extra.attrib_02 = 3 THEN poc_pedidos_extra.importe_02 ELSE 0.0 END) AS tdebito_02, "
+                                + "(CASE WHEN poc_pedidos_extra.attrib_02 = 7 THEN poc_pedidos_extra.importe_02 ELSE 0.0 END) AS otros_02, "
+
+                                  
+                                + "(CASE WHEN poc_pedidos.cancelado=FALSE THEN poc_pedidos.subtotal ELSE 0.0 END) AS subtotal, "
+                                + "(CASE WHEN poc_pedidos.cancelado=FALSE THEN poc_pedidos.monto_ieps ELSE 0.0 END) AS monto_ieps, "  
+                                + "(CASE WHEN poc_pedidos.cancelado=FALSE THEN poc_pedidos.impuesto ELSE 0.0 END) AS impuesto, "
+                                + "(CASE WHEN poc_pedidos.cancelado=FALSE THEN poc_pedidos.total ELSE 0.0 END) AS total, "
+                                + "(CASE WHEN poc_pedidos.moneda_id=1 THEN 1 ELSE poc_pedidos.tipo_cambio END) AS tipo_cambio "
+                        
+                    + "FROM poc_pedidos "
+                        + "JOIN erp_proceso ON erp_proceso.id = poc_pedidos.proceso_id "
+                        + "JOIN cxc_clie ON cxc_clie.id = poc_pedidos.cxc_clie_id "
+                        + "JOIN gral_mon ON gral_mon.id = poc_pedidos.moneda_id "
+                        + "JOIN poc_pedidos_extra ON poc_pedidos_extra.pedido_id = poc_pedidos.id "
+                        + "WHERE erp_proceso.empresa_id="+id_empresa+" "+where+" "
+                            + "AND (to_char(poc_pedidos.momento_creacion,'yyyymmdd')::integer BETWEEN  to_char('"+fecha_inicial+"'::timestamp with time zone,'yyyymmdd')::integer AND to_char('"+fecha_final+"'::timestamp with time zone,'yyyymmdd')::integer) "
+                    + ") AS sbt "
+                    + "ORDER BY id";
+
+                 
+                    
+        //System.out.println("Buscando facturas: "+sql_to_query);
+        ArrayList<HashMap<String, String>> hm_facturas = (ArrayList<HashMap<String, String>>) this.jdbcTemplate.query(
+            sql_to_query,
+            new Object[]{}, new RowMapper(){
+                @Override
+                public Object mapRow(ResultSet rs, int rowNum) throws SQLException {
+                    HashMap<String, String> row = new HashMap<String, String>();
+                    row.put("folio",rs.getString("folio"));
+                    row.put("orden_compra",rs.getString("orden_compra"));
+                    row.put("fecha_factura",rs.getString("fecha_factura"));
+                    row.put("cliente",rs.getString("cliente"));
+                    row.put("moneda_factura",rs.getString("moneda_factura"));
+                    row.put("simbolo_moneda",rs.getString("simbolo_moneda"));
+                    row.put("subtotal",StringHelper.roundDouble(rs.getString("subtotal"),2));
+                    row.put("subtotal_mn",StringHelper.roundDouble(rs.getString("subtotal_mn"),2));
+                    row.put("monto_ieps",StringHelper.roundDouble(rs.getString("monto_ieps"),2));
+                    row.put("monto_ieps_mn",StringHelper.roundDouble(rs.getString("monto_ieps_mn"),2));
+                    row.put("impuesto",StringHelper.roundDouble(rs.getString("impuesto"),2));
+                    row.put("impuesto_mn",StringHelper.roundDouble(rs.getString("impuesto_mn"),2));
+                    row.put("total",StringHelper.roundDouble(rs.getString("total"),2));
+                    row.put("total_mn",StringHelper.roundDouble(rs.getString("total_mn"),2));
+                    row.put("efectivo",StringHelper.roundDouble(rs.getString("efectivo"),2));
+                    row.put("transfer",StringHelper.roundDouble(rs.getString("transfer"),2));
+                    row.put("amex",StringHelper.roundDouble(rs.getString("amex"),2));
+                    row.put("tcredito",StringHelper.roundDouble(rs.getString("tcredito"),2));
+                    row.put("tdebito",StringHelper.roundDouble(rs.getString("tdebito"),2));
+                    row.put("otros",StringHelper.roundDouble(rs.getString("otros"),2));
+                    return row;
+                }
+            }
+        );
+        return hm_facturas;
+    }
+    
     //alimenta el select de los agentes en reporte de pedidos
 
     @Override

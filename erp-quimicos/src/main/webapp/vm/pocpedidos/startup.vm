@@ -442,7 +442,7 @@
 																</td>
 																<td width="17"></td>
                                                                 <td width="110" align="right">
-																	<input type="button" id="cancelar_pedido" value="Cancelar Pedido" style="width:110px; font-weight: bold;">
+																	<input type="button" id="cancelar_pedido" value="Cancelar Remisi&oacute;n" style="width:110px; font-weight: bold;">
 																	<input type="text" name="cancelado" value="REMISI&Oacute;N CANCELADA" class="borde_oculto" style="width:110px; font-size:11px; font-weight:bold;" readOnly="true">
 																</td>
 																<td width="17"></td>

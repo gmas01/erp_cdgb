@@ -175,9 +175,10 @@
 												<td colspan="7"><INPUT TYPE="text" name="razonsocial" style="width:410px;"></td>
 												<td width="25"><div class="interrogacion"><IMG SRC="../../img/help-16x16.png" ALIGN="top" rel="warning_razonsocial"></div></td>
 												<td width="5"></td>
-												<td>Clave&nbsp;Comercial</td>
+                                                                                                <td>Paciente</td>
+										<!--GMAS11102017<td>Clave&nbsp;Comercial</td> -->
 												<td width="5"></td>
-												<td><INPUT TYPE="text" name="clave_comercial" style="width:150px;"></td>
+                                                                                                <td><INPUT TYPE="text" name="clave_comercial" style="width:150px;"></td>
 												<td width="25"><div class="interrogacion"><IMG SRC="../../img/help-16x16.png" ALIGN="top" rel="warning_clavecomercial"></div></td>
 											</tr>
 											<tr>
@@ -295,7 +296,7 @@
 												<td width="150"><INPUT TYPE="text" name="ext2" style="width:150px;"></td>
 												<td width="25"><div class="interrogacion"><IMG SRC="../../img/help-16x16.png" ALIGN="top" rel="warning_ext2"></div></td>
 												<td width="5"></td>
-												<td width="75">Agente</td>
+												<td width="75">M&eacute;dico</td>
 												<td width="5"></td>
 												<td width="150"><SELECT NAME="agente" style="width:150px"></td>
 												<td width="25"><div class="interrogacion"><IMG SRC="../../img/help-16x16.png" ALIGN="top" rel="warning_agente"></div></td>

@@ -81,6 +81,7 @@ public class ClientsController {
         infoConstruccionTabla.put("numero_control", "N&uacute;mero&nbsp;control:100");
         infoConstruccionTabla.put("razon_social", "Razon&nbsp;social:250");
         infoConstruccionTabla.put("rfc", "RFC:100");
+        infoConstruccionTabla.put("clave_comercial", "Paciente:250");
         infoConstruccionTabla.put("tipo_cliente", "Tipo&nbsp;cliente:100");
         infoConstruccionTabla.put("tel", "Tel&eacute;fono:100");
         

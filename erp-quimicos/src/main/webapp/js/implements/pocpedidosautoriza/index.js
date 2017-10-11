@@ -28,7 +28,7 @@ $(function() {
 	});
 	
 	//aqui va el titulo del catalogo
-	$('#barra_titulo').find('#td_titulo').append('Autorizaci&oacute;n de Pedidos de Clientes');
+	$('#barra_titulo').find('#td_titulo').append('Autorizaci&oacute;n de Remisiones de Clientes');
 	
 	//barra para el buscador 
 	//$('#barra_buscador').css({'height':'0px'});
@@ -483,7 +483,7 @@ $(function() {
 						
 						if($accion_proceso.val() == 'cancelar'){
 							if ( data['actualizo'] == "1" ){
-								jAlert("El Pedido se Cancel&oacute; con &eacute;xito", 'Atencion!');
+								jAlert("La Remisi&oacute;n se Cancel&oacute; con &eacute;xito", 'Atencion!');
 								var remove = function() {$(this).remove();};
 								$('#forma-pocpedidosautoriza-overlay').fadeOut(remove);
 							}else{
@@ -491,7 +491,7 @@ $(function() {
 							}
 						}else{
 							if ( data['actualizo'] == "1" ){
-								jAlert("El Pedido fue Autorizado con &eacute;xito", 'Atencion!');
+								jAlert("La Remisi&oacute;n fue Autorizada con &eacute;xito", 'Atencion!');
 								var remove = function() {$(this).remove();};
 								$('#forma-pocpedidosautoriza-overlay').fadeOut(remove);
 							}else{
@@ -857,7 +857,7 @@ $(function() {
 				
 				$autorizar.click(function(e){
 					$accion_proceso.attr({'value' : "autorizar"});
-					jConfirm('Confirmar Autorizacion de Pedido?', 'Dialogo de Confirmacion', function(r) {
+					jConfirm('Confirmar Autorizacion de Remision?', 'Dialogo de Confirmacion', function(r) {
 						// If they confirmed, manually trigger a form submission
 						if (r) {
 							$submit_actualizar.parents("FORM").submit();
@@ -874,7 +874,7 @@ $(function() {
 				
 				$cancelar_pedido.click(function(e){
 					$accion_proceso.attr({'value' : "cancelar"});
-					jConfirm('Desea Cancelar el Pedido?', 'Dialogo de Confirmacion', function(r) {
+					jConfirm('Desea Cancelar la Remision?', 'Dialogo de Confirmacion', function(r) {
 						// If they confirmed, manually trigger a form submission
 						if (r) {
 							$submit_actualizar.parents("FORM").submit();

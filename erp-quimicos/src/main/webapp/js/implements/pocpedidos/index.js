@@ -1324,7 +1324,14 @@ $(function() {
 			}
 		}
 		html+='<option value="4">CURP</option>';
-		html+='<option value="5">Alias</option>';
+                
+		//GMAS07102017-html+='<option value="5">Alias</option>';
+                html+='<option value="5">Cliente</option>';
+                
+                
+                //GMAS html+='<option value="5">clave_comercial</option>';
+                
+                
 		$select_filtro_por.append(html);
 		
 		
@@ -1941,12 +1948,12 @@ $(function() {
 				if(parseInt(idMonedaPedido)==1 && parseInt(id_moneda)!=1){
 					//si la moneda del pedido es pesos y la moneda del precio es diferente de Pesos,
 					//entonces calculamos su equivalente a pesos
-					precioCambiado = parseFloat( parseFloat(precioOriginal) * parseFloat($tipo_cambio.val())).toFixed(4);
+					precioCambiado = parseFloat( parseFloat(precioOriginal) * parseFloat($tipo_cambio.val())).toFixed(2);
 				}
 				if(parseInt(idMonedaPedido)!=1 && parseInt(id_moneda)==1){
 					//alert("precioOriginal:"+precioOriginal +"		tc_original:"+$tc_original.val());
 					//si la moneda original es dolar y la moneda del precio es Pesos, calculamos su equivalente a dolar
-					precioCambiado = parseFloat( parseFloat(precioOriginal) / parseFloat($tipo_cambio.val()) ).toFixed(4);
+					precioCambiado = parseFloat( parseFloat(precioOriginal) / parseFloat($tipo_cambio.val()) ).toFixed(2);
 				}
 			}else{
 				precioCambiado = prec_unitario;
@@ -2045,7 +2052,7 @@ $(function() {
 				trr += '</td>';
 				
 				trr += '<td class="grid2" style="font-size:11px;  border:1px solid #C1DAD7;" width="80">';
-					trr += '<input type="text" name="importeIeps" value="'+parseFloat(0).toFixed(4)+'" class="borde_oculto" id="importeIeps" style="width:76px; text-align:right;" readOnly="true">';
+					trr += '<input type="text" name="importeIeps" value="'+parseFloat(0).toFixed(2)+'" class="borde_oculto" id="importeIeps" style="width:76px; text-align:right;" readOnly="true">';
 				trr += '</td>';
 				
 				trr += '<td class="grid2" id="td_oculto'+ tr +'" style="font-size: 11px;  border:1px solid #C1DAD7;" width="80">';
@@ -2183,17 +2190,17 @@ $(function() {
 				
 				if( ($campoCantidad.val().trim() != '') && ($campoPrecioU.val().trim() != '') ){
 					//Calcular y redondear el importe
-					$campoImporte.val( parseFloat( parseFloat($campoCantidad.val()) * parseFloat($campoPrecioU.val()) ).toFixed(4));
+					$campoImporte.val( parseFloat( parseFloat($campoCantidad.val()) * parseFloat($campoPrecioU.val()) ).toFixed(2));
 					
 					//Calcular y redondear el importe del IEPS
-					$importeIeps.val(parseFloat(parseFloat($campoImporte.val()) * (parseFloat($campoTasaIeps.val())/100)).toFixed(4));
+					$importeIeps.val(parseFloat(parseFloat($campoImporte.val()) * (parseFloat($campoTasaIeps.val())/100)).toFixed(2));
 					
 					//Calcular el impuesto para este producto multiplicando el importe + ieps por la tasa del iva
 					$importeIva.val( (parseFloat($campoImporte.val()) + parseFloat($importeIeps.val())) * parseFloat( $campoTasaIva.val() ));
 					
 					if(parseFloat($ret_tasa.val())>0){
 						//Calcular la retencion de la partida
-						$ret_importe.val(parseFloat(parseFloat($campoImporte.val()) * parseFloat(parseFloat($ret_tasa.val())/100)).toFixed(4));
+						$ret_importe.val(parseFloat(parseFloat($campoImporte.val()) * parseFloat(parseFloat($ret_tasa.val())/100)).toFixed(2));
 					}
                                         
                                         //$montoDesc.val(parseFloat(parseFloat($campoImporte.val()) * (parseFloat($valorDesc.val())/100)).toFixed(2));
@@ -2278,17 +2285,17 @@ $(function() {
 				
 				if( ($campoPrecioU.val().trim()!= '') && ($campoCantidad.val().trim() != '')){	
 					//Calcular y redondear el importe
-					$campoImporte.val( parseFloat(parseFloat($campoPrecioU.val()) * parseFloat( $campoCantidad.val())).toFixed(4) );
+					$campoImporte.val( parseFloat(parseFloat($campoPrecioU.val()) * parseFloat( $campoCantidad.val())).toFixed(2) );
 					
 					//Calcular y redondear el importe del IEPS
-					$importeIeps.val(parseFloat(parseFloat($campoImporte.val()) * (parseFloat($campoTasaIeps.val())/100)).toFixed(4));
+					$importeIeps.val(parseFloat(parseFloat($campoImporte.val()) * (parseFloat($campoTasaIeps.val())/100)).toFixed(2));
 					
 					//calcula el impuesto para este producto multiplicando el importe por el valor del iva
 					$importeIva.val( (parseFloat($campoImporte.val()) + parseFloat($importeIeps.val())) * parseFloat( $campoTasaIva.val() ));
 					
 					if(parseFloat($ret_tasa.val())>0){
 						//Calcular la retencion de la partida
-						$ret_importe.val(parseFloat(parseFloat($campoImporte.val()) * parseFloat(parseFloat($ret_tasa.val())/100)).toFixed(4));
+						$ret_importe.val(parseFloat(parseFloat($campoImporte.val()) * parseFloat(parseFloat($ret_tasa.val())/100)).toFixed(2));
 					}
                                         
                                         //$montoDesc.val(parseFloat(parseFloat($campoImporte.val()) * (parseFloat($valorDesc.val())/100)).toFixed(2));
@@ -2478,17 +2485,17 @@ $(function() {
 				//Calcula el importe
 				$campoImporte.val(parseFloat($campoPrecioU.val()) * parseFloat($campoCantidad.val()));
 				//Redondea el importe en dos decimales
-				$campoImporte.val( parseFloat($campoImporte.val()).toFixed(4));
+				$campoImporte.val( parseFloat($campoImporte.val()).toFixed(2));
 				
 				//Calcular el importe del IEPS
-				$importeIeps.val(parseFloat(parseFloat($campoImporte.val()) * (parseFloat($campoTasaIeps.val())/100)).toFixed(4));
+				$importeIeps.val(parseFloat(parseFloat($campoImporte.val()) * (parseFloat($campoTasaIeps.val())/100)).toFixed(2));
 				
 				//Calcula el impuesto para este producto multiplicando el importe por el valor del iva
 				$importeIva.val((parseFloat($campoImporte.val()) + parseFloat($importeIeps.val())) * parseFloat($campoTasaIva.val()));
 				
 				if(parseFloat($ret_tasa.val())>0){
 					//Calcular la retencion de la partida si l tasa de retencion es mayor a cero
-					$ret_importe.val(parseFloat(parseFloat($campoImporte.val()) * parseFloat(parseFloat($ret_tasa.val())/100)).toFixed(4));
+					$ret_importe.val(parseFloat(parseFloat($campoImporte.val()) * parseFloat(parseFloat($ret_tasa.val())/100)).toFixed(2));
 				}
 			}else{
 				$campoImporte.val(0);
@@ -2791,7 +2798,7 @@ $(function() {
 		
 		var respuestaProcesada = function(data){
 			if ( data['success'] == "true" ){
-				jAlert("El Pedido se guard&oacute; con &eacute;xito", 'Atencion!');
+				jAlert("La Remisi&oacute;n se guard&oacute; con &eacute;xito", 'Atencion!');
 				var remove = function() {$(this).remove();};
 				$('#forma-pocpedidos-overlay').fadeOut(remove);
 				$get_datos_grid();
@@ -3335,7 +3342,7 @@ $(function() {
 				$(this).val(0);
 			}
 			
-			$(this).val(parseFloat($(this).val()).toFixed(4));
+			$(this).val(parseFloat($(this).val()).toFixed(2));
 			
 			if(parseFloat($(this).val())>=parseFloat($tc_usd_sat.val())){
 				$grid_productos.find('tr').each(function (index){
@@ -3360,7 +3367,7 @@ $(function() {
 					if ($campoPrecioU.val().trim() == ''){
 						$campoPrecioU.val(' ');
 					}else{
-						$campoPrecioU.val(parseFloat($campoPrecioU.val()).toFixed(4));
+						$campoPrecioU.val(parseFloat($campoPrecioU.val()).toFixed(2));
 					}
 					
 					if( ($campoPrecioU.val().trim()!='') && ($campoCantidad.val().trim()!='') ){
@@ -3375,24 +3382,24 @@ $(function() {
 								precio_cambiado = parseFloat($campoPrecioOriginalPartida.val()) * parseFloat($tipo_cambio.val());
 							}
 							
-							$campoPrecioU.val(parseFloat(precio_cambiado).toFixed(4));
+							$campoPrecioU.val(parseFloat(precio_cambiado).toFixed(2));
 						}
 						
 						//Calcula el importe
 						$campoImporte.val(parseFloat($campoPrecioU.val()) * parseFloat($campoCantidad.val()));
 						//Redondea el importe en dos decimales
 						//$(this).parent().parent().find('#import').val(Math.round(parseFloat($(this).parent().parent().find('#import').val())*100)/100);
-						$campoImporte.val( parseFloat($campoImporte.val()).toFixed(4));
+						$campoImporte.val( parseFloat($campoImporte.val()).toFixed(2));
 						
 						//Calcular el importe del IEPS
-						$importeIeps.val(parseFloat(parseFloat($campoImporte.val()) * (parseFloat($campoTasaIeps.val())/100)).toFixed(4));
+						$importeIeps.val(parseFloat(parseFloat($campoImporte.val()) * (parseFloat($campoTasaIeps.val())/100)).toFixed(2));
 						
 						//Calcula el impuesto para este producto multiplicando el importe por el valor del iva
 						$importeIva.val((parseFloat($campoImporte.val()) + parseFloat($importeIeps.val())) * parseFloat($campoTasaIva.val()));
 						
 						if(parseFloat($ret_tasa.val())>0){
 							//Calcular la retencion de la partida
-							$ret_importe.val(parseFloat(parseFloat($campoImporte.val()) * parseFloat(parseFloat($ret_tasa.val())/100)).toFixed(4));
+							$ret_importe.val(parseFloat(parseFloat($campoImporte.val()) * parseFloat(parseFloat($ret_tasa.val())/100)).toFixed(2));
 						}
 						
 
@@ -3480,11 +3487,11 @@ $(function() {
 				if (r){
 					$.post(input_json,$arreglo,function(entry){
 						if ( entry['success'] == '1' ){
-							jAlert("El pedido fue eliminado exitosamente", 'Atencion!');
+							jAlert("La Remision fue eliminada exitosamente", 'Atencion!');
 							$get_datos_grid();
 						}
 						else{
-							jAlert("El pedido no pudo ser eliminada", 'Atencion!');
+							jAlert("La Remision no pudo ser eliminada", 'Atencion!');
 						}
 					},"json");
 				}
@@ -3708,12 +3715,12 @@ $(function() {
 						
 						if($accion_proceso.val() == 'cancelar'){
 							if ( data['actualizo'] == "1" ){
-								jAlert("El Pedido se Cancel&oacute; con &eacute;xito", 'Atencion!');
+								jAlert("La Remisi&oacute; se Elimin&oacute; con &eacute;xito", 'Atencion!');
 							}else{
 								jAlert(data['actualizo'], 'Atencion!');
 							}
 						}else{
-							jAlert("El Pedido se guard&oacute; con &eacute;xito", 'Atencion!');
+							jAlert("La Remisi&oacute;n se guard&oacute; con &eacute;xito", 'Atencion!');
 						}
 						
 						var remove = function() {$(this).remove();};
@@ -4200,9 +4207,9 @@ $(function() {
 			
 								
 								{
-									importeIeps = parseFloat(parseFloat(prod['importe']) * (parseFloat(prod['valor_ieps'])/100)).toFixed(4);
+									importeIeps = parseFloat(parseFloat(prod['importe']) * (parseFloat(prod['valor_ieps'])/100)).toFixed(2);
 									importeIva = (parseFloat(prod['importe']) + parseFloat(importeIeps)) * parseFloat( prod['valor_imp'] );
-									importeRetencionIva = parseFloat(parseFloat(prod['importe']) * (parseFloat(prod['ret_tasa'])/100)).toFixed(4);
+									importeRetencionIva = parseFloat(parseFloat(prod['importe']) * (parseFloat(prod['ret_tasa'])/100)).toFixed(2);
 								}
 								
 								trr += '<input type="hidden" 	name="totimpuesto'+ tr +'" id="totimp" value="'+ importeIva +'">';
@@ -4350,17 +4357,17 @@ $(function() {
 									
 									//Redondea el importe en dos decimales
 									//$(this).parent().parent().find('#import').val( Math.round(parseFloat($(this).parent().parent().find('#import').val())*100)/100 );
-									$campoImporte.val( parseFloat($campoImporte.val()).toFixed(4) );
+									$campoImporte.val( parseFloat($campoImporte.val()).toFixed(2) );
 									
 									//Calcular el importe del IEPS
-									$importeIeps.val(parseFloat(parseFloat($campoImporte.val()) * (parseFloat($campoTasaIeps.val())/100)).toFixed(4));
+									$importeIeps.val(parseFloat(parseFloat($campoImporte.val()) * (parseFloat($campoTasaIeps.val())/100)).toFixed(2));
 									
 									//Calcula el IVA para este producto multiplicando el importe + ieps por la tasa del iva
 									$importeIva.val((parseFloat($campoImporte.val()) + parseFloat($importeIeps.val()) ) * parseFloat( $campoTasaIva.val() ));
 									
 									if(parseFloat($ret_tasa.val())>0){
 										//Calcular la retencion de la partida
-										$ret_importe.val(parseFloat(parseFloat($campoImporte.val()) * parseFloat(parseFloat($ret_tasa.val())/100)).toFixed(4));
+										$ret_importe.val(parseFloat(parseFloat($campoImporte.val()) * parseFloat(parseFloat($ret_tasa.val())/100)).toFixed(2));
 									}
 									
                                                                         var percent = parseFloat($valorDesc.val())/100;
@@ -4385,13 +4392,16 @@ $(function() {
 							});
 							
 							//al iniciar el campo tiene un  caracter en blanco, al obtener el foco se elimina el  espacio por comillas
-							$grid_productos.find('.costo'+ tr).focus(function(e){
+							
+                                                        $grid_productos.find('.costo'+ tr).focus(function(e){
 								if($(this).val() == ' '){
 									$(this).val('');
 								}
 							});
 							
 							//Recalcula importe al perder enfoque el campo costo
+                                                        
+                                                       // alert()
 							$grid_productos.find('.costo'+ tr).blur(function(){
 								var $campoCantidad = $(this).parent().parent().find('#cant');
 								var $campoPrecioU = $(this);
@@ -4412,7 +4422,7 @@ $(function() {
 								if ($campoPrecioU.val().trim() == ''){
 									$campoPrecioU.val(' ');
 								}else{
-									$campoPrecioU.val(parseFloat($campoPrecioU.val()).toFixed(4));
+									$campoPrecioU.val(parseFloat($campoPrecioU.val()).toFixed(2));
 								}
 								
 								//Quitar marca que indica que requiere autorizacion
@@ -4423,17 +4433,17 @@ $(function() {
 									$campoImporte.val(parseFloat($campoPrecioU.val()) * parseFloat($campoCantidad.val()));
 									//Redondea el importe en dos decimales
 									//$(this).parent().parent().find('#import').val(Math.round(parseFloat($(this).parent().parent().find('#import').val())*100)/100);
-									$campoImporte.val( parseFloat($campoImporte.val()).toFixed(4));
+									$campoImporte.val( parseFloat($campoImporte.val()).toFixed(2));
 									
 									//Calcular el importe del IEPS
-									$importeIeps.val(parseFloat(parseFloat($campoImporte.val()) * (parseFloat($campoTasaIeps.val())/100)).toFixed(4));
+									$importeIeps.val(parseFloat(parseFloat($campoImporte.val()) * (parseFloat($campoTasaIeps.val())/100)).toFixed(2));
 									
 									//Calcula el impuesto para este producto multiplicando el importe por el valor del iva
 									$importeIva.val((parseFloat($campoImporte.val()) + parseFloat($importeIeps.val())) * parseFloat($campoTasaIva.val()));
 									
 									if(parseFloat($ret_tasa.val())>0){
 										//Calcular la retencion de la partida
-										$ret_importe.val(parseFloat(parseFloat($campoImporte.val()) * parseFloat(parseFloat($ret_tasa.val())/100)).toFixed(4));
+										$ret_importe.val(parseFloat(parseFloat($campoImporte.val()) * parseFloat(parseFloat($ret_tasa.val())/100)).toFixed(2));
 									}
 									
                                                                         var percent = parseFloat($valorDesc.val())/100;
@@ -5157,7 +5167,7 @@ $(function() {
 								$(this).val(0);
 							}
 							
-							$(this).val(parseFloat($(this).val()).toFixed(4));
+							$(this).val(parseFloat($(this).val()).toFixed(2));
 							
 							if(parseFloat($(this).val())>=parseFloat($tc_usd_sat.val())){
 								$grid_productos.find('tr').each(function (index){
@@ -5181,7 +5191,7 @@ $(function() {
 									if ($campoPrecioU.val().trim() == ''){
 										$campoPrecioU.val(' ');
 									}else{
-										$campoPrecioU.val(parseFloat($campoPrecioU.val()).toFixed(4));
+										$campoPrecioU.val(parseFloat($campoPrecioU.val()).toFixed(2));
 									}
 									
 									if( ($campoPrecioU.val().trim()!='') && ($campoCantidad.val().trim()!='') ){
@@ -5196,24 +5206,24 @@ $(function() {
 												precio_cambiado = parseFloat($campoPrecioOriginalPartida.val()) * parseFloat($tipo_cambio.val());
 											}
 											
-											$campoPrecioU.val(parseFloat(precio_cambiado).toFixed(4));
+											$campoPrecioU.val(parseFloat(precio_cambiado).toFixed(2));
 										}
 										
 										//Calcula el importe
 										$campoImporte.val(parseFloat($campoPrecioU.val()) * parseFloat($campoCantidad.val()));
 										//Redondea el importe en dos decimales
 										//$(this).parent().parent().find('#import').val(Math.round(parseFloat($(this).parent().parent().find('#import').val())*100)/100);
-										$campoImporte.val( parseFloat($campoImporte.val()).toFixed(4));
+										$campoImporte.val( parseFloat($campoImporte.val()).toFixed(2));
 										
 										//Calcular el importe del IEPS
-										$importeIeps.val(parseFloat(parseFloat($campoImporte.val()) * (parseFloat($campoTasaIeps.val())/100)).toFixed(4));
+										$importeIeps.val(parseFloat(parseFloat($campoImporte.val()) * (parseFloat($campoTasaIeps.val())/100)).toFixed(2));
 										
 										//Calcula el impuesto para este producto multiplicando el importe por el valor del iva
 										$importeIva.val((parseFloat($campoImporte.val()) + parseFloat($importeIeps.val())) * parseFloat($campoTasaIva.val()));
 										
 										if(parseFloat($ret_tasa.val())>0){
 											//Calcular la retencion de la partida
-											$ret_importe.val(parseFloat(parseFloat($campoImporte.val()) * parseFloat(parseFloat($ret_tasa.val())/100)).toFixed(4));
+											$ret_importe.val(parseFloat(parseFloat($campoImporte.val()) * parseFloat(parseFloat($ret_tasa.val())/100)).toFixed(2));
 										}
 										
 
@@ -5393,7 +5403,7 @@ $(function() {
 						window.location.href=input_json;
 
 					}else{
-						jAlert("No se esta enviando el identificador  del pedido","Atencion!!!")
+						jAlert("No se esta enviando el identificador  de la remisi&oacute;n","Atencion!!!")
 					}
 				 });
                 

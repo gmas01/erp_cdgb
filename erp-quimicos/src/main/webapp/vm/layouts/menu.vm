@@ -9,7 +9,7 @@
 										<div class="elastic column" >&nbsp;</div>
 											<div class="elastic column" style="width:500px;height:50px;" align="right">
 												<div class="columns on-1 vertical-center">
-													<div class="column elastic column" align="right"><span class="emp"></span>&nbsp;&nbsp;<span class="pipe2">&nbsp;|&nbsp;</span>Sucursal:&nbsp;<span class="suc"></span>&nbsp;&nbsp;<br>Bienvenido, <a href="../graluseredit/startup.agnux"> <span class="username"> </span></a>,&nbsp;&nbsp;<a href="../home/logout.agnux">[Log Out]</a><span class="pipe2">&nbsp;|&nbsp;</span><a href="#ayudaindex">Ayuda</a><span class="pipe1">&nbsp;|&nbsp;</span><a href="#Soporteindex">Soporte</a><span class="pipe1">&nbsp;|&nbsp;</span><a href="#Acerca_de">Acerca de</a>&nbsp;&nbsp;</div>
+													<div class="column elastic column" align="right"><font color="#FFC300"><span class="emp"></span></font>&nbsp;&nbsp;<span class="pipe2">&nbsp;|&nbsp;</span>Sucursal:&nbsp;<font color="#FFC300"><span class="suc"></span></font>&nbsp;&nbsp;<br>Bienvenido, <a href="../graluseredit/startup.agnux"> <span class="username"> </span></a>,&nbsp;&nbsp;<a href="../home/logout.agnux">[Log Out]</a><span class="pipe2">&nbsp;|&nbsp;</span><a href="#ayudaindex">Ayuda</a><span class="pipe1">&nbsp;|&nbsp;</span><a href="#Soporteindex">Soporte</a><span class="pipe1">&nbsp;|&nbsp;</span><a href="#Acerca_de">Acerca de</a>&nbsp;&nbsp;</div>
 												</div>
 											</div>
 										</div>
@@ -69,7 +69,8 @@
 												<a href="#" class="sub">Reportes&raquo;</a>
 												<ul>
 													<li class="topline"><a href="../reppedidos/startup.agnux">Remisiones</a></li>
-													<li class="topline"><a href="../reparticulosreservados/startup.agnux">Art&iacute;culos Reservados</a></li>
+													<li class="topline"><a href="../reppedidoscaja/startup.agnux">Reporte de Caja</a></li>
+                                                                                                        <li class="topline"><a href="../reparticulosreservados/startup.agnux">Art&iacute;culos Reservados</a></li>
 													<!--<li class="topline"><a href="#">Estadístico de Remisiones por Artículo</a></li>-->
 												</ul>
 											</li>

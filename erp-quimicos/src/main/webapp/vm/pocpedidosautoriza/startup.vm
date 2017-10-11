@@ -129,7 +129,7 @@
 					
                     <div id="div_two" title="" class="pocpedidosautoriza_div_two">
                         <div class="columns on-2">
-                            <div class="fixed column" style="width:873px; padding-left:6px;"><strong>Autorizaci&oacute;n de Pedidos de Clientes</strong></div>
+                            <div class="fixed column" style="width:873px; padding-left:6px;"><strong>Autorizaci&oacute;n de Remisiones de Clientes</strong></div>
                             <div class="fixed column" style="width:20px; height:25px;">
                                 <div id="close" style="height:25px; background-image:url('../../img/modalbox/close.png'); background-color:; background-position:top; cursor:pointer; background-repeat:no-repeat;"></div>
                             </div>
@@ -164,7 +164,7 @@
                                                         <table border="0" class="gral">
 															<tr>
 																<td width="10"></td>
-																<td width="80">Folio&nbsp;del&nbsp;Pedido</td>
+																<td width="80">Folio&nbsp;del&nbsp;Remision</td>
 																<td width="120">
 																	<INPUT TYPE="text" name="folio" style="width:120px;" readOnly="true">
 																</td>
@@ -277,7 +277,7 @@
 																	<INPUT TYPE="text" name="orden_compra_original"style="display:none">
 																</td>
 																<td width="30"></td>
-																<td width="55">Vendedor</td>
+																<td width="55">M&eacute;dico</td>
 																<td width="180" colspan="3">
 																	<SELECT NAME="vendedor" style="width:180px"></SELECT>
 																	<SELECT NAME="vendedor_original" style="display:none"></SELECT>
@@ -289,16 +289,16 @@
                                                             
                                                             <tr>
                                                                 <td width="10"></td>
-                                                                <td width="80">Transporte</td>
+                                                                <td width="80"> </td>
                                                                 <td width="270" colspan="5">
-																	<INPUT TYPE="text" name="transporte" style="width:270px;">
+																	<input type="hidden" INPUT TYPE="text" name="transporte" style="width:270px;">
 																	<INPUT TYPE="text" name="transporte_original" style="display:none">
                                                                 </td>
                                                                 <td width="30"><div class="interrogacion"><IMG SRC="../../img/help-16x16.png" ALIGN="top" rel="warning_transporte"></div></td>
-																<td width="75">Fecha&nbsp;Compromiso</td>
+																<td width="75" > </td>
 																<td>&nbsp;&nbsp;</td>
 																<td>
-																	<INPUT TYPE="text" name="fecha_compromiso" style="width:75px;" readOnly="true">
+																	<input type="hidden" INPUT TYPE="text" name="fecha_compromiso" style="width:75px;" readOnly="true">
 																	<INPUT TYPE="text" name="fecha_compromiso_original" style="display:none">
 																</td>
 																<td width="30"><div class="interrogacion"><IMG SRC="../../img/help-16x16.png" ALIGN="top" rel="warning_fcompromiso"></div></td>
@@ -316,9 +316,9 @@
                                                             
                                                             <tr>
                                                                 <td width="10"></td>
-                                                                <td width="80">Lugar&nbsp;Entrega</td>
+                                                                <td width="80"> </td>
                                                                 <td width="474" colspan="9">
-																	<INPUT TYPE="text" name="lugar_entrega" style="width:474px;">
+																	<input type="hidden" INPUT TYPE="text" name="lugar_entrega" style="width:474px;">
 																	<INPUT TYPE="text" name="lugar_entrega_original" style="display:none">
                                                                 </td>
                                                                 <td width="30"><div class="interrogacion"><IMG SRC="../../img/help-16x16.png" ALIGN="top" rel="warning_lugarentrega"></div></td>
@@ -354,8 +354,8 @@
 																</td>
 																<td>&nbsp;&nbsp;</td>
                                                                 <td align="right">
-																	<INPUT TYPE="button" id="cancelar_pedido" value="Cancelar Pedido" style="width:110px; font-weight: bold;">
-																	<INPUT TYPE="text" name="cancelado" value="PEDIDO CANCELADO" class="borde_oculto" style="width:110px; font-size:11px; font-weight:bold;" readOnly="true">
+																	<INPUT TYPE="button" id="cancelar_pedido" value="Cancelar Remisi&oacute;n" style="width:110px; font-weight: bold;">
+																	<INPUT TYPE="text" name="cancelado" value="REMISION CANCELADA" class="borde_oculto" style="width:110px; font-size:11px; font-weight:bold;" readOnly="true">
 																</td>
                                                             </tr>
                                                         </table>
