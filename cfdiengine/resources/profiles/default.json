@@ -1,0 +1,84 @@
+{
+    "engine_profile": {
+        "dbms": {
+            "pgsql_conn": {
+                "host" : "localhost",
+                "db" : "instance01",
+                "user" : "instance01",
+                "passwd" : "instance01",
+                "port" : " 5432"
+            }           
+        },
+        "tparty": {
+            "pac": {
+                "name": "servisim",
+                "mode": "test",
+                "real": [
+                    {
+                        "param": "end_point",
+                        "value": "http://noinfo.com/wstest/CFDI.svc?wsdl"
+                    },
+                    {
+                        "param": "login",
+                        "value": "11"
+                    },
+                    {
+                        "param": "passwd",
+                        "value": "Ch1ng4TuM4dr3"
+                    }
+                ],
+                "test": [
+                    {
+                        "param": "end_point",
+                        "value": "http://201.150.37.20/wstest/CFDI.svc?wsdl"
+                    },
+                    {
+                        "param": "login",
+                        "value": "1"
+                    },
+                    {
+                        "param": "passwd",
+                        "value": "Oryx216"
+                    }
+                ]
+            }
+        },
+        "bbgum": {
+            "controllers": [
+                 {
+                     "archetype": "0x30",
+                     "event_mod": "srhello"
+                 },
+                 {
+                     "archetype": "0x24",
+                     "event_mod": "srpostbuff"
+                 },
+                 {
+                     "archetype": "0x28",
+                     "event_mod": "rwrbufftrans"
+                 }
+            ]
+        },
+        "res":{
+            "dirs":[
+                {
+                    "name": "images",
+                    "value": "images"
+                },
+                {
+                    "name": "ssl",
+                    "value": "ssl"
+                },
+                {
+                    "name": "cfdi_output",
+                    "value": "cfdi/timbre/emitidos"
+                },
+                {
+                    "name": "cfdi_xslt",
+                    "value": "xslt"
+                }
+            ]
+        }
+    }
+}
+
