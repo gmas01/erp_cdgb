@@ -1,9 +1,11 @@
+import unidecode
 import math
 import os
 import base64
 import datetime
 import tempfile
 import pyxb
+from decimal import Decimal
 from misc.helperstr import HelperStr
 from docmaker.error import DocBuilderStepError
 from misc.tricks import truncate
@@ -71,7 +73,7 @@ class FacXml(BuilderGen):
             # Just taking first row of query result
             return {
                 'RFC': row['rfc'],
-                'RAZON_SOCIAL': row['titulo'],
+                'RAZON_SOCIAL': unidecode.unidecode(row['titulo']),
                 'REGIMEN_FISCAL': row['numero_control']
             }
 
@@ -120,7 +122,7 @@ class FacXml(BuilderGen):
             # Just taking first row of query result
             return {
                 'RFC': row['rfc'],
-                'RAZON_SOCIAL': row['razon_social'],
+                'RAZON_SOCIAL': unidecode.unidecode(row['razon_social']),
                 'USO_CFDI': 'G01'
             }
 
@@ -185,23 +187,27 @@ class FacXml(BuilderGen):
 
     def __calc_totales(self, l_items):
         totales = {
-            'MONTO_TOTAL': 0,
-            'IMPORTE_SUM': 0,
-            'IMPORTE_SUM_IMPUESTO': 0,
-            'IMPORTE_SUM_IEPS': 0,
+            'MONTO_TOTAL': Decimal(0),
+            'IMPORTE_SUM': Decimal(0),
+            'IMPORTE_SUM_IMPUESTO': Decimal(0),
+            'IMPORTE_SUM_IEPS': Decimal(0),
         }
 
         for item in l_items:
-            totales['IMPORTE_SUM'] += (item['IMPORTE'])
-            totales['IMPORTE_SUM_IEPS'] += self.__calc_imp_tax(
-                item['IMPORTE'], self.__place_tasa(item['TASA_IEPS'])
+            totales['IMPORTE_SUM'] += Decimal(item['IMPORTE'])
+            totales['IMPORTE_SUM_IEPS'] += Decimal(
+                self.__calc_imp_tax(
+                    item['IMPORTE'], self.__place_tasa(item['TASA_IEPS'])
+                )
             )
-            totales['IMPORTE_SUM_IMPUESTO'] += self.__calc_imp_tax(
-                self.__calc_base(item['IMPORTE'], self.__place_tasa(item['TASA_IEPS'])), self.__place_tasa(item['TASA_IMPUESTO'])
+            totales['IMPORTE_SUM_IMPUESTO'] += Decimal(
+                self.__calc_imp_tax(
+                    self.__calc_base(item['IMPORTE'], self.__place_tasa(item['TASA_IEPS'])), self.__place_tasa(item['TASA_IMPUESTO'])
+                )
             )
 
         totales['MONTO_TOTAL'] = totales['IMPORTE_SUM'] + totales['IMPORTE_SUM_IEPS'] + totales['IMPORTE_SUM_IMPUESTO']
-        return {k: truncate(v, self.__NDECIMALS) for k, v in totales.items()}
+        return {k: truncate(float(v), self.__NDECIMALS) for k, v in totales.items()}
 
     def __calc_traslados(self, l_items, l_ieps, l_iva):
         """
@@ -214,19 +220,19 @@ class FacXml(BuilderGen):
             # It's not me. It is the Noe approach :|
             impto_id = 0
             tasa = 0
-            importe_sum = 0
+            importe_sum = Decimal(0)
             for item in l_items:
                 if tax['ID'] == item['IMPUESTO_ID']:
                     impto_id = item['IMPUESTO_ID']
                     tasa = item['TASA_IMPUESTO']
-                    importe_sum += self.__calc_imp_tax(
+                    importe_sum += Decimal(self.__calc_imp_tax(
                         self.__calc_base(item['IMPORTE'], self.__place_tasa(item['TASA_IEPS'])), self.__place_tasa(item['TASA_IMPUESTO'])
-                    )
+                    ))
             if impto_id > 0:
                 traslados.append({
                     'impuesto': 'IVA',
                     'clave': '002',
-                    'importe': truncate(importe_sum, self.__NDECIMALS),
+                    'importe': truncate(float(importe_sum), self.__NDECIMALS),
                     'tasa': tasa
                 })
 
@@ -235,19 +241,19 @@ class FacXml(BuilderGen):
             # It's not me. It is the Noe approach :|
             impto_id = 0
             tasa = 0
-            importe_sum = 0
+            importe_sum = Decimal(0)
             for item in l_items:
                 if tax['ID'] == item['IEPS_ID']:
                     impto_id = item['IEPS_ID']
                     tasa = item['TASA_IEPS']
-                    importe_sum += self.__calc_imp_tax(
+                    importe_sum += Decimal(self.__calc_imp_tax(
                         item['IMPORTE'], self.__place_tasa(item['TASA_IEPS'])
-                    )
+                    ))
             if impto_id > 0:
                 traslados.append({
                     'impuesto': 'IEPS',
                     'clave': '003',
-                    'importe': truncate(importe_sum, self.__NDECIMALS),
+                    'importe': truncate(float(importe_sum), self.__NDECIMALS),
                     'tasa': tasa
                 })
         return traslados
@@ -454,10 +460,15 @@ class FacXml(BuilderGen):
             return x
 
     def __calc_imp_tax(self, imp, tasa):
-        return truncate(imp * tasa, self.__NDECIMALS)
+        return truncate(
+            float( Decimal(imp) * Decimal(tasa) ),
+            self.__NDECIMALS
+        )
 
     def __calc_base(self, imp, tasa):
-        return imp + self.__calc_imp_tax(imp, tasa)
+        return float(
+            Decimal(imp) + Decimal( self.__calc_imp_tax(imp, tasa) )
+        )
 
     def __tag_traslados(self, i):
 
