@@ -429,7 +429,7 @@ class FacXml(BuilderGen):
                 ValorUnitario=i['PRECIO_UNITARIO'],
                 NoIdentificacion=i['SKU'],  # optional
                 Importe=truncate(i['IMPORTE'], self.__NDECIMALS),
-                Descuento=i['DESCTO'],
+                Descuento=i['DESCTO'] if i['DESCTO'] > 0 else None,
                 Impuestos=self.__tag_impuestos(i) if i['TASA_IMPUESTO'] > 0 else None
             ))
 
