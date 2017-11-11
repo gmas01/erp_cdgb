@@ -62,7 +62,28 @@ def writedom_cfdi(d, propos, file_out):
     except KeyError:
         raise Exception("To make up purpose {} is not supported yet".format(propos))
 
+    def indent(elem, level=0):
+        """
+        in-place prettyprint formatter. Adds whitespaces
+        to the tree because of ElementTree is not including
+        such feature yet!.
+        """
+        i = "\n" + level*"  "
+        if len(elem):
+            if not elem.text or not elem.text.strip():
+                elem.text = i + "  "
+            if not elem.tail or not elem.tail.strip():
+                elem.tail = i
+            for elem in elem:
+                indent(elem, level+1)
+            if not elem.tail or not elem.tail.strip():
+                elem.tail = i
+        else:
+            if level and (not elem.tail or not elem.tail.strip()):
+                elem.tail = i
+
     root = ET.fromstring(d.toxml("utf-8").decode())
+    indent(root)
     t = ET.ElementTree(root)
     t.write(file_out, xml_declaration=True,
            encoding='utf-8', method="xml")
