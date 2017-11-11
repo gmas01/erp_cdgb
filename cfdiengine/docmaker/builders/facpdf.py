@@ -38,7 +38,7 @@ class FacPdf(BuilderGen):
             'TL_BILL_CURR': 'MONEDA',
             'TL_BILL_EXC_RATE': 'TIPO DE CAMBIO',
             'TL_PAY_DATE': 'FECHA DE PAGO',
-            'TL_SALE_MAN': 'AGENTE DE VENTAS',
+            'TL_SALE_MAN': '',     # 'AGENTE DE VENTAS',
             'TL_PAY_COND': 'CONDICIONES DE PAGO',
             'TL_ACC_NUM': 'NO. DE CUENTA',
             'TL_PAY_MET': 'METODO DE PAGO',
@@ -101,8 +101,10 @@ class FacPdf(BuilderGen):
             re.titulo as restado,
             rm.titulo as rmunicipio,
             cxc_clie.cp as rcp,
-            rp.titulo as rpais
+            rp.titulo as rpais,
+            fac_metodos_pago.clave_sat as forma_pago
             FROM fac_docs
+            JOIN fac_metodos_pago ON fac_docs.fac_metodos_pago_id = fac_metodos_pago_id
             JOIN cxc_clie ON fac_docs.cxc_clie_id = cxc_clie.id
             JOIN gral_emp ON gral_emp.id = cxc_clie.empresa_id
             JOIN gral_pais as rp ON rp.id = cxc_clie.pais_id
@@ -131,8 +133,8 @@ class FacPdf(BuilderGen):
                 'RECEPTOR_STATE': row['restado'],
                 'RECEPTOR_TOWN': row['rcolonia'],
                 'RECEPTOR_CP': row['rcp'],
-                'FORMA_PAGO': "XXX",
-                'METODO_PAGO': "XXX"
+                'FORMA_PAGO': row['forma_pago'],
+                'METODO_PAGO': "PUE"
             }
 
     def __load_extra_info(self, conn, serie_folio, cap):
@@ -167,7 +169,7 @@ class FacPdf(BuilderGen):
                 'PURCHASE_NUMBER': row['purchase_number'] if row['purchase_number'] else 'N/D',
                 'CUSTOMER_CONTROL_ID': row['customer_control_id'],
                 'PAYMENT_CONSTRAINT': row['payment_constraint'],
-                'SALES_MAN': row['sales_man'],
+                'SALES_MAN': '',                    # row['sales_man'],
                 'PAYMENT_DATE': row['payment_date'],
                 'CURRENCY_ABR': row['currency_abr'],
                 'CURRENCY_NAME': row['currency_name'],
