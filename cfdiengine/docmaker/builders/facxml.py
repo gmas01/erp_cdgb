@@ -397,7 +397,7 @@ class FacXml(BuilderGen):
         c.NoCertificado = dat['NUMERO_CERTIFICADO']
         c.Certificado = dat['CERT_B64']
         c.SubTotal = dat['TOTALES']['IMPORTE_SUM']
-        c.Descuento = dat['TOTALES']['DESCTO_SUM']
+        c.Descuento = dat['TOTALES']['DESCTO_SUM'] if dat['TOTALES']['DESCTO_SUM'] > 0 else None
         c.Total = dat['TOTALES']['MONTO_TOTAL']
         if dat['MONEDA']['ISO_4217'] == 'MXN':
             c.TipoCambio = 1
@@ -453,6 +453,8 @@ class FacXml(BuilderGen):
 
         tmp_file = save(c)
         HelperStr.edit_pattern('TipoCambio="1.0"', 'TipoCambio="1"', tmp_file)  # XXX: Horrible workaround
+        HelperStr.edit_pattern('(Descuento=)"([0-9]*(\.[0-9]{0,1})?)"', lambda x: 'Descuento="%.2f"' % (float(x.group(2)),), tmp_file)
+        HelperStr.edit_pattern('(Importe=)"([0-9]*(\.[0-9]{0,1})?)"', lambda x: 'Importe="%.2f"' % (float(x.group(2)),), tmp_file)
         with open(output_file, 'w', encoding="utf-8") as a:
             a.write(sign_cfdi(dat['KEY_PRIVATE'], dat['XSLT_SCRIPT'], tmp_file))
         os.remove(tmp_file)
