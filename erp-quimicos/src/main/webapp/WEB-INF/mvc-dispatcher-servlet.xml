@@ -15,17 +15,6 @@
 	<mvc:annotation-driven />
         
         
-        <!--   Inicia  nuevo   -->
-        <!--<bean id="viewResolver" class=" org.springframework.web.servlet.view.InternalResourceViewResolver" >
-            <property name="prefix">
-                <value>/jsp/</value>
-            </property>
-            <property name="suffix">
-                <value>.jsp</value>
-            </property>
-        </bean> -->
-        
-        
         <bean id="velocityConfig" class="org.springframework.web.servlet.view.velocity.VelocityConfigurer">
             <property name="resourceLoaderPath" value="/"/>
         </bean>
@@ -58,15 +47,11 @@
         <!--Conexion a bd instance01 LOCAL-->
 	<bean id="dataSource" class="org.springframework.jdbc.datasource.DriverManagerDataSource">
 	     <property name="driverClassName" value="org.postgresql.Driver" />
-             <!--<property name="url" value="jdbc:postgresql://localhost:5432/instance01" />-->
-	     <property name="url" value="jdbc:postgresql://169.54.7.201:5555/instance01" />
+             <property name="url" value="jdbc:postgresql://localhost:5432/instance01" />
              <property name="username" value="instance01" />
 	     <property name="password" value="instance01" />
 	</bean>
         
-        
-        
-        <!--<bean name="beanOutCfdi" class="com.agnux.cfdi.BeanSolicitidesOut"></bean>-->
         
         <!--http://static.springsource.org/spring/docs/2.5.x/reference/beans.html#beans-factory-lifecycle-initializingbean-->
         
