@@ -10,11 +10,13 @@ start() {
 }
 
 stop() {
-    for pid in $(ps -ef | awk '/run.py/ {print $2}' | head -n -1 )
+    PATTERN="run.py"
+    for pid in $( ps -ef | awk -v pattern="$PATTERN" '/pattern/ {print $2}' | head -n -1 )
     do
         echo $pid
         kill -9 $pid
     done
+    pkill -f $PATTERN
 }
 
 restart() {
@@ -27,8 +29,6 @@ case "$1" in
         ;;
   stop)
         # It is stoped twice as a workaround
-        stop
-        sleep 5
         stop
         ;;
   restart)
