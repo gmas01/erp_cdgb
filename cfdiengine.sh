@@ -20,7 +20,9 @@ stop() {
 }
 
 restart() {
-    echo "action not supported yet"
+    stop
+    sleep 5
+    start
 }
 
 case "$1" in
