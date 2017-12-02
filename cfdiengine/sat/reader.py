@@ -27,7 +27,7 @@ class SaxReader(xml.sax.ContentHandler):
             'UUID': None,
             'SAT_SEAL': None,
             'CFD_SEAL': None,
-            'INCEPTOR_REG': None,            
+            'INCEPTOR_REG': None,
             'INCEPTOR_NAME': None,
             'INCEPTOR_RFC': None,
             'INCEPTOR_CP': None,
@@ -39,6 +39,7 @@ class SaxReader(xml.sax.ContentHandler):
             'CFDI_FOLIO': None,
             'MONEY_EXCHANGE': None,
             'CFDI_SUBTOTAL': None,
+            'CFDI_SAVE': None,
             'CFDI_TOTAL': None,
             'ARTIFACTS': [],
             'TAXES': {
