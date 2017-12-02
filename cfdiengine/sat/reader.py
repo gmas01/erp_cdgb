@@ -77,6 +77,8 @@ class SaxReader(xml.sax.ContentHandler):
                     self.__ds['CFDI_TOTAL'] = v
                 if k == "SubTotal":
                     self.__ds['CFDI_SUBTOTAL'] = v
+                if k == "Descuento":
+                    self.__ds['CFDI_SAVE'] = v
                 if k == "TipoCambio":
                     self.__ds['MONEY_EXCHANGE'] = v
                 if k == "Serie":
