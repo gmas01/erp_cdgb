@@ -50,6 +50,7 @@ class FacPdf(BuilderGen):
             'TL_ART_UP': 'P. UNITARIO',
             'TL_ART_AMNT': 'IMPORTE',
             'TL_ART_SUBT': 'SUB-TOTAL',
+            'TL_ART_SAVE': 'DESCUENTO',
             'TL_ART_TOTAL': 'TOTAL'
         },
         'ENG': {
@@ -78,6 +79,7 @@ class FacPdf(BuilderGen):
             'TL_ART_UP': 'UNIT PRICE',
             'TL_ART_AMNT': 'AMOUNT',
             'TL_ART_SUBT': 'SUBT',
+            'TL_ART_SAVE': 'SAVE',
             'TL_ART_TOTAL': 'TOTAL'
         }
     }
@@ -255,6 +257,7 @@ class FacPdf(BuilderGen):
         story.append(self.__customer_table(dat))
         story.append(Spacer(1, 0.4 * cm))
         story.append(self.__items_section(dat))
+        story.append(Spacer(1, 0.4 * cm))
         story.append(self.__amount_section(dat))
         story.append(Spacer(1, 0.45 * cm))
 
@@ -497,6 +500,13 @@ class FacPdf(BuilderGen):
                     strtricks.HelperStr.format_currency(dat['XML_PARSED']['CFDI_SUBTOTAL'])
                 ]
             ]
+
+            if dat['XML_PARSED']['CFDI_SAVE'] is not None:
+                cont.append([
+                    dat['CAP_LOADED']['TL_ART_SAVE'],
+                    dat['EXTRA_INFO']['CURRENCY_ABR'],
+                    strtricks.HelperStr.format_currency(dat['XML_PARSED']['CFDI_SAVE'])
+                ])
 
             TAXES = {'002':'IVA', '003':'IEPS'} # hardcode taxes as per SAT cat
 
