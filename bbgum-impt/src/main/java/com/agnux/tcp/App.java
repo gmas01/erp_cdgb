@@ -10,8 +10,8 @@ import java.io.InputStreamReader;
 public class App {
 
     public static void main(String[] args) {
-        String host = args[1];
-        int port = Integer.getInteger(args[2]);
+        String host = args[0];
+        int port = Integer.parseInt(args[1]);
         sendRequest(host, port, App.readStandartInput(System.in).getBytes());
     }
 
