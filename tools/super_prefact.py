@@ -1,3 +1,5 @@
+#!/usr/bin/python3
+
 import os
 import traceback
 import argparse
@@ -100,6 +102,7 @@ def incept_prefact(profile_path, debug, user_id, cust_id):
 
 
 def validation(conn, user_id):
+
     q = """SELECT *
         FROM fac_global_validation( {}::integer )
         AS result( rc integer, msg text )""".format(user_id)
@@ -114,7 +117,15 @@ def validation(conn, user_id):
 
 
 def create(conn, user_id, cust_id):
-    return 0
+
+    q = '''SELECT *
+        FROM fac_global_prefact( {}::integer, {}::integer )'''.format(user_id, cust_id)
+
+    res = HelperPg.query(conn, q, True)
+    if len(res) != 1:
+        raise Exception('unexpected result regarding execution of fac_global_prefact')
+
+    return res.pop()
 
 
 def clean(conn, prefact_id):
