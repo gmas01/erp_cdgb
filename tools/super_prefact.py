@@ -1,156 +1,19 @@
+import os
 import traceback
+import argparse
 import sys
-import psycopg2
-import psycopg2.extras
 import json
+import logging
+from os.path import expanduser
 
-class ProfileTree:
-    """object to chain other config nodes"""
+sys.path.append(
+    os.path.abspath(
+        os.path.join(expanduser("~"), "cfdiengine")
+    )
+)
 
-    def __init__(self, data):
-        self.data=data
-
-    def __getattr__(self, key):
-
-        try:
-            return ProfileTree(self.data[key])
-        except TypeError:
-            result=[]
-            for item in self.data:
-                if key in item:
-                    try:
-                        result.append(item[key])
-                    except TypeError: pass
-            return ProfileTree(result)
-
-    def __getitem__(self, key):
-
-        return ProfileTree(self.data[key])
-
-    def __iter__(self):
-
-        if isinstance(self.data, str):
-            # self.data might be a str or unicode object
-            yield self.data
-        else:
-            # self.data might be a list or tuple
-            try:
-                for item in self.data:
-                    yield item
-            except TypeError:
-                # self.data might be an int or float
-                yield self.data
-
-    def __length_hint__(self):
-        return len(self.data)
-
-
-class ProfileReader(object):
-    """
-    create a profile tree as per
-    a determined config profile
-    """
-
-    PNODE_UNIQUE, PNODE_MANY = range(2)
-
-    def __init__(self, logger):
-        self.__logger = logger
-
-
-    def __call__(self, p_file_path):
-
-        def parse_profile():
-            """
-            Parses a profile in json format
-            """
-            try:
-                json_lines = open(p_file_path).read()
-                parsed_json = json.loads(json_lines)
-                return parsed_json['engine_profile']
-            except (KeyError, OSError, IOError) as e:
-                self.__logger.error(e)
-                self.__logger.fatal(
-                    "malformed profile file in: {0}".format(p_file_path)
-                )
-                raise
-
-        try:
-            prof = parse_profile()
-            prof['source'] = p_file_path
-            return ProfileTree(prof)
-        except:
-            raise
-
-    @staticmethod
-    def get_content(pt_node, flavor):
-        return [
-            lambda : list(pt_node)[0],
-            lambda : list(pt_node)
-        ][flavor]()
-
-
-class HelperPg(object):
-    """
-    """
-
-    @staticmethod
-    def connect(conf):
-        """opens a connection to database"""
-        try:
-            conn_str = "dbname={0} user={1} host={2} password={3} port={4}".format(
-                ProfileReader.get_content(conf.db, ProfileReader.PNODE_UNIQUE),
-                ProfileReader.get_content(conf.user, ProfileReader.PNODE_UNIQUE),
-                ProfileReader.get_content(conf.host, ProfileReader.PNODE_UNIQUE),
-                ProfileReader.get_content(conf.passwd, ProfileReader.PNODE_UNIQUE),
-                ProfileReader.get_content(conf.port, ProfileReader.PNODE_UNIQUE)
-            )
-            return psycopg2.connect(conn_str)
-        except:
-            raise Exception('It is not possible to connect with database')
-
-    @staticmethod
-    def query(conn, sql, commit=False):
-        """carries an sql query out to database"""
-        cur = conn.cursor(cursor_factory=psycopg2.extras.DictCursor)
-        cur.execute(sql)
-        if commit:
-            conn.commit()
-        rows = cur.fetchall()
-        cur.close()
-        if len(rows) > 0:
-            return rows
-
-        # We should not have reached this point
-        raise Exception('There is not data retrieved')
-
-    @staticmethod
-    def onfly_query(conf, sql, commit=False):
-        """exec a query with a temporary connection"""
-        conn = HelperPg.connect(conf)
-
-        try:
-            return HelperPg.query(conn, sql, commit)
-        except:
-            raise
-        finally:
-            conn.close()
-
-    @staticmethod
-    def store(conn, name, output_expected, *args):
-        """calls an store procedure of database"""
-        cur = conn.cursor(cursor_factory=psycopg2.extras.DictCursor)
-        cur.callproc(name, *args)
-        rows = cur.fetchall()
-        cur.close()
-
-        if not output_expected:
-            return
-
-        if len(rows) > 0:
-            return rows
-
-        # We should not have reached this point
-        raise Exception('There is not data retrieved')
+from custom.profile import ProfileReader
+from misc.helperpg import HelperPg
 
 
 def parse_cmdline():
@@ -168,10 +31,93 @@ def parse_cmdline():
     psr.add_argument('-c', '--config', action='store',
             dest='config', help='load an specific config profile')
 
+    psr.add_argument('-uid', '--user_id', action='store',
+            dest='user_id', help='specify the user id')
+
+    psr.add_argument('-cid', '--cust_id', action='store',
+            dest='cust_id', help='specify the customer id')
+
     return psr.parse_args()
 
 
-def incept_prefact(profile_path):
+def setup_logger(debug):
+    """setup logger singleton"""
+
+    # if no name is specified, return a logger
+    # which is the root logger of the hierarchy.
+    root = logging.getLogger()
+
+    # create console handler with a higher log level
+    ch = logging.StreamHandler()
+    ch.setLevel(logging.DEBUG if debug else logging.INFO)
+
+    # add the handlers to root
+    root.addHandler(ch)
+
+    return root
+
+
+def read_settings(logger, s_file):
+    """reads profile"""
+
+    logger.debug("looking for config profile file in:\n{0}".format(
+        os.path.abspath(s_file)))
+    if os.path.isfile(s_file):
+        reader = ProfileReader(logger)
+        return reader(s_file)
+    raise Exception("unable to locate the config profile file")
+
+
+def open_dbms_conn(logger, pgsql_conf):
+    """opens a connection to postgresql"""
+
+    try:
+        return HelperPg.connect(pgsql_conf)
+    except psycopg2.Error as e:
+        logger.error(e)
+        raise Exception("dbms was not connected")
+    except KeyError as e:
+        logger.error(e)
+        raise Exception("slack pgsql configuration")
+
+
+def incept_prefact(profile_path, debug, user_id, cust_id):
+    """creates global prefactura"""
+
+    logger = setup_logger(debug)
+    pt = read_settings(logger, profile_path)
+    conn = open_dbms_conn(logger, pt.dbms.pgsql_conn)
+
+    try:
+        validation(conn, user_id)
+        prefact_id = create(conn, user_id, cust_id)
+        clean(conn, prefact_id)
+    except:
+        raise
+    finally:
+        if conn is not None:
+            conn.close()
+
+
+def validation(conn, user_id):
+    q = """SELECT *
+        FROM fac_global_validation( {}::integer )
+        AS result( rc integer, msg text )""".format(user_id)
+
+    res = HelperPg.query(conn, q, True)
+    if len(res) != 1:
+        raise Exception('unexpected result regarding execution of fac_global_validation')
+
+    rcode, rmsg = res.pop()
+    if rcode != 0:
+        raise Exception(rmsg)
+
+
+def create(conn, user_id, cust_id):
+    return 0
+
+
+def clean(conn, prefact_id):
     pass
 
 
@@ -186,7 +132,7 @@ if __name__ == "__main__":
     profile_path = '{}/{}'.format(PROFILES_DIR,
             args.config if args.config else DEFAULT_PROFILE)
     try:
-        incept_prefact(profile_path)
+        incept_prefact(profile_path, args.debug, args.user_id, args.cust_id)
     except:
         if args.debug:
             print('Whoops! a problem came up!')
