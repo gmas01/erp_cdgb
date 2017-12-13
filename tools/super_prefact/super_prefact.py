@@ -17,6 +17,78 @@ sys.path.append(
 from custom.profile import ProfileReader
 from misc.helperpg import HelperPg
 
+class CfdiEngineTrigger(object):
+
+    __JAVA_BIN = "java"
+
+    def __init__(host, port, err_mute = False):
+        self.__err_mute = err_mute
+        self.__host = host
+        self.__port = port
+
+        def seekout_java():
+            executable = find_executable(self.__JAVA_BIN)
+            if executable:
+                return os.path.abspath(executable)
+            raise Exception("it has not found {} binary".format(self.__JAVA_BIN))
+
+        self.__java_bin = seekout_java()
+        self.__java_args = ['-classpath', './jars/bbgum-impt-1.0-Alpha.jar',
+                'com.agnux.tcp.App', self.__host, self.__port]
+
+        self.__cmd_tokens = [self.__java_bin] + self.__java_args
+
+    def __call__(self, in_b, cmd_timeout):
+
+        def time_gap(delta):
+            t = time.time()
+            return t, t + delta
+
+        def monitor(p, tbegin, tend):
+            """Loop until process returns or timeout expires"""
+            rc = None
+            output = ''
+            while time.time() < tend and rc is None:
+                rc = p.poll()
+                if rc is None:
+                    try:
+                        outs, errs = p.communicate(input=in_b, timeout=1)
+                        output += outs
+                    except subprocess.TimeoutExpired:
+                        pass
+            return output, rc
+
+        if self.__err_mute:
+            out_err = subprocess.DEVNULL
+        else:
+            out_err = subprocess.STDOUT
+
+        output, rc = monitor(
+            subprocess.Popen(
+                self.__cmd_tokens,
+                stdin = subprocess.PIPE,
+                stdout = subprocess.PIPE,
+                stderr = out_err
+            ),
+            *time_gap(cmd_timeout)
+        )
+
+        if rc is None:
+            raise subprocess.TimeoutExpired(
+                cmd = self.__cmd_tokens,
+                output = output,
+                timeout = cmd_timeout
+            )
+
+        if rc == 0:
+            return output
+
+        raise subprocess.CalledProcessError(
+            returncode = rc,
+            cmd = self.__cmd_tokens,
+            output = output
+        )
+
 
 def parse_cmdline():
     """parses the command line arguments at the call."""
@@ -38,6 +110,12 @@ def parse_cmdline():
 
     psr.add_argument('-cid', '--cust_id', action='store',
             dest='cust_id', help='specify the customer id')
+
+    psr.add_argument('-h', '--host', action='store',
+            dest='host', help='hostname of cfdiengine microservice')
+
+    psr.add_argument('-p', '--port', action='store',
+            dest='port', help='port of cfdiengine microservice')
 
     return psr.parse_args()
 
@@ -83,7 +161,7 @@ def open_dbms_conn(logger, pgsql_conf):
         raise Exception("slack pgsql configuration")
 
 
-def incept_prefact(profile_path, debug, user_id, cust_id):
+def incept_prefact(profile_path, debug, user_id, cust_id, rme):
     """creates global prefactura"""
 
     logger = setup_logger(debug)
@@ -93,7 +171,8 @@ def incept_prefact(profile_path, debug, user_id, cust_id):
     try:
         validation(conn, user_id)
         prefact_id = create(conn, user_id, cust_id)
-        clean(conn, prefact_id)
+        out = facturar(conn, user_id, prefact_id, rme)
+        logger.info(out)
     except:
         raise
     finally:
@@ -102,6 +181,7 @@ def incept_prefact(profile_path, debug, user_id, cust_id):
 
 
 def validation(conn, user_id):
+    """checks coherency before creation prefactura"""
 
     q = """SELECT *
         FROM fac_global_validation( {}::integer )
@@ -128,8 +208,19 @@ def create(conn, user_id, cust_id):
     return res.pop()
 
 
-def clean(conn, prefact_id):
-    pass
+def facturar(conn, user_id, prefact_id, rme):
+
+    request = json.dumps({
+        'to': 'cxc',
+        'action': 'facturar',
+        'args': {
+            'filename': 'global_test.xml',
+            'prefact_id': prefact_id,
+            'usr_id': user_id
+        }
+    }).encode('utf-8')
+
+    return rme(request, cmd_timeout = 10)
 
 
 if __name__ == "__main__":
@@ -142,8 +233,11 @@ if __name__ == "__main__":
 
     profile_path = '{}/{}'.format(PROFILES_DIR,
             args.config if args.config else DEFAULT_PROFILE)
+
+    rme = CfdiEngineTrigger(args.host, args.port)
+
     try:
-        incept_prefact(profile_path, args.debug, args.user_id, args.cust_id)
+        incept_prefact(profile_path, args.debug, args.user_id, args.cust_id, rme)
     except:
         if args.debug:
             print('Whoops! a problem came up!')
