@@ -1094,7 +1094,7 @@ public class PocPedidosController {
         //obtener el directorio temporal
         String dir_tmp = this.getGralDao().getTmpDir();
         
-        String ruta_imagen = this.getGralDao().getImagesDir()+rfc_empresa+"_logo.png";
+        String ruta_imagen = this.getGralDao().getImagesDir()+rfc_empresa+"_blank.png";
         
         File file_dir_tmp = new File(dir_tmp);
         

@@ -596,6 +596,47 @@
 										</ul>
 									</li>
 
+                                                                        <li class="accessible">
+                                                                                <a href="http://jdsharp.us" class="accessible">Producci&oacute;n &raquo;</a>
+                                                                                <ul>
+
+                                                                                        <li>
+                                                                                                <a href="#" class="sub">Cat&aacute;logos &raquo;</a>
+                                                                                                <ul>
+                                                                                                        <li><a href="../proequipos/startup.agnux">Equipos</a></li>
+                                                                                                        <li><a href="../proequiposadic/startup.agnux">Equipos Adicionales</a></li>
+                                                                                                        <li><a href="../protipoequipo/startup.agnux">Tipos de Equipo</a></li>
+                                                                                                        <li><a href="../proinstrumentosmedicion/startup.agnux">Instrumentos de Medici&oacute;n</a></li>
+</ul>
+                                                                                        </li>
+
+                                                                                        <li>
+                                                                                                <a href="#" class="sub">Procesos &raquo;</a>
+                                                                                                <ul>
+                                                                                                        <li class="topline"><a href="../proformulasdesarrollo/startup.agnux">Formulas en Desarrollo</a></li>
+                                                                                                        <li class="topline"><a href="../proconfigproduccion/startup.agnux">Configuraci&oacute;n</a></li>
+                                                                                                        <li class="topline"><a href="../propreordenproduccion/startup.agnux">Preorden Producci&oacute;n</a></li>
+                                                                                                        <li class="topline"><a href="../proordenproduccion/startup.agnux">Orden Producci&oacute;n</a></li>
+                                                                                                        <li class="topline"><a href="../procalidad/startup.agnux">Aseguramiento de Calidad</a></li>
+                                                                                                        <li class="topline"><a href="../proordensimulacion/startup.agnux">Simulaci&oacute;n de Producci&oacute;n</a></li>
+                                                                                                        <!--
+                                                                                                        <li class="topline"><a href="#">Cancelaci&oacute;n</a></li>
+                                                                                                        <li class="topline"><a href="#">Nota Cargo/Cr&eacute;dito</a></li>
+                                                                                                        <li class="topline"><a href="#">Consulta Cancelaci&oacute;n/Devoluci&oacute;n</a></li>
+                                                                                                        <li class="topline"><a href="#">Recepci&oacute;n Documentos XML</a></li>
+                                                                                                        -->
+                                                                                                </ul>
+                                                                                        </li>
+                                                                                        <li>
+                                                                                                <a href="#" class="sub">Reportes&raquo;</a>
+                                                                                                <ul>
+                                                                                                        <!--<li class="topline"><a href="#">F&oacute;rmulas</a></li>-->
+                                                                                                        <li class="topline"><a href="../proreporteproduccion/startup.agnux">Producci&oacute;n</a></li>
+                                                                                                        <li class="topline"><a href="../proreportecalidad/startup.agnux">Reporte de Calidad</a></li>
+                                                                                                </ul>
+                                                                                        </li>
+                                                                                </ul>
+                                                                        </li>
 
 									
 									<li class="accessible" >
