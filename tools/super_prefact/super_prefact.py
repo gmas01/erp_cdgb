@@ -20,6 +20,7 @@ from misc.helperpg import HelperPg
 class CfdiEngineTrigger(object):
 
     __JAVA_BIN = "java"
+    __IMPT_JAR = "bbgum-impt-1.0-Alpha"
 
     def __init__(host, port, err_mute = False):
         self.__err_mute = err_mute
@@ -33,12 +34,13 @@ class CfdiEngineTrigger(object):
             raise Exception("it has not found {} binary".format(self.__JAVA_BIN))
 
         self.__java_bin = seekout_java()
-        self.__java_args = ['-classpath', './jars/bbgum-impt-1.0-Alpha.jar',
+        self.__java_args = ['-classpath', './jars/{}.jar'.format(self.__IMPT_JAR),
                 'com.agnux.tcp.App', self.__host, self.__port]
 
         self.__cmd_tokens = [self.__java_bin] + self.__java_args
 
     def __call__(self, in_b, cmd_timeout):
+        """implementation as function object"""
 
         def time_gap(delta):
             t = time.time()
@@ -125,14 +127,9 @@ def setup_logger(debug):
 
     # if no name is specified, return a logger
     # which is the root logger of the hierarchy.
-    root = logging.getLogger()
+    root = logging.getLogger(__name__)
 
-    # create console handler with a higher log level
-    ch = logging.StreamHandler()
-    ch.setLevel(logging.DEBUG if debug else logging.INFO)
-
-    # add the handlers to root
-    root.addHandler(ch)
+    logging.basicConfig(level=logging.DEBUG if debug else logging.INFO)
 
     return root
 
@@ -161,11 +158,9 @@ def open_dbms_conn(logger, pgsql_conf):
         raise Exception("slack pgsql configuration")
 
 
-def incept_prefact(profile_path, debug, user_id, cust_id, rme):
+def incept_prefact(logger, pt, debug, user_id, cust_id, rme):
     """creates global prefactura"""
 
-    logger = setup_logger(debug)
-    pt = read_settings(logger, profile_path)
     conn = open_dbms_conn(logger, pt.dbms.pgsql_conn)
 
     try:
@@ -197,6 +192,7 @@ def validation(conn, user_id):
 
 
 def create(conn, user_id, cust_id):
+    """creates a prefactura"""
 
     q = '''SELECT *
         FROM fac_global_prefact( {}::integer, {}::integer )'''.format(user_id, cust_id)
@@ -234,10 +230,15 @@ if __name__ == "__main__":
     profile_path = '{}/{}'.format(PROFILES_DIR,
             args.config if args.config else DEFAULT_PROFILE)
 
+    logger = setup_logger(args.debug)
+    logger.debug(args)
+
     rme = CfdiEngineTrigger(args.host, args.port)
 
     try:
-        incept_prefact(profile_path, args.debug, args.user_id, args.cust_id, rme)
+        pt = read_settings(logger, profile_path)
+        incept_prefact(logger, pt, args.debug, args.user_id, args.cust_id, rme)
+        logger.info('successful super prefact execution')
     except:
         if args.debug:
             print('Whoops! a problem came up!')
