@@ -1484,7 +1484,7 @@ $(function() {
 			
 			//carga select de zonas
 			$select_zona.children().remove();
-			var zona_html = '<option value="0" selected="yes">[-Zona-]</option>';
+			var zona_html = '<option value="1" selected="yes">[-Zona-]</option>';
 			$.each(entry['Zonas'],function(entryIndex,zona){
 				zona_html += '<option value="' + zona['id'] + '"  >' + zona['nombre_zona'] + '</option>';
 			});
@@ -1492,7 +1492,7 @@ $(function() {
 			
 			//alimentando select de grupos
 			$select_grupo.children().remove();
-			var grupo_html = '<option value="0" selected="yes">[-Grupo-]</option>';
+			var grupo_html = '<option value="1" selected="yes">[-Grupo-]</option>';
 			$.each(entry['Grupos'],function(entryIndex,grupo){
 				grupo_html += '<option value="' + grupo['id'] + '"  >' + grupo['nombre_grupo'] + '</option>';
 			});
@@ -1500,7 +1500,7 @@ $(function() {
 			
 			//Alimentando los campos select de tipos de cliente
 			$select_tipocliente.children().remove();
-			var tipo_cliente_hmtl = '<option value="0" selected="yes">[--Tipo de cliente--]</option>';
+			var tipo_cliente_hmtl = '<option value="1" selected="yes">[--Tipo de cliente--]</option>';
 			$.each(entry['Tiposclient'],function(entryIndex,tipo){
 				tipo_cliente_hmtl += '<option value="' + tipo['id'] + '"  >' + tipo['titulo'] + '</option>';
 			});
@@ -1508,7 +1508,7 @@ $(function() {
 			
 			//carga select de clasificacion 1 de cliente
 			$select_clasif1.children().remove();
-			var clas1_hmtl = '<option value="0" selected="yes">[-- Clasificacion 1 --]</option>';
+			var clas1_hmtl = '<option value="1" selected="yes">[-- Clasificacion 1 --]</option>';
 			$.each(entry['Clas1'],function(entryIndex,clas1){
 				clas1_hmtl += '<option value="' + clas1['id'] + '"  >' + clas1['clasificacion1'] + '</option>';
 			});
@@ -1516,7 +1516,7 @@ $(function() {
 			
 			//carga select de clasificacion 2 de cliente
 			$select_clasif2.children().remove();
-			var clasif2_html = '<option value="0" selected="yes">[-Clasificacion 2-]</option>';
+			var clasif2_html = '<option value="1" selected="yes">[-Clasificacion 2-]</option>';
 			$.each(entry['Clas2'],function(entryIndex,clas2){
 				clasif2_html += '<option value="' + clas2['id'] + '"  >' + clas2['clasificacion2'] + '</option>';
 			});
@@ -1524,7 +1524,7 @@ $(function() {
 			
 			//carga select de clasificacion 3 de cliente
 			$select_clasif3.children().remove();
-			var clasif3_html = '<option value="0" selected="yes">[-Clasificacion 3-]</option>';
+			var clasif3_html = '<option value="1" selected="yes">[-Clasificacion 3-]</option>';
 			$.each(entry['Clas3'],function(entryIndex,clas3){
 				clasif3_html += '<option value="' + clas3['id'] + '" >' + clas3['clasificacion3'] + '</option>';
 			});
@@ -1534,7 +1534,7 @@ $(function() {
 			//Alimentando los campos select de monedas
 			$select_moneda.children().remove();
 			moneda_hmtl='';
-			moneda_hmtl = '<option value="0" selected="yes">[-- Moneda --]</option>';
+			moneda_hmtl = '<option value="1" selected="yes">[-- Moneda --]</option>';
 			$.each(entry['Monedas'],function(entryIndex,moneda){
 				moneda_hmtl += '<option value="' + moneda['id'] + '"  >' + moneda['descripcion'] + '</option>';
 			});
@@ -1602,7 +1602,7 @@ $(function() {
 			
 			//carga select dias de credito
 			$select_dias_credito.children().remove();
-			var hmtl_condiciones = '<option value="0" selected="yes">[-- Terminos  --]</option>';
+			var hmtl_condiciones = '<option value="1" selected="yes">[-- Terminos  --]</option>';
 			$.each(entry['Condiciones'],function(entryIndex,condicion){
 				hmtl_condiciones += '<option value="' + condicion['id'] + '"  >' + condicion['descripcion'] + '</option>';
 			});
@@ -1618,7 +1618,7 @@ $(function() {
 			
 			//carga el select de Inicios de Credito
 			$select_inicio_credito.children().remove();
-			var inicio_hmtl = '<option value="0" selected="yes">[--Seleccionar inicio --]</option>';
+			var inicio_hmtl = '<option value="1" selected="yes">[--Seleccionar inicio --]</option>';
 			$.each(entry['InicioCredito'],function(entryIndex,inicio){
 				inicio_hmtl += '<option value="' + inicio['id'] + '"  >' + inicio['titulo'] + '</option>';
 			});
