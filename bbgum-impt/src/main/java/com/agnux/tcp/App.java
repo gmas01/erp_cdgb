@@ -6,27 +6,30 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 
-
 public class App {
 
     public static void main(String[] args) {
         String host = args[0];
         int port = Integer.parseInt(args[1]);
-        sendRequest(host, port, App.readStandartInput(System.in).getBytes());
+        System.out.println("=================================================");
+        System.out.println("Sending the following request to " + host + ":" + port);
+        String req = App.readStandartInput(System.in);
+        System.out.println("=================================================");
+        System.out.println(req);
+        sendRequest(host, port, req.getBytes());
     }
 
     private static String readStandartInput(InputStream p) {
         InputStreamReader ir = new InputStreamReader(p);
         BufferedReader rf = new BufferedReader(ir);
         StringBuilder sb = new StringBuilder();
+        String l;
         for (;;) {
             try {
-                String l = rf.readLine();
                 if ((l = rf.readLine()) == null) {
                     break;
                 }
-
-                sb.append(l);
+                sb.append(l).append("\n");
             } catch (IOException ex) {
                 System.err.println(ex.getMessage());
                 System.exit(1);
@@ -40,7 +43,7 @@ public class App {
             System.exit(1);
         }
 
-        return rs;
+        return App.removeLastChar(rs);
     }
 
     private static void sendRequest(String host, Integer port, byte[] req) {
@@ -60,5 +63,11 @@ public class App {
             System.err.println(ex.getMessage());
             System.exit(1);
         }
+    }
+
+    public static String removeLastChar(String s) {
+        return (s == null || s.length() == 0)
+                ? null
+                : (s.substring(0, s.length() - 1));
     }
 }

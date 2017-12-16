@@ -1,11 +1,14 @@
 #!/usr/bin/python3
 
+import time
 import os
 import traceback
 import argparse
 import sys
 import json
 import logging
+import subprocess
+from distutils.spawn import find_executable
 from os.path import expanduser
 
 sys.path.append(
@@ -16,13 +19,13 @@ sys.path.append(
 
 from custom.profile import ProfileReader
 from misc.helperpg import HelperPg
+from misc.tricks import dump_exception
 
 class CfdiEngineTrigger(object):
 
     __JAVA_BIN = "java"
-    __IMPT_JAR = "bbgum-impt-1.0-Alpha"
 
-    def __init__(host, port, err_mute = False):
+    def __init__(self, host, port, err_mute = False):
         self.__err_mute = err_mute
         self.__host = host
         self.__port = port
@@ -34,8 +37,8 @@ class CfdiEngineTrigger(object):
             raise Exception("it has not found {} binary".format(self.__JAVA_BIN))
 
         self.__java_bin = seekout_java()
-        self.__java_args = ['-classpath', './jars/{}.jar'.format(self.__IMPT_JAR),
-                'com.agnux.tcp.App', self.__host, self.__port]
+        self.__java_args = ['-classpath', './jars/*',
+                'com.agnux.tcp.App', self.__host, str(self.__port)]
 
         self.__cmd_tokens = [self.__java_bin] + self.__java_args
 
@@ -54,8 +57,8 @@ class CfdiEngineTrigger(object):
                 rc = p.poll()
                 if rc is None:
                     try:
-                        outs, errs = p.communicate(input=in_b, timeout=1)
-                        output += outs
+                        outs, errs = p.communicate(input=in_b, timeout=100)
+                        output += outs.decode("utf-8")
                     except subprocess.TimeoutExpired:
                         pass
             return output, rc
@@ -65,7 +68,7 @@ class CfdiEngineTrigger(object):
         else:
             out_err = subprocess.STDOUT
 
-        output, rc = monitor(
+        oput, rc = monitor(
             subprocess.Popen(
                 self.__cmd_tokens,
                 stdin = subprocess.PIPE,
@@ -78,17 +81,17 @@ class CfdiEngineTrigger(object):
         if rc is None:
             raise subprocess.TimeoutExpired(
                 cmd = self.__cmd_tokens,
-                output = output,
+                output = oput,
                 timeout = cmd_timeout
             )
 
         if rc == 0:
-            return output
+            return oput
 
         raise subprocess.CalledProcessError(
             returncode = rc,
             cmd = self.__cmd_tokens,
-            output = output
+            output = oput
         )
 
 
@@ -113,10 +116,10 @@ def parse_cmdline():
     psr.add_argument('-cid', '--cust_id', action='store',
             dest='cust_id', help='specify the customer id')
 
-    psr.add_argument('-h', '--host', action='store',
+    psr.add_argument('-ho', '--host', action='store',
             dest='host', help='hostname of cfdiengine microservice')
 
-    psr.add_argument('-p', '--port', action='store',
+    psr.add_argument('-po', '--port', action='store',
             dest='port', help='port of cfdiengine microservice')
 
     return psr.parse_args()
@@ -166,8 +169,8 @@ def incept_prefact(logger, pt, debug, user_id, cust_id, rme):
     try:
         validation(conn, user_id)
         prefact_id = create(conn, user_id, cust_id)
-        out = facturar(conn, user_id, prefact_id, rme)
-        logger.info(out)
+        out = facturar(user_id, prefact_id, rme)
+        logger.debug(out)
     except:
         raise
     finally:
@@ -201,22 +204,26 @@ def create(conn, user_id, cust_id):
     if len(res) != 1:
         raise Exception('unexpected result regarding execution of fac_global_prefact')
 
-    return res.pop()
+    return (res.pop())[0]
 
 
-def facturar(conn, user_id, prefact_id, rme):
+def facturar(user_id, prefact_id, rme):
 
-    request = json.dumps({
-        'to': 'cxc',
-        'action': 'facturar',
-        'args': {
-            'filename': 'global_test.xml',
-            'prefact_id': prefact_id,
-            'usr_id': user_id
+    request = json.dumps(
+        {
+            'request': {
+                'to': 'cxc',
+                'action': 'facturar',
+                'args': {
+                    'filename': 'global_test.xml',
+                    'prefact_id': prefact_id,
+                    'usr_id': user_id
+                }
+            }
         }
-    }).encode('utf-8')
+    ).encode('utf-8')
 
-    return rme(request, cmd_timeout = 10)
+    return rme(request, cmd_timeout = 100)
 
 
 if __name__ == "__main__":
@@ -238,11 +245,13 @@ if __name__ == "__main__":
     try:
         pt = read_settings(logger, profile_path)
         incept_prefact(logger, pt, args.debug, args.user_id, args.cust_id, rme)
-        logger.info('successful super prefact execution')
+        logger.debug('successful super prefact execution')
+    except subprocess.CalledProcessError as e:
+        print(e.output)
     except:
         if args.debug:
             print('Whoops! a problem came up!')
-            traceback.print_exc(file=sys.stderr)
+            print(dump_exception())
         sys.exit(1)
 
     # assuming everything went right, exit gracefully
