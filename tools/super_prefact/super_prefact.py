@@ -169,7 +169,7 @@ def incept_prefact(logger, pt, debug, user_id, cust_id, rme):
     try:
         validation(conn, user_id)
         prefact_id = create(conn, user_id, cust_id)
-        out = facturar(user_id, prefact_id, rme)
+        out = facturar(conn, user_id, prefact_id, rme)
         logger.debug(out)
     except:
         raise
@@ -207,7 +207,41 @@ def create(conn, user_id, cust_id):
     return (res.pop())[0]
 
 
-def facturar(user_id, prefact_id, rme):
+def facturar(conn, user_id, prefact_id, rme):
+
+    def _q_no_id_empresa():
+        q = """SELECT gral_emp.no_id::character varying as no_id
+            FROM gral_usr_suc
+            JOIN gral_suc ON gral_suc.id = gral_usr_suc.gral_suc_id
+            JOIN gral_emp ON gral_emp.id = gral_suc.empresa_id
+            WHERE gral_usr_suc.gral_usr_id ="""
+        for row in HelperPg.query(conn, "{0}{1}".format(q, user_id)):
+            # Just taking first row of query result
+            return row['no_id']
+
+    def _q_serie_folio():
+        q = """select fac_cfds_conf_folios.serie as serie,
+            fac_cfds_conf_folios.folio_actual::character varying as folio
+            FROM gral_suc AS SUC
+            LEFT JOIN fac_cfds_conf ON fac_cfds_conf.gral_suc_id = SUC.id
+            LEFT JOIN fac_cfds_conf_folios ON fac_cfds_conf_folios.fac_cfds_conf_id = fac_cfds_conf.id
+            LEFT JOIN gral_usr_suc AS USR_SUC ON USR_SUC.gral_suc_id = SUC.id
+            WHERE fac_cfds_conf_folios.proposito = 'FAC'
+            AND USR_SUC.gral_usr_id="""
+        for row in HelperPg.query(conn, "{0}{1}".format(q, user_id)):
+            # Just taking first row of query result
+            return {
+                'SERIE': row['serie'],
+                'FOLIO': row['folio']
+            }
+
+    filename = None
+    try:
+        no_id = _q_no_id_empresa()
+        sf = _q_serie_folio()
+        filename = '{}_{}{}.xml'.format(no_id, sf['SERIE'], sf['FOLIO'])
+    except:
+        raise Exception("Error conforming filename variable for request")
 
     request = json.dumps(
         {
@@ -215,7 +249,7 @@ def facturar(user_id, prefact_id, rme):
                 'to': 'cxc',
                 'action': 'facturar',
                 'args': {
-                    'filename': 'global_test.xml',
+                    'filename': filename,
                     'prefact_id': prefact_id,
                     'usr_id': user_id
                 }
