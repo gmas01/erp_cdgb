@@ -3781,7 +3781,7 @@ public class PocSpringDao implements PocInterfaceDao{
 
     @Override
     public Integer getCustomerForGlobal(Integer uid) {
-        String q = "SELECT =" + uid;
+        String q = "SELECT gral_suc.empresa_id, gral_usr_suc.gral_suc_id, inv_suc_alm.almacen_id, cxc_clie.id as cliente FROM gral_usr_suc JOIN gral_suc ON gral_suc.id = gral_usr_suc.gral_suc_id     JOIN inv_suc_alm ON inv_suc_alm.sucursal_id = gral_suc.id JOIN gral_usr ON gral_usr_suc.gral_usr_id = gral_usr.id JOin cxc_clie on gral_suc.id = cxc_clie.sucursal_id WHERE cxc_clie.clasif_3=2 AND gral_usr_suc.gral_usr_id =" + uid;
         return this.getJdbcTemplate().queryForInt(q);
     }
     
