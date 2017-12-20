@@ -10,5 +10,6 @@
         <module>../bbgum-jcli</module>
         <module>../erp-quimicos</module>
         <module>../bbgum-impt</module>
+        <module>../magic-helpers</module>
     </modules>
 </project>
