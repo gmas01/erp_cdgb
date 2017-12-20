@@ -3781,7 +3781,8 @@ public class PocSpringDao implements PocInterfaceDao{
 
     @Override
     public Integer getCustomerForGlobal(Integer uid) {
-        throw new UnsupportedOperationException("Not supported yet.");
+        String q = "SELECT =" + uid;
+        return this.getJdbcTemplate().queryForInt(q);
     }
     
     
