@@ -28,7 +28,7 @@ public class RunExternalProg {
         this.out = out;
     }
 
-    protected void exec(String path, String executable, String params, boolean captureStdout, String processFileOutput) throws IOException, InterruptedException {
+    protected int exec(String path, String executable, String params, boolean captureStdout, String processFileOutput) throws IOException, InterruptedException {
         String cmd = executable + " " + params;
         out.log(Level.INFO, cmd);
 
@@ -69,8 +69,6 @@ public class RunExternalProg {
         }
 
         int result = process.waitFor();
-
-        out.log(Level.INFO, "Process exited with result {0}", result);
-
+        return result;
     }
 }

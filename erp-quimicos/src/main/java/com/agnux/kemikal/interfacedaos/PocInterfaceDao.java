@@ -141,4 +141,6 @@ public interface PocInterfaceDao{
     public HashMap<String, String> poc_val_cusorder(Integer usr_id, String curr_val, String date_lim, Integer pay_met, String account, String matrix);
 
     public String poc_cat_cusorder(PotCatCusorder pc);
+
+    public Integer getCustomerForGlobal(Integer uid);
 }

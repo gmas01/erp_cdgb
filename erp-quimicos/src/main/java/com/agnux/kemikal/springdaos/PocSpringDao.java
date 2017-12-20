@@ -3778,6 +3778,11 @@ public class PocSpringDao implements PocInterfaceDao{
         
         return data;
     }
+
+    @Override
+    public Integer getCustomerForGlobal(Integer uid) {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
     
     
 }

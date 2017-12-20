@@ -5,15 +5,7 @@
  */
 package com.maxima.magichelpers;
 
-import java.io.BufferedReader;
-import java.io.BufferedWriter;
-import java.io.File;
-import java.util.Scanner;
-import java.io.FileWriter;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
@@ -30,7 +22,7 @@ public class GlueRunner extends RunExternalProg {
         this.glueDir = glueDir;
     }
 
-    public void go(String script, String params, boolean captureStdout, String processFileOutput) throws IOException, InterruptedException{
-        this.exec(this.glueDir, script, params, captureStdout, processFileOutput);
+    public int go(String script, String params, boolean captureStdout, String processFileOutput) throws IOException, InterruptedException{
+        return this.exec(this.glueDir, script, params, captureStdout, processFileOutput);
     }
 }
