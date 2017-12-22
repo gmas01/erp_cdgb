@@ -1,0 +1,14 @@
+The following debian packages are required to run cfdiengine
+
+python3-psycopg2
+xsltproc
+openjdk-7-jdk
+python3-pip
+python3-lxml
+python3-reportlab
+
+These packages may not come across with your debian version and are also
+required, so please utilize pip3 to install them.
+
+qrcode
+suds-jurko
