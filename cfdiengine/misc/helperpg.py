@@ -22,6 +22,21 @@ class HelperPg(object):
         except:
             raise Exception('It is not possible to connect with database')
 
+
+    @staticmethod
+    def update(conn, sql):
+        cur = conn.cursor()
+        cur.execute(sql)
+        updated_rows = cur.rowcount
+        conn.commit()
+        cur.close()
+        if updated_rows > 0:
+            return updated_rows
+
+        # We should not have reached this point
+        raise Exception('Nothing updated')
+
+
     @staticmethod
     def query(conn, sql, commit=False):
         """carries an sql query out to database"""
