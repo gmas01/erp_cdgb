@@ -44,55 +44,24 @@ class CfdiEngineTrigger(object):
 
     def __call__(self, in_b, cmd_timeout):
         """implementation as function object"""
-
-        def time_gap(delta):
-            t = time.time()
-            return t, t + delta
-
-        def monitor(p, tbegin, tend):
-            """Loop until process returns or timeout expires"""
-            rc = None
-            output = ''
-            while time.time() < tend and rc is None:
-                rc = p.poll()
-                if rc is None:
-                    try:
-                        outs, errs = p.communicate(input=in_b, timeout=100)
-                        output += outs.decode("utf-8")
-                    except subprocess.TimeoutExpired:
-                        pass
-            return output, rc
-
         if self.__err_mute:
             out_err = subprocess.DEVNULL
         else:
             out_err = subprocess.STDOUT
 
-        oput, rc = monitor(
-            subprocess.Popen(
-                self.__cmd_tokens,
-                stdin = subprocess.PIPE,
-                stdout = subprocess.PIPE,
-                stderr = out_err
-            ),
-            *time_gap(cmd_timeout)
+        p = subprocess.Popen(
+            self.__cmd_tokens,
+            stdin = subprocess.PIPE,
+            stdout = subprocess.PIPE,
+            stderr = out_err
         )
 
-        if rc is None:
-            raise subprocess.TimeoutExpired(
-                cmd = self.__cmd_tokens,
-                output = oput,
-                timeout = cmd_timeout
-            )
-
-        if rc == 0:
-            return oput
-
-        raise subprocess.CalledProcessError(
-            returncode = rc,
-            cmd = self.__cmd_tokens,
-            output = oput
-        )
+        try:
+            outs, errs = p.communicate(input=in_b, timeout=cmd_timeout)
+            return outs.decode("utf-8")
+        except subprocess.TimeoutExpired:
+            p.kill()
+            raise
 
 
 def parse_cmdline():
@@ -161,21 +130,56 @@ def open_dbms_conn(logger, pgsql_conf):
         raise Exception("slack pgsql configuration")
 
 
+def make_remain_prefacts_up(conn, user_id):
+    """deals with the remain prefacts which are opened"""
+    q_upt = """UPDATE erp_proceso
+        SET proceso_flujo_id = 3, id_aux = 2
+        FROM gral_suc, gral_usr, gral_usr_suc
+        WHERE gral_suc.id = gral_usr_suc.gral_suc_id
+        AND gral_usr_suc.gral_usr_id = gral_usr.id
+        AND erp_proceso.sucursal_id = gral_usr_suc.gral_suc_id
+        AND erp_proceso.proceso_flujo_id = 2
+        AND gral_usr_suc.gral_usr_id = {}""".format(user_id)
+
+    nrowu = HelperPg.update(conn, q_upt)
+    return nrowu
+
 def incept_prefact(logger, pt, debug, user_id, cust_id, rme):
     """creates global prefactura"""
 
     conn = open_dbms_conn(logger, pt.dbms.pgsql_conn)
+
+    prefact_id = None
 
     try:
         validation(conn, user_id)
         prefact_id = create(conn, user_id, cust_id)
         out = facturar(conn, user_id, prefact_id, rme)
         logger.debug(out)
+        make_remain_prefacts_up(conn, user_id)
+    except (subprocess.TimeoutExpired, subprocess.CalledProcessError):
+        remove_bad_atempt(conn, prefact_id)
+        raise
     except:
         raise
     finally:
         if conn is not None:
             conn.close()
+
+
+def remove_bad_atempt(conn, prefact_id):
+    logger.debug("Executing sql to remove attempt failed".format(prefact_id))
+    q = """SELECT *
+        FROM fac_global_rm_attempt( {}::integer )
+        AS result( rc integer, msg text )""".format(prefact_id)
+
+    res = HelperPg.query(conn, q, True)
+    if len(res) != 1:
+        raise Exception('unexpected result regarding execution of fac_global_bad_atempt')
+
+    rcode, rmsg = res.pop()
+    if rcode != 0:
+        raise Exception(rmsg)
 
 
 def validation(conn, user_id):
@@ -255,9 +259,9 @@ def facturar(conn, user_id, prefact_id, rme):
                 }
             }
         }
-    ).encode('utf-8')
+    ) + "\n"
 
-    return rme(request, cmd_timeout = 100)
+    return rme(request.encode('utf-8'), cmd_timeout = 60)
 
 
 if __name__ == "__main__":
