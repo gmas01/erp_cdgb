@@ -483,7 +483,7 @@ class FacXml(BuilderGen):
         )
 
     def __calc_base(self, imp, tasa):
-        return float(
+        return self.__narf(
             Decimal(imp) + Decimal( self.__calc_imp_tax(imp, tasa) )
         )
 
