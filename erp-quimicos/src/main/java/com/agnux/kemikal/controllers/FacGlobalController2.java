@@ -70,12 +70,12 @@ public class FacGlobalController2 {
         Integer cid = this.getPedidDao().getCustomerForGlobal(uid);
 
         String glueDir = System.getenv("HOME") + "/tools/super_prefact";
-        String params = String.format("-uid %s -cid %s -d -ho localhost -po 10080", String.valueOf(uid), String.valueOf(cid));
+        String params = String.format("-uid %s -cid %s -d", String.valueOf(uid), String.valueOf(cid));
         HashMap<String, String> jsonOutput = new HashMap<String, String>();
 
         try {
             GlueRunner glueRunner = new GlueRunner(glueDir, log);
-            int r = glueRunner.go("super_prefact.py", params, false, null);
+            int r = glueRunner.go("spawns_global.py", params, false, null);
             jsonOutput.put("errorCode", String.valueOf(r));
             if (r != 0) {
                 jsonOutput.put("msg", "Consulte el archivo de log de esta aplicacion para mas informacion");
