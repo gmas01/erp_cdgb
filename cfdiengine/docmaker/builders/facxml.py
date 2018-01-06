@@ -123,7 +123,7 @@ class FacXml(BuilderGen):
             return {
                 'RFC': row['rfc'],
                 'RAZON_SOCIAL': unidecode.unidecode(row['razon_social']),
-                'USO_CFDI': 'G01'
+                'USO_CFDI': 'P01'
             }
 
     def __q_conceptos(self, conn, prefact_id):
@@ -177,7 +177,7 @@ class FacXml(BuilderGen):
                 'UNIDAD': row['unidad'],
                 'PRODSERV': row['prodserv'],
                 'CANTIDAD': row['cantidad'],
-                'PRECIO_UNITARIO': row['precio_unitario'],
+                'PRECIO_UNITARIO': self.__narf(row['precio_unitario']),
                 'IMPORTE': row['importe'],
                 'DESCTO': truncate(row['descto'], self.__NDECIMALS),
                 # From this point onwards tax related elements
