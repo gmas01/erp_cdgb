@@ -9,6 +9,13 @@ import json
 import sys
 
 
+for name in ["controllers", "business"]:
+    sys.path.append(
+        os.path.abspath(os.path.join(
+            os.path.dirname(__file__), name)
+        )
+    )
+
 def do_request(logger, pt, req, adapter=None):
     """"""
     def apply_adapter():
@@ -45,10 +52,6 @@ class ControllerFactory(Factory):
         super().__init__()
         self.logger = logger
         pt = self.__read_settings(profile_path)
-        for name in ["controllers", "business"]:
-            sys.path.append(
-                os.path.abspath(os.path.join(
-                    os.path.dirname(__file__), name)))
         self.bm = BuffMediator(self.logger, pt)
         self.__makeup_factory(pt.bbgum.controllers)
 

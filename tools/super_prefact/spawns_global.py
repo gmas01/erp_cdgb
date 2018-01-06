@@ -22,33 +22,6 @@ from engine.erp import do_request
 from engine.error import ErrorCode
 
 
-if __name__ == "__main__":
-
-    args = parse_cmdline()
-
-    RESOURCES_DIR = '{}/resources'.format(expanduser("~"))
-    PROFILES_DIR = '{}/profiles'.format(RESOURCES_DIR)
-    DEFAULT_PROFILE = 'default.json'
-
-    profile_path = '{}/{}'.format(PROFILES_DIR,
-            args.config if args.config else DEFAULT_PROFILE)
-
-    logger = setup_logger(args.debug)
-    logger.debug(args)
-
-    try:
-        pt = read_settings(logger, profile_path)
-        incept_prefact(logger, pt, args.user_id, args.cust_id)
-        logger.debug('successful super prefact execution')
-    except:
-        if args.debug:
-            print('Whoops! a problem came up!')
-            print(dump_exception())
-        sys.exit(1)
-
-    # assuming everything went right, exit gracefully
-    sys.exit(0)
-
 
 def incept_prefact(logger, pt, user_id, cust_id):
     """creates global prefactura"""
@@ -62,10 +35,9 @@ def incept_prefact(logger, pt, user_id, cust_id):
         prefact_id = create(conn, user_id, cust_id)
         facturar(conn, logger, pt, user_id, prefact_id)
         make_remain_prefacts_up(conn, user_id)
-    except (subprocess.TimeoutExpired, subprocess.CalledProcessError):
-        remove_bad_atempt(conn, prefact_id)
-        raise
     except:
+        if prefact_id is not None:
+            remove_bad_atempt(conn, prefact_id)
         raise
     finally:
         if conn is not None:
@@ -135,9 +107,9 @@ def facturar(conn, logger, pt, user_id, prefact_id):
     raise Exception(msg)
 
 
-    def remove_bad_atempt(conn, prefact_id):
-        logger.debug("Executing sql to remove attempt failed".format(prefact_id))
-        q = """SELECT *
+def remove_bad_atempt(conn, prefact_id):
+    logger.debug("Executing sql to remove attempt failed".format(prefact_id))
+    q = """SELECT *
         FROM fac_global_rm_attempt( {}::integer )
         AS result( rc integer, msg text )""".format(prefact_id)
 
@@ -253,3 +225,31 @@ def parse_cmdline():
             dest='cust_id', help='specify the customer id')
 
     return psr.parse_args()
+
+
+if __name__ == "__main__":
+
+    args = parse_cmdline()
+
+    RESOURCES_DIR = '{}/resources'.format(expanduser("~"))
+    PROFILES_DIR = '{}/profiles'.format(RESOURCES_DIR)
+    DEFAULT_PROFILE = 'default.json'
+
+    profile_path = '{}/{}'.format(PROFILES_DIR,
+            args.config if args.config else DEFAULT_PROFILE)
+
+    logger = setup_logger(args.debug)
+    logger.debug(args)
+
+    try:
+        pt = read_settings(logger, profile_path)
+        incept_prefact(logger, pt, args.user_id, args.cust_id)
+        logger.debug('successful super prefact execution')
+    except:
+        if args.debug:
+            print('Whoops! a problem came up!')
+            print(dump_exception())
+        sys.exit(1)
+
+    # assuming everything went right, exit gracefully
+    sys.exit(0)
