@@ -89,6 +89,21 @@ class FacXml(BuilderGen):
             # Just taking first row of query result
             return row['cp']
 
+    def __q_forma_pago(self, conn, prefact_id):
+        """
+        Consulta la forma de pago y numero de cuenta
+        """
+        SQL= """SELECT FP.clave_sat, EP.no_cuenta
+            FROM erp_prefacturas as EP
+            JOIN fac_metodos_pago as FP ON EP.fac_metodos_pago_id = FP.id
+            WHERE EP.id="""
+        for row in self.pg_query(conn, "{0}{1}".format(SQL, prefact_id)):
+            # Just taking first row of query result
+            return {
+                'CLAVE': row['clave_sat'],
+                'CUENTA': row['no_cuenta']
+            }
+
     def __q_moneda(self, conn, prefact_id):
         """
         Consulta la moneda de la prefactura en dbms
@@ -372,6 +387,7 @@ class FacXml(BuilderGen):
             'NUMERO_CERTIFICADO': self.__q_no_certificado(conn, usr_id),
             'RECEPTOR': self.__q_receptor(conn, prefact_id),
             'MONEDA': self.__q_moneda(conn, prefact_id),
+            'FORMA_PAGO': self.__q_forma_pago(conn, prefact_id),
             'LUGAR_EXPEDICION': self.__q_lugar_expedicion(conn, usr_id),
             'CONCEPTOS': conceptos,
             'TRASLADOS': traslados,
@@ -393,7 +409,7 @@ class FacXml(BuilderGen):
         c.Folio = dat['CONTROL']['FOLIO']  # optional
         c.Fecha = dat['TIME_STAMP']
         c.Sello = '__DIGITAL_SIGN_HERE__'
-        c.FormaPago = "01"  # optional
+        c.FormaPago = dat["FORMA_PAGO"]['CLAVE']  # optional
         c.NoCertificado = dat['NUMERO_CERTIFICADO']
         c.Certificado = dat['CERT_B64']
         c.SubTotal = dat['TOTALES']['IMPORTE_SUM']
