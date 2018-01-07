@@ -374,7 +374,7 @@
                                                             
                                                             <tr>
                                                                 <td width="10"></td>
-                                                                <td width="80">M&eacute;todo&nbsp;de&nbsp;pago</td>
+                                                                <td width="80">Forma&nbsp;de&nbsp;pago</td>
                                                                 <td width="190" colspan="3">
 																	<SELECT NAME="select_metodo_pago" style="width:190px"></SELECT>
 																	<SELECT NAME="select_metodo_pago_original" style="display:none"></SELECT>

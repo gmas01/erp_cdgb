@@ -322,7 +322,7 @@
 																	<INPUT TYPE="text" name="lugar_entrega_original" style="display:none">
                                                                 </td>
                                                                 <td width="30"><div class="interrogacion"><IMG SRC="../../img/help-16x16.png" ALIGN="top" rel="warning_lugarentrega"></div></td>
-																<td width="90" colspan="2">M&eacute;todo&nbsp;de&nbsp;pago</td>
+																<td width="90" colspan="2">Forma&nbsp;de&nbsp;pago</td>
 																<td>&nbsp;&nbsp;</td>
 																<td width="140"><SELECT NAME="select_metodo_pago" style="width:140px"></SELECT></td>
 																<td width="25"></td>
