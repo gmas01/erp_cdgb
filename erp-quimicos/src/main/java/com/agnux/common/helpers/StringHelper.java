@@ -199,27 +199,6 @@ public class StringHelper {
         
         return cadByte;
     }
-    
-    public static String generar_nombre_de_archivo_aleatorio(String path, String sufijo, String extension){
-    	return new String(path + "/"+ sufijo + "____"+ decimal_random() + "." + extension);
-    }
-    
-    public static String generar_nombre_de_archivo_en_el_sitio(String path, String sufijo, String extension){
-    	return new String(path + "/"+ sufijo+ "." + extension);
-    }
-    
-    
-    public static String decimal_random(){
-	String valor_retorno = new String("");
-	int[] ndigitos = new int[10];
-	int n;
-	Random rnd = new Random();
-	for (int i = 0; i < 10; i++) ndigitos[i] = 0;
-	for (long i=0; i < 100000L; i++) { n = (int)(rnd.nextDouble() * 10.0); ndigitos[n]++; }
-	rnd.setSeed(new Date().getTime());
-	valor_retorno = Double.toString(rnd.nextDouble());
-	return valor_retorno;
-    }
 
     public static String convertirnumero(String numero2){
 	StringTokenizer token;
