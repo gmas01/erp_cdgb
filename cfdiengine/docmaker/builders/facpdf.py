@@ -38,7 +38,7 @@ class FacPdf(BuilderGen):
             'TL_BILL_CURR': 'MONEDA',
             'TL_BILL_EXC_RATE': 'TIPO DE CAMBIO',
             'TL_PAY_DATE': 'FECHA DE PAGO',
-            'TL_SALE_MAN': '',     # 'AGENTE DE VENTAS',
+            'TL_CFDI_USE': 'USO CFDI',
             'TL_PAY_COND': 'CONDICIONES DE PAGO',
             'TL_ACC_NUM': 'NO. DE CUENTA',
             'TL_PAY_MET': 'METODO DE PAGO',
@@ -67,7 +67,7 @@ class FacPdf(BuilderGen):
             'TL_BILL_CURR': 'CURRENCY',
             'TL_BILL_EXC_RATE': 'EXCHANGE RATE',
             'TL_PAY_DATE': 'PAYMENT DATE',
-            'TL_SALE_MAN': 'SALE REP',
+            'TL_CFDI_USE': 'SALE REP',
             'TL_PAY_COND': 'PAYMENT TERMS',
             'TL_ACC_NUM': 'ACCOUNT #',
             'TL_PAY_MET': 'PAYMENT METHOD',
@@ -695,8 +695,8 @@ class FacPdf(BuilderGen):
             c.append([dat['EXTRA_INFO']['CURRENCY_ABR'], dat['XML_PARSED']['FORMA_PAGO']])
             c.append([dat['CAP_LOADED']['TL_BILL_EXC_RATE'], dat['CAP_LOADED']['TL_ACC_NUM']])
             c.append([dat['XML_PARSED']['MONEY_EXCHANGE'], dat['EXTRA_INFO']['NO_CUENTA']])
-            c.append([dat['CAP_LOADED']['TL_PAY_DATE'], dat['CAP_LOADED']['TL_SALE_MAN']])
-            c.append([dat['EXTRA_INFO']['PAYMENT_DATE'], dat['EXTRA_INFO']['SALES_MAN']])
+            c.append([dat['CAP_LOADED']['TL_PAY_DATE'], dat['CAP_LOADED']['TL_CFDI_USE']])
+            c.append([dat['EXTRA_INFO']['PAYMENT_DATE'], dat['XML_PARSED']['RECEPTOR_USAGE']])
             t = Table(c,
                 [
                     4.0 * cm,
