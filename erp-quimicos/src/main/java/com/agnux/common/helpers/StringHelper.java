@@ -5,15 +5,7 @@
 
 package com.agnux.common.helpers;
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileReader;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.Reader;
-import java.io.StringWriter;
-import java.io.UnsupportedEncodingException;
+import java.io.*;
 import java.math.BigInteger;
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
@@ -22,11 +14,13 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import org.w3c.dom.*;
-import javax.xml.transform.*;
-import javax.xml.transform.dom.*;
-import javax.xml.transform.stream.*;
+import javax.xml.transform.OutputKeys;
+import javax.xml.transform.Transformer;
+import javax.xml.transform.TransformerFactory;
+import javax.xml.transform.dom.DOMSource;
+import javax.xml.transform.stream.StreamResult;
 import org.apache.commons.lang.StringUtils;
+import org.w3c.dom.Document;
 
 /**
  *
@@ -204,15 +198,6 @@ public class StringHelper {
         }
         
         return cadByte;
-    }
-    
-    
-    
-    //convierte una cadena a utf8
-    public static String convUtf8(String cadutf8) throws UnsupportedEncodingException{
-        byte[] utf8Cadena = cadutf8.getBytes("UTF8");
-        cadutf8 = new String(utf8Cadena, "UTF8");
-        return cadutf8;
     }
     
     public static String generar_nombre_de_archivo_aleatorio(String path, String sufijo, String extension){

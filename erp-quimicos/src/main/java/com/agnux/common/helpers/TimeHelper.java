@@ -6,9 +6,6 @@ package com.agnux.common.helpers;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
-import java.util.Calendar;
-import java.text.DateFormat;
-import java.util.GregorianCalendar;
 
 /**
  *
@@ -21,78 +18,6 @@ public class TimeHelper {
 	return Long.parseLong(unix_epoch_time); 
     }
     
-    	
-    /**Compara dos fechas en dia mes y a�o solamente, ya que la comparacion con tipo Date hce comparacion tambien en milisegundos
-     * @param calendario1
-     * @param calendario2
-     * @return 0 si la fecha es igual, -1 si es menor, 1 si es mayor. Si no cumple con las condiciones regresa 99
-     */
-    public static int compareCalendars(Date fechaAComparar, Date fechaBase){
-    	Calendar calendario1 = Calendar.getInstance();
-    	calendario1.setTime(fechaAComparar);
-    	Calendar calendario2 = Calendar.getInstance();
-    	calendario2.setTime(fechaBase);
-		if (calendario1.get(Calendar.YEAR) == calendario2.get(Calendar.YEAR) 
-			&& calendario1.get(Calendar.MONTH) == calendario2.get(Calendar.MONTH) 
-			&& calendario1.get(Calendar.DATE) == calendario2.get(Calendar.DATE)) {
-			return 0;
-		}
-		if (calendario1.get(Calendar.YEAR)  >= calendario2.get(Calendar.YEAR) 
-				&& calendario1.get(Calendar.MONTH) >= calendario2.get(Calendar.MONTH) 
-				&& calendario1.get(Calendar.DATE) > calendario2.get(Calendar.DATE)) {
-			return 1;
-		}
-		if (calendario1.get(Calendar.YEAR)  <= calendario2.get(Calendar.YEAR) 
-				&& calendario1.get(Calendar.MONTH) <= calendario2.get(Calendar.MONTH) 
-				&& calendario1.get(Calendar.DATE) < calendario2.get(Calendar.DATE)) {
-			return -1;
-		}
-		return 99;
-    }
-    
-    public static boolean compararFechas(String fechaACompar,String fechaInicio,String fechaFin){
-        boolean respuesta = false;
-        fechaACompar = fechaACompar.replaceAll("T"," ");
-        DateFormat formato = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-        try{
-            Date fecha_comparar = formato.parse(fechaACompar);
-            Date fecha_ini = formato.parse(fechaInicio);
-            Date fecha_fin = formato.parse(fechaFin);
-            if(fecha_ini.after(fecha_comparar) && fecha_fin.before(fecha_comparar)){
-                respuesta = true;
-            }
-        }
-        catch(Exception e){
-            e.printStackTrace();
-        }
-        return respuesta;
-    }
-    public static int compareCalendars(String fechaAComparar, String fechaBase){
-    	
-    	int valor_retorno = -1;
-    	
-    	DateFormat formato = new SimpleDateFormat("yyyy-MM-dd");
-    	
-    	try{
-    		Date d1 = formato.parse(fechaAComparar);
-        	Date d2 = formato.parse(fechaBase);
-        	
-        	if (d1.equals(d2))
-        		valor_retorno = 0;
-        	else if (d1.before(d2))
-        		valor_retorno = -1;
-        	else if ( d1.after(d2))
-        		valor_retorno = 1;
-        	else
-        		valor_retorno = 99;
-    	}
-    	catch(Exception e){
-            e.printStackTrace();
-        }
-    	return valor_retorno;
-    }
-    
-        
 	public static Date getFechaActual(){
 		Date fechasalida = new Date();
 		fechasalida = new Date(fechasalida.getTime());		

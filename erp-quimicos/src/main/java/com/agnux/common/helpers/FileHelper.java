@@ -263,28 +263,6 @@ public class FileHelper {
     }
     
     
-    
-    
-    public static List<File> listRegularFilesOfDirectory(String directorio, long dateMilis){
-        List<File> valor_retorno = null;
-        File dir = new File(directorio);
-        final long milis = dateMilis;
-        
-        // This filter only returns regular files without directories
-        FileFilter fileFilter = new FileFilter() {
-            public boolean accept(File file) {
-              return file.lastModified() < milis;
-            }
-        };
-        
-        valor_retorno = Arrays.asList(dir.listFiles(fileFilter));  
-        
-        return valor_retorno;
-    }
-    
-    
-    
-    
     public static List<File> listDirectoriesOfDirectory(String directorio){
         List<File> valor_retorno = null;
         File dir = new File(directorio);
