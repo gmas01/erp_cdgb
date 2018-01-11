@@ -17,7 +17,6 @@ class Servisim(Adapter):
             'EP': kwargs.get('end_point', None),
             'LOGIN': kwargs.get('login', None),
             'PASSWD': kwargs.get('passwd', None),
-            'RFC': kwargs.get('rfc', None)
         }
 
     def __setup_req(self, m):
@@ -41,6 +40,17 @@ class Servisim(Adapter):
         req.Pass = self.config['PASSWD']
         return req, conn
 
+    def __check(self, r, usage):
+        try:
+            self.logger.info('Code {} received from PAC'.format(r['Codigo']))
+            if r['Codigo'] != 0:
+                raise AdapterError(
+                    "{} experimenting problems: {} ({})".format(usage, r['Descripcion'], r['Codigo']))
+            return r['Xml']
+        except KeyError:
+            raise AdapterError('unexpected format of PAC reply')
+
+
     def stamp(self, xml, xid):
         """
         Timbrado usando XML firmado por el cliente
@@ -48,16 +58,6 @@ class Servisim(Adapter):
             xml (str): xml de cfdi firmado por cliente
             xid (str): mi identificador alternativo de cfdi
         """
-        def check(r):
-            try:
-                self.logger.info('Code {} received from PAC'.format(r['Codigo']))
-                if r['Codigo'] != 0:
-                    raise AdapterError(
-                        "Stamp experimenting problems: {} ({})".format(r['Descripcion'], r['Codigo']))
-                return r['Xml']
-            except KeyError:
-                raise AdapterError('unexpected format of PAC reply')
-
         try:
             req, conn = self.__setup_req('ns0:TimbradoCFDIRequest')
             req.TipoPeticion = '1'  # SIGNED BY CUSTOMER
@@ -66,7 +66,7 @@ class Servisim(Adapter):
             self.logger.debug(
                 "The following request for stamp will be sent\n{0}".format(req)
             )
-            return check(conn.service.timbrarCFDI(req))
+            return self.__check(conn.service.timbrarCFDI(req), 'Stamp')
         except AdapterError:
             raise
         except (suds.WebFault, Exception) as e:
@@ -91,7 +91,7 @@ class Servisim(Adapter):
         except (suds.WebFault, Exception) as e:
             raise AdapterError("Fetch experimenting problems: {}".format(e))
 
-    def cancel(self, xml):
+    def cancel(self, xml, emisor):
         """
         Cancelacion de XML firmado por el cliente
         Args:
@@ -100,10 +100,10 @@ class Servisim(Adapter):
         try:
             req, conn = self.__setup_req('ns0:CancelacionCFDIRequest')
             req.TipoPeticion = '1'  # SIGNED BY CUSTOMER
-            req.Emisor = self.config['RFC']
+            req.Emisor = emisor     # RFC
             req.Xml = xml
             self.logger.debug(
                 "The following request for cancel will be sent\n{0}".format(req))
-            return conn.service.cancelarCFDI(req)
+            return self.__check(conn.service.cancelarCFDI(req), 'Cancel')
         except (suds.WebFault, Exception) as e:
             raise AdapterError("Cancel experimenting problems".format(e))
