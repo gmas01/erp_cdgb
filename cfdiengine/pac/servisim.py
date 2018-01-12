@@ -99,7 +99,7 @@ class Servisim(Adapter):
         """
         try:
             req, conn = self.__setup_req('ns0:CancelacionCFDIRequest')
-            req.TipoPeticion = '1'  # SIGNED BY CUSTOMER
+            req.TipoPeticion = '2'
             req.Emisor = emisor     # RFC
             req.Xml = xml
             self.logger.debug(
