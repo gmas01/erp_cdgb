@@ -404,10 +404,10 @@ public class BeanFacturadorCfdiTimbre {
                 
                 //System.out.println("fichero_xml_ok: "+fichero_xml_ok);
                 //Instancia del validador 
-                validarXml validacion = new validarXml( path_file+"/"+xml_file_name, ruta_fichero_schema);
+                //validarXml validacion = new validarXml( path_file+"/"+xml_file_name, ruta_fichero_schema);
                 //System.out.println("validacion: "+validacion);
                 //Aquí se ejecuta la validación del xml contra el Esquema(xsd)
-                String success = validacion.validar();
+                String success = "true";//validacion.validar();
                 
                 System.out.println(TimeHelper.getFechaActualYMDH()+"Termina Validacion XML: "+success);
                 
