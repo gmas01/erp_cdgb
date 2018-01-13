@@ -126,7 +126,7 @@ def undofacturar(logger, pt, req):
         return ErrorCode.REQUEST_INVALID.value
 
     rc = pac_cancel(_uuid, _rfc)
-    if rc != ErrorCode.SUCCESS.value:
+    if rc != ErrorCode.SUCCESS:
         return rc.value
 
     try:
