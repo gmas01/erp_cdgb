@@ -31,7 +31,7 @@ def undofacturar(logger, pt, req):
     q_do = """select * from fac_exec_cancel(
         {}::integer,
         {}::integer,
-        {}::text,
+        '{}'::text,
         {}::integer
         ) AS result( rc integer, msg text )
         """.format(   # Store procedure parameters
