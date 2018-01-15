@@ -55,7 +55,8 @@ def writedom_cfdi(d, propos, file_out):
 
     try:
         namespace_set = {
-            sa.CfdiType.FAC: makeup_fac
+            sa.CfdiType.FAC: makeup_fac,
+            sa.CfdiType.NCR: makeup_fac
         }[propos]()
         for prefix, uri in namespace_set.items():
             ET.register_namespace(prefix, uri)
