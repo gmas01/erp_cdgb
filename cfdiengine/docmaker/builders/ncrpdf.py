@@ -628,9 +628,16 @@ class NcrPdf(BuilderGen):
     def __customer_table(self, dat):
 
         def customer_sec():
+            st = ParagraphStyle(
+                name='info',
+                fontName='Helvetica',
+                fontSize=7,
+                leading=8
+            )
+
             c = []
             c.append([ dat['CAP_LOADED']['TL_CUST_NAME'] ])
-            c.append([ dat['XML_PARSED']['RECEPTOR_NAME'].upper() ])
+            c.append([ Paragraph(dat['XML_PARSED']['RECEPTOR_NAME'].upper(), st) ])
             c.append([ dat['CAP_LOADED']['TL_CUST_REG'] ] )
             c.append([ dat['XML_PARSED']['RECEPTOR_RFC'].upper() ])
             c.append([ dat['CAP_LOADED']['TL_CUST_ADDR'] ])
