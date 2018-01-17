@@ -7,6 +7,36 @@ from pac.connector import setup_pac
 from misc.tricks import dump_exception
 from custom.profile import ProfileReader
 from sat.reader import SaxReader
+from docmaker.pipeline import DocPipeLine
+from misc.helperstr import HelperStr
+
+
+def __pac_sign(logger, f_xmlin, xid, out_dir, pac_conf):
+    """
+    Signs xml with pac connector mechanism
+    """
+    try:
+        logger.debug('Getting a pac connector as per config profile')
+        pac, err = setup_pac(logger, pac_conf)
+        if pac is None:
+            raise Exception(err)
+
+        logger.debug('File to sign {}'.format(f_xmlin))
+
+        s_signed = None
+        with open(f_xmlin) as f:
+            s_signed = pac.stamp(f.read(), xid)
+            logger.debug(s_signed)
+
+        f_xmlout = os.path.join(out_dir, xid)
+        logger.debug('saving pac xml signed upon {}'.format(f_xmlout))
+        with open(f_xmlout, "w") as f:
+            f.write(s_signed)
+
+        return ErrorCode.SUCCESS, f_xmlout
+    except:
+        logger.error(dump_exception())
+        return ErrorCode.THIRD_PARTY_ISSUES, None
 
 
 def undofacturar(logger, pt, req):
@@ -146,9 +176,6 @@ def undofacturar(logger, pt, req):
 
 def facturar(logger, pt, req):
 
-    from docmaker.pipeline import DocPipeLine
-    from misc.helperstr import HelperStr
-
     def inception_pdf(f_outdoc, resdir, f_xmlin, inceptor_rfc):
         dm_builder = 'facpdf'
         kwargs = {'xml': f_xmlin, 'rfc': inceptor_rfc}
@@ -189,33 +216,6 @@ def facturar(logger, pt, req):
         except:
             logger.error(dump_exception())
             return ErrorCode.DBMS_SQL_ISSUES, None
-
-    def pac_sign(f_xmlin, xid, out_dir):
-        try:
-            # Here it would be placed, code calling
-            # the pac connector mechanism
-
-            logger.debug('Getting a pac connector as per config profile')
-            pac, err = setup_pac(logger, pt.tparty.pac)
-            if pac is None:
-                raise Exception(err)
-
-            logger.debug('File to sign {}'.format(f_xmlin))
-
-            s_signed = None
-            with open(f_xmlin) as f:
-                s_signed = pac.stamp(f.read(), xid)
-                logger.debug(s_signed)
-
-            f_xmlout = os.path.join(out_dir, xid)
-            logger.debug('saving pac xml signed upon {}'.format(f_xmlout))
-            with open(f_xmlout, "w") as f:
-                f.write(s_signed)
-
-            return ErrorCode.SUCCESS, f_xmlout
-        except:
-            logger.error(dump_exception())
-            return ErrorCode.THIRD_PARTY_ISSUES, None
 
     def store(f_xmlin, usr_id, prefact_id, no_id):
         parser = SaxReader()
@@ -280,8 +280,6 @@ def facturar(logger, pt, req):
     resdir = os.path.abspath(os.path.join(os.path.dirname(source), os.pardir))
     rdirs = fetch_rdirs(resdir, pt.res.dirs)
 
-    logger.debug('Using as resources directory {}'.format(resdir))
-
     tmp_dir = tempfile.gettempdir()
     tmp_file = os.path.join(tmp_dir, HelperStr.random_str())
     rc = inception_xml(tmp_file, resdir, usr_id, prefact_id)
@@ -290,7 +288,7 @@ def facturar(logger, pt, req):
         rc, inceptor_data = fetch_empdat(usr_id)
         if rc == ErrorCode.SUCCESS:
             out_dir = os.path.join(rdirs['cfdi_output'], inceptor_data['rfc'])
-            rc, outfile = pac_sign(tmp_file, filename, out_dir)
+            rc, outfile = __pac_sign(logger, tmp_file, filename, out_dir, pt.tparty.pac)
             if rc == ErrorCode.SUCCESS:
                 rc = store(outfile, usr_id, prefact_id, inceptor_data['no_id'])
             if rc == ErrorCode.SUCCESS:
@@ -298,6 +296,54 @@ def facturar(logger, pt, req):
                     outfile.replace('.xml', '.pdf'),    # We replace the xml extension
                     resdir, outfile, inceptor_data['rfc']
                 )
+
+    if os.path.isfile(tmp_file):
+        os.remove(tmp_file)
+
+    return rc.value
+
+
+def donota(logger, pt, req):
+
+    def run_builder(f_outdoc, resdir, dm_builder, **kwargs):
+        try:
+            dpl = DocPipeLine(logger, resdir,
+                rdirs_conf=pt.res.dirs,
+                pgsql_conf=pt.dbms.pgsql_conn)
+            dpl.run(dm_builder, f_outdoc, **kwargs)
+            return ErrorCode.SUCCESS
+        except:
+            logger.error(dump_exception())
+            return ErrorCode.DOCMAKER_ERROR
+
+    def inception_pdf(f_outdoc, resdir, f_xmlin, inceptor_rfc):
+        dm_builder = 'ncrpdf'
+        kwargs = {'xml': f_xmlin, 'rfc': inceptor_rfc}
+        try:
+            dpl = DocPipeLine(logger, resdir,
+                rdirs_conf=pt.res.dirs,
+                pgsql_conf=pt.dbms.pgsql_conn)
+            dpl.run(dm_builder, f_outdoc, **kwargs)
+            return ErrorCode.SUCCESS
+        except:
+            logger.error(dump_exception())
+            return ErrorCode.DOCMAKER_ERROR
+
+    logger.info("stepping in donota handler within {}".format(__name__))
+
+    filename = req.get('filename', None)
+
+    source = ProfileReader.get_content(pt.source, ProfileReader.PNODE_UNIQUE)
+    resdir = os.path.abspath(os.path.join(os.path.dirname(source), os.pardir))
+    rdirs = fetch_rdirs(resdir, pt.res.dirs)
+
+    tmp_dir = tempfile.gettempdir()
+    tmp_file = os.path.join(tmp_dir, HelperStr.random_str())
+    rc = run_builder(
+        tmp_file, resdir, 'ncrxml',
+        usr_id = req.get('usr_id', None),
+        nc_id = req.get('nc_id', None)
+    )
 
     if os.path.isfile(tmp_file):
         os.remove(tmp_file)
