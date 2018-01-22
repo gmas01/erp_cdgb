@@ -677,16 +677,16 @@ class NcrPdf(BuilderGen):
 
         def addons():
             c = []
-            c.append([dat['CAP_LOADED']['TL_CUST_NUM'], dat['CAP_LOADED']['TL_PAY_MET']])
-            c.append([dat['EXTRA_INFO']['CUSTOMER_CONTROL_ID'], dat['XML_PARSED']['METODO_PAGO']])
-            c.append([dat['CAP_LOADED']['TL_ORDER_NUM'], dat['CAP_LOADED']['TL_PAY_COND']])
-            c.append([dat['EXTRA_INFO']['PURCHASE_NUMBER'], dat['EXTRA_INFO']['PAYMENT_CONSTRAINT']])
-            c.append([dat['CAP_LOADED']['TL_BILL_CURR'], dat['CAP_LOADED']['TL_PAY_WAY']])
-            c.append([dat['EXTRA_INFO']['CURRENCY_ABR'], dat['XML_PARSED']['FORMA_PAGO']])
-            c.append([dat['CAP_LOADED']['TL_BILL_EXC_RATE'], dat['CAP_LOADED']['TL_ACC_NUM']])
-            c.append([dat['XML_PARSED']['MONEY_EXCHANGE'], dat['EXTRA_INFO']['NO_CUENTA']])
-            c.append([dat['CAP_LOADED']['TL_PAY_DATE'], dat['CAP_LOADED']['TL_CFDI_USE']])
-            c.append([dat['EXTRA_INFO']['PAYMENT_DATE'], dat['XML_PARSED']['RECEPTOR_USAGE']])
+            c.append([dat['CAP_LOADED']['TL_CUST_NUM'], ''])
+            c.append([dat['EXTRA_INFO']['CUSTOMER_CONTROL_ID'], ''])
+            c.append(['', ''])
+            c.append(['', ''])
+            c.append([dat['CAP_LOADED']['TL_BILL_CURR'], ''])
+            c.append([dat['EXTRA_INFO']['CURRENCY_ABR'], ''])
+            c.append([dat['CAP_LOADED']['TL_BILL_EXC_RATE'], ''])
+            c.append([dat['XML_PARSED']['MONEY_EXCHANGE'], ''])
+            c.append(['', ''])
+            c.append(['', ''])
             t = Table(c,
                 [
                     4.0 * cm,
