@@ -38,6 +38,43 @@ def __run_builder(logger, pt, f_outdoc, resdir, dm_builder, **kwargs):
         return ErrorCode.DOCMAKER_ERROR
 
 
+def __run_sp_ra(logger, q, pgsql_conf, tmode = True):
+    """Runs a store procedure with rich answer"""
+
+    def run_store():
+        logger.debug("Performing query: {}".format(q))
+        r = HelperPg.onfly_query(pgsql_conf, q, True)
+
+        # For this case we are just expecting one row
+        if len(r) != 1:
+            raise Exception('unexpected result regarding execution of store')
+        return r
+
+    def check_result(r):
+        rcode, rmsg = r.pop()
+        if rcode != 0:
+            raise Exception(rmsg)
+
+    _res = None
+
+    try:
+        _res = run_store()
+    except:
+        logger.error(dump_exception())
+        return ErrorCode.DBMS_SQL_ISSUES
+
+    try:
+        check_result(_res)
+    except:
+        logger.error(dump_exception())
+        if tmode:
+            return ErrorCode.DBMS_TRANS_ERROR
+        else:
+            return ErrorCode.REQUEST_INVALID
+
+    return ErrorCode.SUCCESS
+
+
 def __pac_sign(logger, f_xmlin, xid, out_dir, pac_conf):
     """
     Signs xml with pac connector mechanism
@@ -64,6 +101,22 @@ def __pac_sign(logger, f_xmlin, xid, out_dir, pac_conf):
     except:
         logger.error(dump_exception())
         return ErrorCode.THIRD_PARTY_ISSUES, None
+
+
+def __pac_cancel(logger, t, rfc, pac_conf):
+    try:
+        logger.debug('Getting a pac connector as per config profile')
+        pac, err = setup_pac(logger, pac_conf)
+        if pac is None:
+            raise Exception(err)
+
+        s_cancel = pac.cancel(t, rfc)
+        logger.debug(s_cancel)
+
+        return ErrorCode.SUCCESS
+    except:
+        logger.error(dump_exception())
+        return ErrorCode.THIRD_PARTY_ISSUES
 
 
 def undofacturar(logger, pt, req):
@@ -121,21 +174,6 @@ def undofacturar(logger, pt, req):
             # Just taking first row of query result
             return row['filename'] + '.xml'
 
-    def pac_cancel(t, rfc):
-        try:
-            logger.debug('Getting a pac connector as per config profile')
-            pac, err = setup_pac(logger, pt.tparty.pac)
-            if pac is None:
-                raise Exception(err)
-
-            s_cancel = pac.cancel(t, rfc)
-            logger.debug(s_cancel)
-
-            return ErrorCode.SUCCESS
-        except:
-            logger.error(dump_exception())
-            return ErrorCode.THIRD_PARTY_ISSUES
-
     source = ProfileReader.get_content(pt.source, ProfileReader.PNODE_UNIQUE)
     resdir = os.path.abspath(os.path.join(os.path.dirname(source), os.pardir))
     rdirs = fetch_rdirs(resdir, pt.res.dirs)
@@ -159,35 +197,16 @@ def undofacturar(logger, pt, req):
     except:
         return ErrorCode.RESOURCE_NOT_FOUND.value
 
-    try:
-        _res = run_store(q_val)
-    except:
-        logger.error(dump_exception())
-        return ErrorCode.DBMS_SQL_ISSUES.value
-
-    try:
-        check_result(_res)
-    except:
-        logger.error(dump_exception())
-        return ErrorCode.REQUEST_INVALID.value
-
-    rc = pac_cancel(_uuid, _rfc)
+    rc = __run_sp_ra(logger, q_val, pt.dbms.pgsql_conn, tmode = False)
     if rc != ErrorCode.SUCCESS:
         return rc.value
 
-    try:
-        _res = run_store(q_do)
-    except:
-        logger.error(dump_exception())
-        return ErrorCode.DBMS_SQL_ISSUES.value
+    rc = __pac_cancel(logger, _uuid, _rfc, pt.tparty.pac)
+    if rc != ErrorCode.SUCCESS:
+        return rc.value
 
-    try:
-        check_result(_res)
-    except:
-        logger.error(dump_exception())
-        return ErrorCode.DBMS_TRANS_ERROR.value
-
-    return ErrorCode.SUCCESS.value
+    rc = __run_sp_ra(logger, q_do, pt.dbms.pgsql_conn)
+    return rc.value
 
 
 def facturar(logger, pt, req):
@@ -375,4 +394,69 @@ def donota(logger, pt, req):
     if os.path.isfile(tmp_file):
         os.remove(tmp_file)
 
+    return rc.value
+
+
+def undonota(logger, pt, req):
+
+    ncr_id = req.get('ncr_id', None)
+    usr_id = req.get('usr_id', None)
+    reason = req.get('reason', None)
+    mode = req.get('mode', None)
+
+    if reason is None:
+        reason = ''
+
+    if (ncr_id is None) or (usr_id is None) or (mode is None):
+        return ErrorCode.REQUEST_INCOMPLETE.value
+
+    def get_xml_name():
+        q = """select ref_id as filename
+            FROM fac_nota_credito
+            WHERE fac_nota_credito.id = {}""".format(ncr_id)
+
+        for row in HelperPg.onfly_query(pt.dbms.pgsql_conn, q, True):
+            # Just taking first row of query result
+            return row['filename'] + '.xml'
+
+    source = ProfileReader.get_content(pt.source, ProfileReader.PNODE_UNIQUE)
+    resdir = os.path.abspath(os.path.join(os.path.dirname(source), os.pardir))
+    rdirs = fetch_rdirs(resdir, pt.res.dirs)
+
+    _uuid = None
+    _rfc = None
+
+    try:
+        _rfc = __get_emisor_rfc(logger, usr_id, pt.dbms.pgsql_conn)
+    except:
+        return ErrorCode.DBMS_SQL_ISSUES.value
+
+    try:
+        cfdi_dir = os.path.join(rdirs['cfdi_output'], _rfc)
+        f_xml = os.path.join(cfdi_dir, get_xml_name())
+        logger.debug('File to cancel {}'.format(f_xml))
+        parser = SaxReader()
+        xml_dat, _ = parser(f_xml)
+        _uuid = xml_dat['UUID']
+    except:
+        return ErrorCode.RESOURCE_NOT_FOUND.value
+
+    rc = __pac_cancel(logger, _uuid, _rfc, pt.tparty.pac)
+    if rc != ErrorCode.SUCCESS:
+        return rc.value
+
+    q_do = """select * from ncr_exec_cancel(
+        {}::integer,
+        {}::integer,
+        '{}'::text,
+        {}::integer
+        ) AS result( rc integer, msg text )
+        """.format(   # Store procedure parameters
+        usr_id,       #  _usr_id
+        ncr_id,       #  _ncr_id
+        reason,       #  _reason
+        mode          #  _mode
+    )
+
+    rc = __run_sp_ra(logger, q_do, pt.dbms.pgsql_conn)
     return rc.value

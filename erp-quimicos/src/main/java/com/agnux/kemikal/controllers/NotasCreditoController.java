@@ -554,229 +554,54 @@ public class NotasCreditoController {
             @RequestParam(value="motivo", required=true) String motivo_cancelacion,
             @RequestParam(value="iu", required=true) String id_user,
             Model model
-        ) throws IOException {
+        ) throws IOException, BbgumProxyError {
         
-        HashMap<String, String> jsonretorno = new HashMap<String, String>();
-        HashMap<String, String> userDat = new HashMap<String, String>();
+        Integer id_usuario = Integer.parseInt(Base64Coder.decodeString(id_user));
         
-        Integer id_usuario=0;//aqui va el id del usuario
-        
-        //decodificar id de usuario
-        id_usuario = Integer.parseInt(Base64Coder.decodeString(id_user));
-        userDat = this.getHomeDao().getUserById(id_usuario);
-        Integer id_empresa = Integer.parseInt(userDat.get("empresa_id"));
-        Integer id_sucursal = Integer.parseInt(userDat.get("sucursal_id"));
-        
-        //Aplicativo notas de credito
-        Integer app_selected = 70;
-        String command_selected = "cancelacion";
-        String extra_data_array = "'sin datos'";
         String succcess = "false";
         String serie_folio="";
-        String refId="";
-        String tipo_facturacion="";
         String valorRespuesta="false";
         String msjRespuesta="";
         
-        //obtener tipo de facturacion
-        tipo_facturacion = this.getFacdao().getTipoFacturacion(id_empresa);
-        tipo_facturacion = String.valueOf(tipo_facturacion);
-        
-        //Obtener el numero del PAC para el Timbrado de la Factura
-        String noPac = this.getFacdao().getNoPacFacturacion(id_empresa);
-        
-        //Obtener el Ambiente de Facturacion PRUEBAS ó PRODUCCION, solo aplica para Facturacion por Timbre FIscal(cfditf)
-        String ambienteFac = this.getFacdao().getAmbienteFacturacion(id_empresa);
-        
-        System.out.println("Tipo::"+tipo_facturacion+" | noPac::"+noPac+" | Ambiente::"+ambienteFac);
-        
-        tmov = StringHelper.verificarSelect(tmov);
-        
-        String data_string = app_selected+"___"+command_selected+"___"+id_usuario+"___"+id_nota+"___"+motivo_cancelacion.toUpperCase()+"___"+tipo_facturacion+"___"+tmov;
-        
-        if(tipo_facturacion.equals("cfdi") || tipo_facturacion.equals("cfd")){
-            succcess = this.getFacdao().selectFunctionForFacAdmProcesos(data_string, extra_data_array);
-        }
-        
         serie_folio = this.getFacdao().getSerieFolioNotaCredito(id_nota);
-        refId = this.getFacdao().getRefIdNotaCredito(id_nota);
         
-        if(tipo_facturacion.equals("cfd")){
-            if(succcess.split(":")[1].equals("true")){
-                valorRespuesta="true";
-                msjRespuesta="La Nota de Cr&eacute;dito "+serie_folio+", fue cancelada con &eacute;xito.";
-            }else{
-                valorRespuesta="false";
-                msjRespuesta="La Nota de Cr&eacute;dito "+serie_folio+", no fue posible cancelar.\nIntente de nuevo.";
-            }
-        }
-        
-        
-        
-        //tipo facturacion CFDI. Generar txt para buzon fiscal
-        if(tipo_facturacion.equals("cfdi")){
-            
-            //Pac 0=Sin PAC, 1=Diverza, 2=ServiSim
-            if(!noPac.equals("0") && !noPac.equals("2")){
-                //Solo se permite Cancelar Nota de Credito por Conector Fiscal con Diverza
-                
-                File toFile = new File(this.getGralDao().getCfdiSolicitudesDir() + "out/"+refId+".xml");
-                //System.out.println("FicheroXML: "+this.getGralDao().getCfdiSolicitudesDir() + "out/"+serie_folio+".xml");
-                
-                if (toFile.exists()) {
-                    if(succcess.split(":")[1].equals("true")){
-                        HashMap<String, String> data = new HashMap<String, String>();
-                        serie_folio = succcess.split(":")[0];
-                        
-                        String directorioSolicitudesCfdiOut=this.getGralDao().getCfdiSolicitudesDir() + "out/"+refId+".xml";
-                        BeanFromCfdiXml pop = new BeanFromCfdiXml(directorioSolicitudesCfdiOut);
-                        
-                        data.put("uuid", pop.getUuid());
-                        data.put("emisor_rfc", pop.getEmisor_rfc());
-                        data.put("receptor_rfc", pop.getReceptor_rfc());
-                        
-                        //generar archivo de texto para cfdi
-                        this.getBcancelafdi().init(data, serie_folio);
-                        this.getBcancelafdi().start();
-                        
-                        System.out.println("serie_folio:"+serie_folio + "    Cancelado:"+succcess.split(":")[1]);
-                    }else{
-                        valorRespuesta="false";
-                        msjRespuesta="No fue posible cancelar la Nota de Cr&eacute;dito "+serie_folio+".\nIntente de nuevo.";
-                    }
-                }else{                        
-                    valorRespuesta="false";
-                    msjRespuesta="No fue posible cancelar la Nota de Cr&eacute;dito "+serie_folio+". No se encuentra el archivo XML.";
-                }
-            }else{
-                valorRespuesta="false";
-                msjRespuesta="No se puede Cancelar la Nota de Cr&eacute;dito por Conector Fiscal con el PAC actual.\nVerifique la configuraci&oacute;n del tipo de Facturaci&oacute;n y del PAC.";
-            }
-        }
-        
-        if(tipo_facturacion.equals("cfditf")){
-            
-            //Pac 0=Sin PAC, 1=Diverza, 2=ServiSim
-            if(!String.valueOf(noPac).equals("0")){
-                //Solo se permite Cancelar Factura con Diverza y ServiSim
-                
-                String rfcEmpresaEmisora = this.getGralDao().getRfcEmpresaEmisora(id_empresa);
-                
-                String directorioEmitidosCfdiTimbre = this.getGralDao().getCfdiTimbreEmitidosDir() + rfcEmpresaEmisora +"/"+ refId+".xml";
-                
-                File toFile = new File(directorioEmitidosCfdiTimbre);
-                //System.out.println("FicheroXML: "+directorioEmitidosCfdiTimbre);
-                
-                if (toFile.exists()) {
-                    
-                    //:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
-                    //aqui inicia request al webservice
-                    //:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
-                    
-                    String rutaCanceladosDir = this.getGralDao().getCfdiTimbreCanceladosDir();
-                    String ruta_ejecutable_java = this.getGralDao().getJavaVmDir(id_empresa, id_sucursal);
-                    //String ruta_ejecutable_java = "/home/agnux/jdk/bin/java";
-                    String ruta_jarWebService = this.getGralDao().getCfdiTimbreJarWsDir()+"wscli.jar";
-                    String ruta_fichero_llave_pfx = this.getGralDao().getSslDir() + rfcEmpresaEmisora+ "/" +this.getGralDao().getFicheroPfxTimbradoCfdi(id_empresa,id_sucursal) ;
-                    String password_pfx = this.getGralDao().getPasswdFicheroPfxTimbradoCfdi(id_empresa, id_sucursal);
-                    String ruta_java_almacen_certificados = this.getGralDao().getJavaRutaCacerts(id_empresa, id_sucursal);
-                    //String ruta_ejecutable_java = "/home/agnux/jdk/bin/java";
-                    
-                    //Parsear el XML de la Nota de Crédito
-                    BeanFromCfdiXml pop = new BeanFromCfdiXml(directorioEmitidosCfdiTimbre);
-                    
-                    String uuid = pop.getUuid();
-                    String emisor_rfc = pop.getEmisor_rfc();
-                    String receptor_rfc = pop.getReceptor_rfc();
-                    String tipo_peticion = "cancelacfdi";
-                    
-                    String str_execute="";
-                    
-                    //Cancelacion con DIVERZA
-                    if(String.valueOf(noPac).equals("1")){
-                        /*
-                        //Datos para cancelacion
-                        args[0] = PAC proveedor
-                        args[1] = tipo de ambiente(pruebas, produccion)
-                        args[2] = tipo_peticion
-                        args[3] = FicheroPfxTimbradoCfdi
-                        args[4] = PasswdFicheroPfxTimbradoCfdi
-                        args[5] = JavaVmDir
-                        args[6] = getRfc_emisor
-                        args[7] = getRfc_receptor
-                        args[8] = uuid
-                        args[9] = DirCancelados
-                        args[10] = serie_folio
-                         */
-                        //str_execute = ruta_ejecutable_java+" -jar "+ruta_jarWebService+" cancelacfdi "+ruta_fichero_llave_pfx+" "+password_pfx+" "+ruta_java_almacen_certificados+" "+emisor_rfc+" "+receptor_rfc+" "+uuid;
-                        str_execute = ruta_ejecutable_java+" -jar "+ruta_jarWebService+" "+noPac+" "+ambienteFac+" "+tipo_peticion+" "+ruta_fichero_llave_pfx+" "+password_pfx+" "+ruta_java_almacen_certificados+" "+emisor_rfc+" "+receptor_rfc+" "+uuid+" "+rutaCanceladosDir+" "+serie_folio;
-                    }
-                    
-                    //Cancelacion con SERVISIM
-                    if(String.valueOf(noPac).equals("2")){
-                        /*
-                        //Datos para Cancelacion
-                        args[0] = PAC proveedor
-                        args[1] = tipo de ambiente(pruebas, produccion)
-                        args[2] = tipo_peticion(cancelacion, timbrado)
-                        args[3] = Usuario
-                        args[4] = Password
-                        args[5] = uuid
-                        args[6] = rfcEmisor
-                        args[7] = serieFolio
-                        args[8] = dirCancelados
-                        */
+        BbgumProxy bbgumProxy = new BbgumProxy();
+        LegacyRequest req = new LegacyRequest();
 
-                        String usuario = this.getGralDao().getUserContrato(id_empresa, id_sucursal);
-                        String contrasena = this.getGralDao().getPasswordUserContrato(id_empresa, id_sucursal);
+        req.sendTo("cxc");
+        req.from("webui");
+        req.action("undonota");
 
-                        //aqui se forma la cadena con los parametros que se le pasan a jar
-                        str_execute = ruta_ejecutable_java+" -jar "+ruta_jarWebService+" "+noPac+" "+ambienteFac+" "+tipo_peticion+" "+usuario+" "+contrasena+" "+uuid+" "+emisor_rfc+" "+serie_folio+" "+rutaCanceladosDir;
-                    }
-                    
-                    System.out.println("str_execute: "+str_execute);
-                    
-                    Process resultado = null; 
-                    resultado = Runtime.getRuntime().exec(str_execute);
-                    
-                    InputStream myInputStream=null;
-                    myInputStream= resultado.getInputStream();
-                    BufferedReader reader = new BufferedReader(new InputStreamReader(myInputStream));
-                    StringBuilder sb = new StringBuilder();
-                    String line = null;
-                    while ((line = reader.readLine()) != null) {
-                        sb.append(line);
-                    }
-                    myInputStream.close();
-                    
-                    System.out.println("Resultado: "+sb.toString());
-                    String arrayResult[] = sb.toString().split("___");
-                    
-                    //Toma el valor true o false
-                    valorRespuesta = arrayResult[0];
-                    
-                    //Toma el mensaje
-                    msjRespuesta = arrayResult[1];
-                    
-                    if(String.valueOf(valorRespuesta).equals("true")){
-                        succcess = this.getFacdao().selectFunctionForFacAdmProcesos(data_string, extra_data_array);
-                        if(String.valueOf(succcess).equals("true")){
-                            HashMap<String, String> data = new HashMap<String, String>();
-                            //serie_folio = succcess.split(":")[0];
-                            //System.out.println("serie_folio:"+serie_folio + "    Cancelado:"+succcess.split(":")[1]);
-                        }
-                    }
-                    
-                }else{
-                    valorRespuesta="false";
-                    msjRespuesta="No fue posible cancelar la Nota de Cr&eacute;dito "+serie_folio+". No se encuentra el archivo XML.";
-                }
-            }else{
-                valorRespuesta="false";
-                msjRespuesta="No se puede Cancelar la Nota de Cr&eacute;dito por Conector Fiscal con el PAC actual.\nVerifique la configuraci&oacute;n del tipo de Facturaci&oacute;n y del PAC.";
+        HashMap<String, String> kwargs = new HashMap<String, String>();
+        kwargs.put("usr_id", id_usuario.toString());
+        kwargs.put("ncr_id", id_nota.toString());
+        kwargs.put("reason", motivo_cancelacion.toUpperCase());
+        kwargs.put("mode", "1"); // Cancel without warehouse modification
+        req.args(kwargs);
+
+        try {
+            ServerReply reply = bbgumProxy.uploadBuff("localhost", 10080, req.getJson().getBytes());
+            String msg = "core reply code: " + reply.getReplyCode();
+            if (reply.getReplyCode() == 0) {
+                Logger.getLogger(NotasCreditoController.class.getName()).log(
+                        Level.INFO, msg);
+                msjRespuesta = "Se cancelo la Nota de Cr&eacute;dito: " + serie_folio;
+                valorRespuesta = "true";
+                succcess = "true";
+            } else {
+                Logger.getLogger(NotasCreditoController.class.getName()).log(
+                        Level.WARNING, msg);
+                valorRespuesta = "false";
+                msjRespuesta = msg;
             }
+        } catch (BbgumProxyError ex) {
+            Logger.getLogger(NotasCreditoController.class.getName()).log(
+                    Level.WARNING, ex.getMessage());
+            valorRespuesta = "false";
+            msjRespuesta = ex.getMessage();
         }
-        
+
+        HashMap<String, String> jsonretorno = new HashMap<String, String>();
         jsonretorno.put("success", succcess);
         jsonretorno.put("valor",valorRespuesta);
         jsonretorno.put("msj",msjRespuesta);
