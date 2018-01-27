@@ -57,6 +57,8 @@ public class PrefacturasController {
 
     ResourceProject resource = new ResourceProject();
     private static final Logger log = Logger.getLogger(PrefacturasController.class.getName());
+    private Object outGoingCtrl = new Object();
+
     @Autowired
     @Qualifier("daoPrefactura")
     private PrefacturasInterfaceDao pdao;
@@ -631,76 +633,78 @@ public class PrefacturasController {
             jsonretorno.put("actualizo", String.valueOf(actualizo));
         }
 
+        // Workaround to avoid race conditions when requesting serie and folio
+        synchronized (this.outGoingCtrl) {
 
-        if (actualizo.equals("1")) {
+            if (actualizo.equals("1")) {
 
-            if (!accion.equals("new")) {
-                //select_tipo_documento 1=Factura, 3=Factura de Remision
-                if (select_tipo_documento == 1 || select_tipo_documento == 3) {
-                    Logger.getLogger(PrefacturasController.class.getName()).log(
-                            Level.INFO, "::::::::::::Iniciando Facturacion:::::::::::::::::..");
-
-                    //Numero de Identificacion unica de la Empresa
-                    HashMap<String, String> userDat = this.getHomeDao().getUserById(id_usuario);
-                    Integer id_empresa = Integer.parseInt(userDat.get("empresa_id"));                    
-                    String no_id = this.getGralDao().getNoIdEmpresa(id_empresa);
-                    String serieFolio = this.getFacdao().q_serie_folio(id_usuario);
-                            
-                    String filename = no_id + "_" + serieFolio + ".xml";
-                    BbgumProxy bbgumProxy = new BbgumProxy();
-                    LegacyRequest req = new LegacyRequest();
-
-                    req.sendTo("cxc");
-                    req.from("webui");
-                    req.action("facturar");
-                    HashMap<String, String> kwargs = new HashMap<String, String>();
-                    kwargs.put("filename", filename);
-                    kwargs.put("usr_id", id_usuario.toString());
-                    kwargs.put("prefact_id", id_prefactura.toString());
-                    req.args(kwargs);
-
-                    try {
-                        ServerReply reply = bbgumProxy.uploadBuff("localhost", 10080, req.getJson().getBytes());
-                        String msg = "core reply code: " + reply.getReplyCode();
-                        if (reply.getReplyCode() == 0) {
-                            Logger.getLogger(PrefacturasController.class.getName()).log(
-                                    Level.INFO, msg);
-                            jsonretorno.put("folio", serieFolio);
-                            msjRespuesta = "Se gener&oacute; la Factura: " + serieFolio;
-                            valorRespuesta = "true";
-                        } else {
-                            Logger.getLogger(PrefacturasController.class.getName()).log(
-                                    Level.WARNING, msg);
-                            valorRespuesta = "false";
-                            msjRespuesta = msg;
-                        }
-                    } catch (BbgumProxyError ex) {
+                if (!accion.equals("new")) {
+                    //select_tipo_documento 1=Factura, 3=Factura de Remision
+                    if (select_tipo_documento == 1 || select_tipo_documento == 3) {
                         Logger.getLogger(PrefacturasController.class.getName()).log(
-                                Level.WARNING, ex.getMessage());
-                        valorRespuesta = "false";
-                        msjRespuesta = ex.getMessage();
+                                Level.INFO, "::::::::::::Iniciando Facturacion:::::::::::::::::..");
+
+                        //Numero de Identificacion unica de la Empresa
+                        HashMap<String, String> userDat = this.getHomeDao().getUserById(id_usuario);
+                        Integer id_empresa = Integer.parseInt(userDat.get("empresa_id"));
+                        String no_id = this.getGralDao().getNoIdEmpresa(id_empresa);
+                        String serieFolio = this.getFacdao().q_serie_folio(id_usuario);
+
+                        String filename = no_id + "_" + serieFolio + ".xml";
+                        BbgumProxy bbgumProxy = new BbgumProxy();
+                        LegacyRequest req = new LegacyRequest();
+
+                        req.sendTo("cxc");
+                        req.from("webui");
+                        req.action("facturar");
+                        HashMap<String, String> kwargs = new HashMap<String, String>();
+                        kwargs.put("filename", filename);
+                        kwargs.put("usr_id", id_usuario.toString());
+                        kwargs.put("prefact_id", id_prefactura.toString());
+                        req.args(kwargs);
+
+                        try {
+                            ServerReply reply = bbgumProxy.uploadBuff("localhost", 10080, req.getJson().getBytes());
+                            String msg = "core reply code: " + reply.getReplyCode();
+                            if (reply.getReplyCode() == 0) {
+                                Logger.getLogger(PrefacturasController.class.getName()).log(
+                                        Level.INFO, msg);
+                                jsonretorno.put("folio", serieFolio);
+                                msjRespuesta = "Se gener&oacute; la Factura: " + serieFolio;
+                                valorRespuesta = "true";
+                            } else {
+                                Logger.getLogger(PrefacturasController.class.getName()).log(
+                                        Level.WARNING, msg);
+                                valorRespuesta = "false";
+                                msjRespuesta = msg;
+                            }
+                        } catch (BbgumProxyError ex) {
+                            Logger.getLogger(PrefacturasController.class.getName()).log(
+                                    Level.WARNING, ex.getMessage());
+                            valorRespuesta = "false";
+                            msjRespuesta = ex.getMessage();
+                        }
+
+                    } else {
+                        valorRespuesta = "true";
+                        msjRespuesta = "Se gener&oacute; la Remisi&oacute;n con Folio: " + jsonretorno.get("folio");
                     }
 
                 } else {
-                    valorRespuesta = "true";
-                    msjRespuesta = "Se gener&oacute; la Remisi&oacute;n con Folio: " + jsonretorno.get("folio");
+                    if (accion.equals("new")) {
+                        valorRespuesta = "true";
+                        msjRespuesta = "El registro se gener&oacute; con &eacute;xito, puede proceder a Facturar.";
+                    }
                 }
+
+                System.out.println("Folio: " + String.valueOf(jsonretorno.get("folio")));
 
             } else {
-                if (accion.equals("new")) {
-                    valorRespuesta = "true";
-                    msjRespuesta = "El registro se gener&oacute; con &eacute;xito, puede proceder a Facturar.";
+                if (actualizo.equals("0")) {
+                    jsonretorno.put("actualizo", String.valueOf(actualizo));
                 }
             }
-
-            System.out.println("Folio: " + String.valueOf(jsonretorno.get("folio")));
-
-        } else {
-            if (actualizo.equals("0")) {
-                jsonretorno.put("actualizo", String.valueOf(actualizo));
-            }
         }
-
         jsonretorno.put("success", succes.get("success"));
         jsonretorno.put("valor", valorRespuesta);
         jsonretorno.put("msj", msjRespuesta);
