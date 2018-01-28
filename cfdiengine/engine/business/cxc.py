@@ -151,20 +151,6 @@ def undofacturar(logger, pt, req):
         mode          #  _mode
     )
 
-    def run_store(q):
-        logger.debug("Performing query: {}".format(q))
-        res = HelperPg.onfly_query(pt.dbms.pgsql_conn, q, True)
-
-        # For this case we are just expecting one row
-        if len(res) != 1:
-            raise Exception('unexpected result regarding execution of store')
-        return res
-
-    def check_result(r):
-        rcode, rmsg = r.pop()
-        if rcode != 0:
-            raise Exception(rmsg)
-
     def get_xml_name():
         q = """select ref_id as filename
             FROM fac_docs
