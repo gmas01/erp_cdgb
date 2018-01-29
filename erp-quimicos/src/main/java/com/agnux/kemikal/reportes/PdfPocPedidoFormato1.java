@@ -366,6 +366,10 @@ public class PdfPocPedidoFormato1 {
                 rowspan=5;
             }
             
+            ////////////////////////////////////////////////////
+            ////  DESCUENTO
+            ///////////////////////////////////////////////////
+            
             cell = new PdfPCell(new Paragraph("",smallFont));
             cell.setBorderWidthTop(1);
             cell.setBorderWidthBottom(0);
@@ -378,7 +382,7 @@ public class PdfPocPedidoFormato1 {
             cell.setHorizontalAlignment(Element.ALIGN_LEFT);
             tabla_totales.addCell(cell);
             
-            cell = new PdfPCell(new Paragraph("SUBTOTAL",smallFont));
+            cell = new PdfPCell(new Paragraph("DESCUENTO",smallFont));
             cell.setBorderWidthTop(1);
             cell.setBorderWidthBottom(0);
             cell.setBorderWidthLeft(1);
@@ -398,8 +402,56 @@ public class PdfPocPedidoFormato1 {
             cell.setBorderWidthRight(0);
             tabla_totales.addCell(cell);
             
-            cell = new PdfPCell(new Paragraph(Datos_Pedido.get("subtotal"),smallFont));
+            cell = new PdfPCell(new Paragraph(Datos_Pedido.get("monto_descto"),smallFont));
             cell.setBorderWidthTop(1);
+            cell.setBorderWidthBottom(0);
+            cell.setBorderWidthLeft(0);
+            cell.setBorderWidthRight(1);
+            cell.setHorizontalAlignment(Element.ALIGN_RIGHT);
+            cell.setUseAscender(true);
+            cell.setUseDescender(true);
+            tabla_totales.addCell(cell);
+
+            
+            ////// FIN DESCUENTO
+            
+            
+        //    cell = new PdfPCell(new Paragraph("",smallFont));
+        //    cell.setBorderWidthTop(1);
+        //    cell.setBorderWidthBottom(0);
+        //    cell.setBorderWidthLeft(0);
+        //    cell.setBorderWidthRight(0);
+        //    cell.setColspan(5);
+        //    cell.setRowspan(rowspan);
+        //    cell.setUseAscender(true);
+        //    cell.setUseDescender(true);
+        //    cell.setHorizontalAlignment(Element.ALIGN_LEFT);
+        //    tabla_totales.addCell(cell);
+     
+         
+            
+            cell = new PdfPCell(new Paragraph("SUBTOTAL",smallFont));
+            cell.setBorderWidthTop(0);
+            cell.setBorderWidthBottom(0);
+            cell.setBorderWidthLeft(1);
+            cell.setBorderWidthRight(0);
+            cell.setColspan(2);
+            cell.setUseAscender(true);
+            cell.setHorizontalAlignment(Element.ALIGN_RIGHT);
+            cell.setUseDescender(true);
+            tabla_totales.addCell(cell);
+            
+            cell = new PdfPCell(new Paragraph(Datos_Pedido.get("simbolo_moneda"),smallFont));
+            cell.setHorizontalAlignment(Element.ALIGN_RIGHT);
+            cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
+            cell.setBorderWidthTop(0);
+            cell.setBorderWidthBottom(0);
+            cell.setBorderWidthLeft(1);
+            cell.setBorderWidthRight(0);
+            tabla_totales.addCell(cell);
+         
+            cell = new PdfPCell(new Paragraph(StringHelper.AgregaComas(StringHelper.roundDouble(Datos_Pedido.get("subtotal"),2)),smallFont));
+            cell.setBorderWidthTop(0);
             cell.setBorderWidthBottom(0);
             cell.setBorderWidthLeft(0);
             cell.setBorderWidthRight(1);
@@ -505,36 +557,36 @@ public class PdfPocPedidoFormato1 {
             tabla_totales.addCell(cell);
             */
             
-            cell = new PdfPCell(new Paragraph("RETENCIÓN",smallFont));
-            cell.setBorderWidthTop(0);
-            cell.setBorderWidthBottom(0);
-            cell.setBorderWidthLeft(1);
-            cell.setBorderWidthRight(0);
-            cell.setColspan(2);
-            cell.setUseAscender(true);
-            cell.setHorizontalAlignment(Element.ALIGN_RIGHT);
-            cell.setUseDescender(true);
-            tabla_totales.addCell(cell);
+    //        cell = new PdfPCell(new Paragraph("RETEN",smallFont));
+    //        cell.setBorderWidthTop(0);
+    //        cell.setBorderWidthBottom(0);
+    //        cell.setBorderWidthLeft(1);
+    //        cell.setBorderWidthRight(0);
+    //        cell.setColspan(2);
+    //        cell.setUseAscender(true);
+    //        cell.setHorizontalAlignment(Element.ALIGN_RIGHT);
+    //        cell.setUseDescender(true);
+    //        tabla_totales.addCell(cell);
             
-            cell = new PdfPCell(new Paragraph(Datos_Pedido.get("simbolo_moneda"),smallFont));
-            cell.setHorizontalAlignment(Element.ALIGN_RIGHT);
-            cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
-            cell.setBorderWidthTop(0);
-            cell.setBorderWidthBottom(0);
-            cell.setBorderWidthLeft(1);
-            cell.setBorderWidthRight(0);
-            tabla_totales.addCell(cell);
+    //        cell = new PdfPCell(new Paragraph(Datos_Pedido.get("simbolo_moneda"),smallFont));
+    //        cell.setHorizontalAlignment(Element.ALIGN_RIGHT);
+    //        cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
+    //        cell.setBorderWidthTop(0);
+    //        cell.setBorderWidthBottom(0);
+    //        cell.setBorderWidthLeft(1);
+    //        cell.setBorderWidthRight(0);
+    //        tabla_totales.addCell(cell);
             
             
-            cell= new PdfPCell(new Paragraph(StringHelper.AgregaComas(StringHelper.roundDouble(Datos_Pedido.get("monto_retencion"),2)),smallFont));
-            cell.setUseAscender(true);
-            cell.setHorizontalAlignment(Element.ALIGN_RIGHT);
-            cell.setUseDescender(true);
-            cell.setBorderWidthTop(0);
-            cell.setBorderWidthBottom(0);
-            cell.setBorderWidthLeft(0);
-            cell.setBorderWidthRight(1);
-            tabla_totales.addCell(cell);
+    //        cell= new PdfPCell(new Paragraph(StringHelper.AgregaComas(StringHelper.roundDouble(Datos_Pedido.get("monto_retencion"),2)),smallFont));
+    //        cell.setUseAscender(true);
+    //        cell.setHorizontalAlignment(Element.ALIGN_RIGHT);
+    //        cell.setUseDescender(true);
+    //        cell.setBorderWidthTop(0);
+   //         cell.setBorderWidthBottom(0);
+    //        cell.setBorderWidthLeft(0);
+    //        cell.setBorderWidthRight(1);
+    //        tabla_totales.addCell(cell);
             
             /*
             cell = new PdfPCell(new Paragraph("",smallFont));
@@ -682,19 +734,22 @@ public class PdfPocPedidoFormato1 {
             
             
             //FILA 2
-            cell = new PdfPCell(new Paragraph("Médico:", smallFont));
+            cell = new PdfPCell(new Paragraph("ELABORÓ LA REMISIÓN: ", smallFont));
+          //  cell = new PdfPCell(new Paragraph("", smallFont));
             cell.setBorderWidthTop(0);
             cell.setBorderWidthBottom(0);
             cell.setBorderWidthLeft(0);
             cell.setBorderWidthRight(0);
+             cell.setColspan(2);
             tablaDatosExtras.addCell(cell);
             
-            cell = new PdfPCell(new Paragraph(Datos_Pedido.get("nombre_agente"), smallFont));
+            cell = new PdfPCell(new Paragraph(Datos_Pedido.get("nombre_autorizo_pedido"), smallFont));
+         //   cell = new PdfPCell(new Paragraph("", smallFont));
             cell.setBorderWidthTop(0);
-            cell.setBorderWidthBottom(1);
+            cell.setBorderWidthBottom(0);
             cell.setBorderWidthLeft(0);
             cell.setBorderWidthRight(0);
-            cell.setColspan(4);
+            cell.setColspan(3);
             tablaDatosExtras.addCell(cell);
             
             cell = new PdfPCell(new Paragraph("", smallFont));
@@ -704,7 +759,7 @@ public class PdfPocPedidoFormato1 {
             cell.setBorderWidthRight(0);
             tablaDatosExtras.addCell(cell);
             
-            //cell = new PdfPCell(new Paragraph("Solicitado por:", smallFont));
+          // cell = new PdfPCell(new Paragraph("Solicitado por:", smallFont));
            cell = new PdfPCell(new Paragraph("", smallFont));
            cell.setBorderWidthTop(0);
            cell.setBorderWidthBottom(0);
@@ -772,7 +827,7 @@ public class PdfPocPedidoFormato1 {
      //       cell.setFixedHeight(10);
      //       tabla_conceptos.addCell(cell);
             
-     //       cell = new PdfPCell(new Paragraph("Nombre y Firma de Autorización por credito y cobranza:", smallFont));
+    //        cell = new PdfPCell(new Paragraph("Elaboró la Remisión: ", smallFont));
             cell.setBorderWidthTop(0);
             cell.setBorderWidthBottom(0);
             cell.setBorderWidthLeft(0);
@@ -781,7 +836,7 @@ public class PdfPocPedidoFormato1 {
             cell.setVerticalAlignment(Element.ALIGN_BOTTOM);
             tabla_conceptos.addCell(cell);
             
-            cell = new PdfPCell(new Paragraph(Datos_Pedido.get("nombre_autorizo_pedido"), smallFont));
+     //       cell = new PdfPCell(new Paragraph(Datos_Pedido.get("nombre_autorizo_pedido"), smallFont));
             cell.setBorderWidthTop(0);
             cell.setBorderWidthBottom(0);
             cell.setBorderWidthLeft(0);

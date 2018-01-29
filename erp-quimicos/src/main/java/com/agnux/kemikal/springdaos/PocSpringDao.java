@@ -576,6 +576,7 @@ public class PocSpringDao implements PocInterfaceDao{
                 + "cxc_clie.telefono1 AS telefono, "
                 + "poc_pedidos.subtotal, "
                 + "poc_pedidos.monto_ieps, "
+                + "poc_pedidos.monto_descto, "
                 + "poc_pedidos.impuesto, "
                 + "poc_pedidos.total,"
                 + "poc_pedidos.tipo_cambio, "
@@ -640,6 +641,7 @@ public class PocSpringDao implements PocInterfaceDao{
         //mappdf.put("direccion", mapdatosquery.get("direccion").toString() );
         mappdf.put("subtotal", StringHelper.roundDouble(mapdatosquery.get("subtotal").toString(),2) );
         mappdf.put("monto_ieps", StringHelper.roundDouble(mapdatosquery.get("monto_ieps").toString(),2) );
+        mappdf.put("monto_descto", StringHelper.roundDouble(mapdatosquery.get("monto_descto").toString(),2) );
         mappdf.put("impuesto", StringHelper.roundDouble(mapdatosquery.get("impuesto").toString(),2) );
         mappdf.put("total", StringHelper.roundDouble(mapdatosquery.get("total").toString(),2) );
         mappdf.put("tipo_cambio", StringHelper.roundDouble(mapdatosquery.get("tipo_cambio").toString(),2) );
@@ -998,7 +1000,26 @@ public class PocSpringDao implements PocInterfaceDao{
         return hm;
     }
 
-
+    @Override
+    public ArrayList<HashMap<String, String>> getUsos() {
+        String sql_to_query = "SELECT id,numero_control FROM cfdi_usos;";
+        ArrayList<HashMap<String, String>> hm = (ArrayList<HashMap<String, String>>) this.jdbcTemplate.query(
+            sql_to_query,
+            new Object[]{}, new RowMapper(){
+                @Override
+                public Object mapRow(ResultSet rs, int rowNum) throws SQLException {
+                    HashMap<String, String> row = new HashMap<String, String>();
+                    row.put("id",String.valueOf(rs.getInt("id"))  );
+                    row.put("numero_control",rs.getString("numero_control"));
+             //       row.put("descripcion",rs.getString("descripcion"));
+                    return row;
+                }
+            }
+        );
+        return hm;
+    }
+    
+    
     //obtiene el tipo de cambio actual
     @Override
     public Double getTipoCambioActual() {
