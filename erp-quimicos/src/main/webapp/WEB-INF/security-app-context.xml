@@ -175,7 +175,6 @@ xmlns:beans="http://www.springframework.org/schema/beans"
         <intercept-url pattern="/controllers/entradamercancias/startup.agnux" access="ROLE_ADMIN,ROLE_FACTURAS_COMPRAS" />
         <intercept-url pattern="/controllers/prefacturas/startup.agnux" access="ROLE_ADMIN,ROLE_FACTURACION" />
         <intercept-url pattern="/controllers/faccancelacion/startup.agnux" access="ROLE_ADMIN,ROLE_FAC_CANCELACION" />
-        <intercept-url pattern="/controllers/faccancelacionv2/startup.agnux" access="ROLE_ADMIN" />
         <intercept-url pattern="/controllers/facconsultas/startup.agnux" access="ROLE_ADMIN,ROLE_FAC_CONSULTAS" />
         <intercept-url pattern="/controllers/facdevoluciones/startup.agnux" access="ROLE_ADMIN,ROLE_FAC_DEVOLUCIONES" />
         <intercept-url pattern="/controllers/facnomina/startup.agnux" access="ROLE_ADMIN,ROLE_FAC_NOMINA" />
