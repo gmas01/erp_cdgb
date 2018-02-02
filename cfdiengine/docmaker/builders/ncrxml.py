@@ -127,7 +127,7 @@ class NcrXml(BuilderGen):
         """
         Consulta la forma de pago y numero de cuenta
         """
-        return { 'CLAVE': '03', 'CUENTA': None }
+        return { 'CLAVE': '99', 'CUENTA': None }
 
     def __q_moneda(self, conn, nc_id):
         """
@@ -162,7 +162,7 @@ class NcrXml(BuilderGen):
             return {
                 'RFC': row['rfc'],
                 'RAZON_SOCIAL': unidecode.unidecode(row['razon_social']),
-                'USO_CFDI': 'G02'
+                'USO_CFDI': 'P01'
             }
 
     def __q_emisor(self, conn, usr_id):
@@ -430,13 +430,13 @@ class NcrXml(BuilderGen):
 
         c = Comprobante()
         c.Version = '3.3'
-# c.MetodoPago = "PPD"  # optional and hardcode until ui can suply such value
+        c.MetodoPago = "PPD"  # optional and hardcode until ui can suply such value
         c.LugarExpedicion = dat['LUGAR_EXPEDICION']
         c.Serie = dat['CONTROL']['SERIE']  # optional
         c.Folio = dat['CONTROL']['FOLIO']  # optional
         c.Fecha = dat['TIME_STAMP']
         c.Sello = '__DIGITAL_SIGN_HERE__'
-# c.FormaPago = dat["FORMA_PAGO"]['CLAVE']  # optional
+        c.FormaPago = dat["FORMA_PAGO"]['CLAVE']  # optional
         c.NoCertificado = dat['NUMERO_CERTIFICADO']
         c.Certificado = dat['CERT_B64']
         c.TipoDeComprobante = 'E'
@@ -457,7 +457,7 @@ class NcrXml(BuilderGen):
         c.Receptor = pyxb.BIND()
         c.Receptor.Nombre = dat['RECEPTOR']['RAZON_SOCIAL']  # optional
         c.Receptor.Rfc = dat['RECEPTOR']['RFC']
-# c.Receptor.UsoCFDI = dat['RECEPTOR']['USO_CFDI']
+        c.Receptor.UsoCFDI = dat['RECEPTOR']['USO_CFDI']
 
         c.Conceptos = pyxb.BIND()
         for i in dat['CONCEPTOS']:
