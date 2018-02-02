@@ -9,7 +9,7 @@ import com.agnux.cfd.v2.BeanFacturador;
 import com.agnux.cfdi.BeanCancelaCfdi;
 import com.agnux.cfdi.BeanFacturadorCfdi;
 import com.agnux.cfdi.BeanFromCfdiXml;
-import com.agnux.cfdi.adendas.AdendaCliente;
+import com.agnux.cfdi.LegacyRequest;
 import com.agnux.cfdi.timbre.BeanFacturadorCfdiTimbre;
 import com.agnux.common.helpers.StringHelper;
 import com.agnux.common.obj.DataPost;
@@ -18,8 +18,9 @@ import com.agnux.common.obj.UserSessionData;
 import com.agnux.kemikal.interfacedaos.FacturasInterfaceDao;
 import com.agnux.kemikal.interfacedaos.GralInterfaceDao;
 import com.agnux.kemikal.interfacedaos.HomeInterfaceDao;
-import com.agnux.kemikal.reportes.pdfCfd_CfdiTimbrado;
-import com.agnux.kemikal.reportes.pdfCfd_CfdiTimbradoFormato2;
+import com.agnux.tcp.BbgumProxy;
+import com.agnux.tcp.BbgumProxyError;
+import com.maxima.bbgum.ServerReply;
 import java.io.*;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
@@ -38,11 +39,7 @@ import org.springframework.util.FileCopyUtils;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
-/**
- * @author Noe Martinez
- * gpmarsan@gmail.com
- * 25/julio/2012
- */
+
 @Controller
 @SessionAttributes({"user"})
 @RequestMapping("/notascredito/")
@@ -387,30 +384,7 @@ public class NotasCreditoController {
             System.out.println("Guardar del Nota de Credito");
             HashMap<String, String> jsonretorno = new HashMap<String, String>();
             HashMap<String, String> succes = new HashMap<String, String>();
-            String tipo_facturacion="";
-            
             HashMap<String, String> userDat = new HashMap<String, String>();
-            HashMap<String,String> datos_emisor = new HashMap<String,String>();
-            HashMap<String, String> parametros = new HashMap<String, String>();
-            //variables para xml de Nota de Credito CFD y CFDI
-            HashMap<String,String> dataCliente = new HashMap<String,String>();
-            ArrayList<LinkedHashMap<String,String>> listaConceptos = new ArrayList<LinkedHashMap<String,String>>();
-            ArrayList<LinkedHashMap<String,String>> impTrasladados = new ArrayList<LinkedHashMap<String,String>>();
-            ArrayList<LinkedHashMap<String,String>> impRetenidos = new ArrayList<LinkedHashMap<String,String>>();
-            LinkedHashMap<String,String> datosExtras = new LinkedHashMap<String,String>();
-            ArrayList<String> leyendas = new ArrayList<String>();
-            LinkedHashMap<String,Object> dataAdenda = new LinkedHashMap<String,Object>();
-            
-            //variables para PDF de Nota de Credito CFD
-            ArrayList<HashMap<String, String>> listaConceptosPdf = new ArrayList<HashMap<String, String>>();
-            HashMap<String, String> datosExtrasPdf= new HashMap<String, String>();
-            
-            //::ESTAS VARIABLES SON SOLO PARA NOMINAS, AQUI SE DECLARA SOLO PARA RELLENAR PARAMETROS::::::::::::
-            ArrayList<LinkedHashMap<String,String>> percepciones = new ArrayList<LinkedHashMap<String,String>>();
-            ArrayList<LinkedHashMap<String,String>> deducciones = new ArrayList<LinkedHashMap<String,String>>();
-            ArrayList<LinkedHashMap<String,String>> incapacidades = new ArrayList<LinkedHashMap<String,String>>();
-            ArrayList<LinkedHashMap<String,String>> hrs_extras = new ArrayList<LinkedHashMap<String,String>>();
-            //::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
             
             Integer app_selected = 70;//aplicativo notas de credito
             String command_selected = "new";
@@ -420,16 +394,9 @@ public class NotasCreditoController {
             String valorRespuesta="";
             String msjRespuesta = "";
             String serieFolio="";
-            String rfiId="";
-            String rfcEmisor="";
             userDat = this.getHomeDao().getUserById(id_usuario);
             Integer id_empresa = Integer.parseInt(userDat.get("empresa_id"));
             Integer id_sucursal = Integer.parseInt(userDat.get("sucursal_id"));
-            String select_tipo_documento = "0";
-            String refacturar = "false";
-            
-            //Variable que indica si terminó bien el proceso de agregar la Adenda, por default es verdadero, si ocurre algu problema en el proceso se le asigna un false.
-            boolean procesoAdendaCorrecto=true;
             
             if( id_nota_credito==0 ){
                 command_selected = "new";
@@ -453,345 +420,78 @@ public class NotasCreditoController {
             
             System.out.println("Actualizo::: "+actualizo);
             
-            if(generar.equals("true")){
-                
-                if(actualizo.equals("1")){
-                    
-                    System.out.println("::::::::::::Iniciando Generacion de NOTA DE CREDITO:::::::::::::::::..");
-                    String proposito = "NOTA_CREDITO";
-                    
-                    //obtener tipo de facturacion
-                    tipo_facturacion = this.getFacdao().getTipoFacturacion(id_empresa);
-                    
-                    //Obtener el numero del PAC para el Timbrado de la Factura
-                    String noPac = this.getFacdao().getNoPacFacturacion(id_empresa);
-                    
-                    //Obtener el Ambiente de Facturacion PRUEBAS ó PRODUCCION, solo aplica para Facturacion por Timbre FIscal(cfditf)
-                    String ambienteFac = this.getFacdao().getAmbienteFacturacion(id_empresa);
-                    
-                    System.out.println("Tipo::"+tipo_facturacion+" | noPac::"+noPac+" | Ambiente::"+ambienteFac);
-                    
-                    //aqui se obtienen los parametros de la facturacion, nos intersa el tipo de formato para el pdf de la factura
-                    parametros = this.getFacdao().getFac_Parametros(id_empresa, id_sucursal);
-                    
-                    //**********************************************************
-                    //Nota de Credito CFD
-                    //**********************************************************
-                    if(tipo_facturacion.equals("cfd")){
-                        System.out.println("::::::::::::Tipo CFD:::::::::::::::::..");
-                        listaConceptos = this.getFacdao().getNotaCreditoCfd_ListaConceptosXml(id_nota_credito);
-                        impRetenidos = this.getFacdao().getNotaCreditoCfd_CfdiTf_ImpuestosRetenidosXml();
-                        impTrasladados = this.getFacdao().getNotaCreditoCfd_CfdiTf_ImpuestosTrasladadosXml(id_sucursal);
-                        dataCliente = this.getFacdao().getNotaCreditoCfd_Cfdi_Datos(id_nota_credito);
-                        
-                        command_selected = "genera_nota_credito_cfd";
-                        extra_data_array = "'sin datos'";
-                        datosExtras = this.getFacdao().getNotaCreditoCfd_DatosExtrasXml(id_nota_credito,tipo_cambio,String.valueOf(id_usuario),select_moneda,id_empresa,id_sucursal,app_selected, command_selected, extra_data_array, fac_saldado);
-                        dataCliente.put("comprobante_attr_tc", String.valueOf(datosExtras.get("tipo_cambio")));
-                        datosExtras.put("moneda_abr", String.valueOf(dataCliente.get("moneda_abr")));
-                        datosExtras.put("nombre_moneda", String.valueOf(dataCliente.get("nombre_moneda")));
-                        
-                        //xml factura
-                        this.getBf().init(dataCliente, listaConceptos,impRetenidos,impTrasladados , proposito, datosExtras, id_empresa, id_sucursal);
-                        this.getBf().start();
-                        
-                        //obtiene serie_folio de la Nota de Credito que se acaba de guardar
-                        serieFolio = this.getFacdao().getSerieFolioNotaCredito(id_nota_credito);
-                        rfiId = this.getFacdao().getRefIdNotaCredito(id_nota_credito);
-                        
-                        String cadena_original=this.getBf().getCadenaOriginal();
-                        //System.out.println("cadena_original:"+cadena_original);
-                        
-                        String sello_digital = this.getBf().getSelloDigital();
-                        //System.out.println("sello_digital:"+sello_digital);
-                        
-                        //este es el timbre fiscal, solo es para cfdi con timbre fiscal. Aqui debe ir vacio
-                        String sello_digital_sat = "";
-                        String uuid = "";
-                        String fechaTimbre = "";
-                        String noCertSAT = "";
-                        
-                        //conceptos para el pdfcfd
-                        listaConceptosPdf = this.getFacdao().getNotaCreditoCfd_ListaConceptosPdf(serieFolio);
-                        
-                        //datos para el pdf
-                        datosExtrasPdf = this.getFacdao().getNotaCreditoCfd_DatosExtrasPdf( serieFolio, proposito, cadena_original,sello_digital, id_sucursal, id_empresa);
-                        datosExtrasPdf.put("tipo_facturacion", tipo_facturacion);
-                        datosExtrasPdf.put("sello_sat", sello_digital_sat);
-                        datosExtrasPdf.put("uuid", uuid);
-                        datosExtrasPdf.put("fechaTimbre", fechaTimbre);
-                        datosExtrasPdf.put("noCertificadoSAT", noCertSAT);
-                        datosExtrasPdf.put("fecha_comprobante", this.getBf().getFecha());
-                        
-                        //pdf Nota
-                        if (parametros.get("formato_factura").equals("2")){
-                            pdfCfd_CfdiTimbradoFormato2 pdfFactura = new pdfCfd_CfdiTimbradoFormato2(this.getGralDao(), dataCliente, listaConceptosPdf, leyendas, datosExtrasPdf, id_empresa, id_sucursal);
-                            pdfFactura.ViewPDF();
-                        }else{
-                            pdfCfd_CfdiTimbrado pdfFactura = new pdfCfd_CfdiTimbrado(this.getGralDao(), dataCliente, listaConceptosPdf, datosExtrasPdf, id_empresa, id_sucursal);
-                        }
-                        
-                        jsonretorno.put("folio",serieFolio);
-                        valorRespuesta="true";
-                        msjRespuesta = "Se gener&oacute; la Nota de Cr&eacute;dito: "+serieFolio;
+        if (generar.equals("true")) {
+
+            if (actualizo.equals("1")) {
+
+                String no_id = this.getGralDao().getNoIdEmpresa(id_empresa);
+                String serie = this.getGralDao().getSerieNotaCredito(id_empresa, id_sucursal);
+                String folio = this.getGralDao().getFolioNotaCredito(id_empresa, id_sucursal);
+
+                String filename = no_id + "_" + serie + folio + ".xml";
+
+                BbgumProxy bbgumProxy = new BbgumProxy();
+                LegacyRequest req = new LegacyRequest();
+
+                req.sendTo("cxc");
+                req.from("webui");
+                req.action("donota");
+                HashMap<String, String> kwargs = new HashMap<String, String>();
+                kwargs.put("filename", filename);
+                kwargs.put("usr_id", id_usuario.toString());
+                kwargs.put("ncr_id", id_nota_credito.toString());
+                kwargs.put("saldado", fac_saldado.toString());
+                req.args(kwargs);
+
+                try {
+                    ServerReply reply = bbgumProxy.uploadBuff("localhost", 10080, req.getJson().getBytes());
+                    String msg = "core reply code: " + reply.getReplyCode();
+                    if (reply.getReplyCode() == 0) {
+                        Logger.getLogger(NotasCreditoController.class.getName()).log(
+                                Level.INFO, msg);
+                        jsonretorno.put("folio", serieFolio);
+                        msjRespuesta = "Se gener&oacute; la Nota de Cr&eacute;dito: " + serie + folio;
+                        valorRespuesta = "true";
+                    } else {
+                        Logger.getLogger(NotasCreditoController.class.getName()).log(
+                                Level.WARNING, msg);
+                        valorRespuesta = "false";
+                        msjRespuesta = msg;
                     }
-                    
-                    
-                    //**********************************************************
-                    //Nota de Credito CFDI con Conector Fiscal con Diverza
-                    //**********************************************************
-                    if(tipo_facturacion.equals("cfdi")){
-                        System.out.println("::::::::::::Tipo CFDI:::::::::::::::::..");
-                        
-                        //Pac 0=Sin PAC, 1=Diverza, 2=ServiSim
-                        if(!noPac.equals("0") && !noPac.equals("2")){
-                            data_string="";
-                            extra_data_array = "'sin datos'";
-                            command_selected="genera_nota_credito_cfdi";
-
-                            String Serie=this.getGralDao().getSerieNotaCredito(id_empresa, id_sucursal);
-                            String Folio=this.getGralDao().getFolioNotaCredito(id_empresa, id_sucursal);
-                            rfcEmisor = this.getGralDao().getRfcEmpresaEmisora(id_empresa);
-                            
-                            //lista de conceptos para la Nota de Credito cfdi
-                            
-                            listaConceptos = this.getFacdao().getNotaCreditoCfdi_ListaConceptos(id_nota_credito);
-                            dataCliente = this.getFacdao().getNotaCreditoCfd_Cfdi_Datos(id_nota_credito);
-                            
-                            //obtiene datos extras para el cfdi
-                            datosExtras = this.getFacdao().getNotaCreditoCfdi_DatosExtras(id_nota_credito, Serie, Folio);
-                            impTrasladados = this.getFacdao().getNotaCreditoCfdi_ImpuestosTrasladados(id_nota_credito);
-                            impRetenidos = this.getFacdao().getNotaCreditoCfdi_ImpuestosRetenidos(id_nota_credito);
-                            //leyendas = this.getFacdao().getLeyendasEspecialesCfdi(id_empresa);
-                            
-                            //generar archivo de texto para cfdi
-                            this.getBfcfdi().init(dataCliente, listaConceptos,impRetenidos,impTrasladados, leyendas, proposito,datosExtras, id_empresa, id_sucursal);
-                            this.getBfcfdi().start();
-                            
-                            //aqui se debe actializar el registro
-                            data_string = app_selected+"___"+command_selected+"___"+id_usuario+"___"+id_nota_credito+"___"+Serie+Folio+"___"+fac_saldado;
-                            
-                            actualizo = this.getFacdao().selectFunctionForFacAdmProcesos(data_string, extra_data_array);
-                            
-                            //actualiza el folio de la Nota de Credito
-                            this.getGralDao().actualizarFolioNotaCredito(id_empresa, id_sucursal);
-                            
-                            jsonretorno.put("folio",Serie+Folio);
-
-                            jsonretorno.put("folio",Serie+Folio);
-                            valorRespuesta="true";
-                            msjRespuesta = "Se gener&oacute; la Nota de Cr&eacute;dito: "+Serie+Folio;
-                            
-                        }else{
-                            valorRespuesta="false";
-                            msjRespuesta="No se puede Timbrar la Nota de Cr&eacute;dito por Conector Fiscal con el PAC actual.\nVerifique la configuraci&oacute;n del tipo de Facturaci&oacute;n y del PAC.";
-                        }
-                    }//termina Nota de Credito tipo CFDI Conector Fiscal (Diverza)
-                    
-                    
-                    //tipo facturacion CFDITF
-                    if(tipo_facturacion.equals("cfditf")){
-                        System.out.println("::::::::::::Tipo CFDITF:::::::::::::::::..");
-                        
-                        //Pac 0=Sin PAC, 1=Diverza, 2=ServiSim
-                        if(!noPac.equals("0")){
-                            //Solo se permite generar Nota de Credito Timbrado con Diverza y ServiSim
-                            
-                            data_string="";
-                            extra_data_array = "'sin datos'";
-                            command_selected="genera_nota_credito_cfditf";
-                            
-                            String Serie=this.getGralDao().getSerieNotaCredito(id_empresa, id_sucursal);
-                            String Folio=this.getGralDao().getFolioNotaCredito(id_empresa, id_sucursal);
-                            rfcEmisor = this.getGralDao().getRfcEmpresaEmisora(id_empresa);
-                            
-                            //lista de conceptos para la Nota de Credito cfditf
-                            listaConceptos = this.getFacdao().getNotaCreditoCfdiTf_ListaConceptosXml(id_nota_credito);
-                            impRetenidos = this.getFacdao().getNotaCreditoCfd_CfdiTf_ImpuestosRetenidosXml();
-                            impTrasladados = this.getFacdao().getNotaCreditoCfd_CfdiTf_ImpuestosTrasladadosXml(id_sucursal);
-                            dataCliente = this.getFacdao().getNotaCreditoCfd_Cfdi_Datos(id_nota_credito);
-                            
-                            //obtiene datos extras para el cfdi
-                            datosExtras = this.getFacdao().getNotaCreditoCfdi_DatosExtras(id_nota_credito, Serie, Folio);
-
-                            dataCliente.put("comprobante_attr_tc", String.valueOf(datosExtras.get("tipo_cambio")));
-                            dataCliente.put("comprobante_attr_moneda", String.valueOf(datosExtras.get("nombre_moneda")));
-                            
-                            //estos son requeridos para cfditf
-                            datosExtras.put("prefactura_id", String.valueOf(id_nota_credito));
-                            datosExtras.put("tipo_documento", String.valueOf(select_tipo_documento));
-                            datosExtras.put("moneda_id", select_moneda);
-                            datosExtras.put("usuario_id", String.valueOf(id_usuario));
-                            datosExtras.put("empresa_id", String.valueOf(id_empresa));
-                            datosExtras.put("sucursal_id", String.valueOf(id_sucursal));
-                            datosExtras.put("refacturar",  refacturar);
-                            datosExtras.put("app_selected", String.valueOf(app_selected));
-                            datosExtras.put("command_selected", command_selected);
-                            datosExtras.put("extra_data_array", extra_data_array);
-                            datosExtras.put("noPac", noPac);
-                            datosExtras.put("ambienteFac", ambienteFac);
-                            datosExtras.put("identificador", String.valueOf(id_nota_credito));
-                            
-                            //genera xml factura
-                            this.getBfcfditf().init(dataCliente, listaConceptos, impRetenidos, impTrasladados, proposito, datosExtras, id_empresa, id_sucursal, percepciones, deducciones, incapacidades, hrs_extras);
-                            String timbrado_correcto = this.getBfcfditf().start();
-                            
-                            String cadRes[] = timbrado_correcto.split("___");
-                            
-                            //System.out.println("timbrado_correcto:"+timbrado_correcto);
-                            /***********************************************/
-                            //aqui se checa si el xml fue validado correctamente
-                            //si fue correcto debe traer un valor "true", de otra manera trae un error y por lo tanto no se genera el pdf
-                            //if(timbrado_correcto.equals("true")){
-                            if(cadRes[0].equals("true")){
-                                //System.out.println("timbrado_correcto dentro:"+timbrado_correcto);
-                                //aqui se debe actializar el registro
-                                data_string = app_selected+"___"+command_selected+"___"+id_usuario+"___"+id_nota_credito+"___"+Serie+Folio+"___"+fac_saldado+"___"+this.getBfcfditf().getRef_id()+"___"+this.getBfcfditf().getXml_timbrado();
-                                
-                                actualizo = this.getFacdao().selectFunctionForFacAdmProcesos(data_string, extra_data_array);
-                                
-                                //Actualiza el folio de la Nota de Credito
-                                this.getGralDao().actualizarFolioNotaCredito(id_empresa, id_sucursal);
-                                
-                                /*======================================================*/
-                                /*Codigo para generar el pdf para nota de credito*/
-                                //Obtiene serie_folio de la Nota de Credito que se acaba de guardar
-                                serieFolio = this.getFacdao().getSerieFolioNotaCredito(id_nota_credito);
-                                rfiId = this.getFacdao().getRefIdNotaCredito(id_nota_credito);
-                                
-                                String cadena_original=this.getBfcfditf().getCadenaOriginalTimbre();
-                                //System.out.println("cadena_original:"+cadena_original);
-                                
-                                
-                                String sello_digital = this.getBfcfditf().getSelloDigital();
-                                //System.out.println("sello_digital:"+sello_digital);
-
-                                //este es el timbre fiscal, solo es para cfdi con timbre fiscal. Aqui debe ir vacio
-                                String sello_digital_sat = this.getBfcfditf().getSelloDigitalSat();
-
-                                //este es el folio fiscal del la factura timbrada, se obtiene   del xml
-                                String uuid = this.getBfcfditf().getUuid();
-                                String fechaTimbre = this.getBfcfditf().getFechaTimbrado();
-                                String noCertSAT = this.getBfcfditf().getNoCertificadoSAT();
-
-                                //conceptos para el pdfcfd
-                                listaConceptosPdf = this.getFacdao().getNotaCreditoCfd_ListaConceptosPdf(serieFolio);
-
-                                //datos para el pdf
-                                datosExtrasPdf = this.getFacdao().getNotaCreditoCfd_DatosExtrasPdf( serieFolio, proposito, cadena_original,sello_digital, id_sucursal, id_empresa);
-                                datosExtrasPdf.put("tipo_facturacion", tipo_facturacion);
-                                datosExtrasPdf.put("sello_sat", sello_digital_sat);
-                                datosExtrasPdf.put("uuid", uuid);
-                                datosExtrasPdf.put("fechaTimbre", fechaTimbre);
-                                datosExtrasPdf.put("noCertificadoSAT", noCertSAT);
-                                datosExtrasPdf.put("fecha_comprobante", this.getBfcfditf().getFecha());
-                                
-                                //pdf factura
-                                if (parametros.get("formato_factura").equals("2")){
-                                    pdfCfd_CfdiTimbradoFormato2 pdfFactura = new pdfCfd_CfdiTimbradoFormato2(this.getGralDao(), dataCliente, listaConceptosPdf, leyendas, datosExtrasPdf, id_empresa, id_sucursal);
-                                    pdfFactura.ViewPDF();
-                                }else{
-                                    pdfCfd_CfdiTimbrado pdfFactura = new pdfCfd_CfdiTimbrado(this.getGralDao(), dataCliente, listaConceptosPdf, datosExtrasPdf, id_empresa, id_sucursal);
-                                }
-                                
-                                //::::::INICIA AGREGAR ADENDA AL XML DEL CFDI::::::::::::::::::::::::::::::::::::::::::::::::::::::
-                                System.out.println("incluye_adenda: "+parametros.get("incluye_adenda")+"  |  dataFacturaClienteAdendaID: "+dataCliente.get("adenda_id"));
-                                
-                                //Verificar si hay que incluir adenda
-                                if (parametros.get("incluye_adenda").equals("true")){
-                                    Integer numAdenda = Integer.parseInt(dataCliente.get("adenda_id"));
-                                    
-                                    //Verificar si el cliente tiene asignada una adenda
-                                    if(numAdenda>0){
-                                        
-                                        //Buscar si la Factura ligada a la Nota de credito Incluye Adenda
-                                        int exis = this.getFacdao().buscarAdendaFactura(id_nota_credito);
-                                        
-                                        //Si es mayor que cero si Incluye Adenda
-                                        if(exis>0){
-                                           
-                                            
-                                            String path_file = new String();
-                                            String xml_file_name = new String();
-                                            
-                                            //Tipo 9=Nota de credito
-                                            int tipoDocAdenda=9;
-                                            
-                                            path_file = this.getGralDao().getCfdiTimbreEmitidosDir() + this.getGralDao().getRfcEmpresaEmisora(id_empresa);
-                                            xml_file_name = rfiId+".xml";
-                                            
-                                            //Agregar estos datos para generar el objeto que contiene los datos de la Adenda
-                                            dataCliente.put("emailEmisor", this.getGralDao().getEmailSucursal(id_sucursal));
-                                            
-                                            
-                                            //1 indica que es Adenda de una factura
-                                            dataAdenda = this.getFacdao().getDatosAdenda(tipoDocAdenda, Integer.parseInt(dataCliente.get("adenda_id")), dataCliente, id_nota_credito, serieFolio, id_empresa);
-                                            
-                                            //INICIA EJECUCION DE CLASE QUE AGREGA LA ADENDA
-                                            AdendaCliente adenda = new AdendaCliente();
-                                            adenda.createAdenda(numAdenda, dataAdenda, path_file, xml_file_name);
-                                            //TERMINA EJECUCION DE CLASE QUE AGREGA LA ADENDA
-                                            
-                                            File file_xml_con_adenda = new File(path_file+"/"+xml_file_name);
-                                            if(!file_xml_con_adenda.exists()){
-                                                //Si el archivo existe indica que se agregó bien la adenda y se creó el nuevo archivo xml
-                                                procesoAdendaCorrecto=false;
-                                            }
-                                            
-                                        }else{
-                                           System.out.println("La factura ligada a esta Nota de Credito no incluye Adenda, por lo tanto la Nota de Credito tampoco se le incluyó la Adenda.");
-                                        }
-                                         
-                                    }
-                                }
-                                //::::::TERMINA AGREGAR ADENDA AL XML DEL CFDI::::::::::::::::::::::::::::::::::::::::::::::::::::::
-                                
-                                jsonretorno.put("folio",Serie+Folio);
-                                valorRespuesta="true";
-                                msjRespuesta = "Se gener&oacute; la Nota de Cr&eacute;dito: "+Serie+Folio;
-                                
-                                if (!procesoAdendaCorrecto){
-                                    msjRespuesta = msjRespuesta + ", pero no fue posible agregar la Adenda.\nContacte a Soporte.";
-                                }
-                            }else{
-                                valorRespuesta="false";
-                                msjRespuesta=cadRes[1];
-                            }
-                            /***********************************************/
-                        }else{
-                            valorRespuesta="false";
-                            msjRespuesta="No se puede Timbrar la Nota de Cr&eacute;dito con el PAC actual.\nVerifique la configuraci&oacute;n del PAC.";
-                        }
-                        //Termina timbrado de Nota de Credito con Diverza y ServiSim
-                        
-                    }//termina tipo CFDI
-                    
-                }else{
-                    if(actualizo.equals("0")){
-                        jsonretorno.put("actualizo",String.valueOf(actualizo));
-                        //Aqui entra cuando No se Genera Nota de Credito, solo actualiza el registro en la tabla
-                        valorRespuesta="false";
-                        msjRespuesta="Error al actualizar los datos. Intente de nuevo.";
-                    }
+                } catch (BbgumProxyError ex) {
+                    Logger.getLogger(NotasCreditoController.class.getName()).log(
+                            Level.WARNING, ex.getMessage());
+                    valorRespuesta = "false";
+                    msjRespuesta = ex.getMessage();
                 }
-            }else{
-                if(actualizo.equals("1")){
+
+            } else {
+                if (actualizo.equals("0")) {
+                    jsonretorno.put("actualizo", String.valueOf(actualizo));
                     //Aqui entra cuando No se Genera Nota de Credito, solo actualiza el registro en la tabla
-                    valorRespuesta="true";
-                    msjRespuesta="Los datos se actualizaron con &eacute;xito.\nPuede proceder a generar la Nota de Cr&eacute;dito.";
+                    valorRespuesta = "false";
+                    msjRespuesta = "Error al actualizar los datos. Intente de nuevo.";
                 }
-            }//Termina if genarar
-            
-            jsonretorno.put("success",String.valueOf(succes.get("success")));
-            jsonretorno.put("valor",valorRespuesta);
-            jsonretorno.put("msj",msjRespuesta);
-            
-            log.log(Level.INFO, "Salida json {0}", String.valueOf(jsonretorno.get("success")));
-            
-            System.out.println("Validacion: "+ String.valueOf(jsonretorno.get("success")));
-            System.out.println("Actualizo: "+String.valueOf(jsonretorno.get("actualizo")));
-            System.out.println("valorRespuesta: "+String.valueOf(valorRespuesta));
-            System.out.println("msjRespuesta: "+String.valueOf(msjRespuesta));
+            }
+
+        } else {
+            if (actualizo.equals("1")) {
+                //Aqui entra cuando No se Genera Nota de Credito, solo actualiza el registro en la tabla
+                valorRespuesta = "true";
+                msjRespuesta = "Los datos se actualizaron con &eacute;xito.\nPuede proceder a generar la Nota de Cr&eacute;dito.";
+            }
+        }//Termina if genarar
+
+        jsonretorno.put("success", String.valueOf(succes.get("success")));
+        jsonretorno.put("valor", valorRespuesta);
+        jsonretorno.put("msj", msjRespuesta);
+
+        log.log(Level.INFO, "Salida json {0}", String.valueOf(jsonretorno.get("success")));
+
+        System.out.println("Validacion: " + String.valueOf(jsonretorno.get("success")));
+        System.out.println("Actualizo: " + String.valueOf(jsonretorno.get("actualizo")));
+        System.out.println("valorRespuesta: " + String.valueOf(valorRespuesta));
+        System.out.println("msjRespuesta: " + String.valueOf(msjRespuesta));
         return jsonretorno;
     }
     
@@ -854,229 +554,54 @@ public class NotasCreditoController {
             @RequestParam(value="motivo", required=true) String motivo_cancelacion,
             @RequestParam(value="iu", required=true) String id_user,
             Model model
-        ) throws IOException {
+        ) throws IOException, BbgumProxyError {
         
-        HashMap<String, String> jsonretorno = new HashMap<String, String>();
-        HashMap<String, String> userDat = new HashMap<String, String>();
+        Integer id_usuario = Integer.parseInt(Base64Coder.decodeString(id_user));
         
-        Integer id_usuario=0;//aqui va el id del usuario
-        
-        //decodificar id de usuario
-        id_usuario = Integer.parseInt(Base64Coder.decodeString(id_user));
-        userDat = this.getHomeDao().getUserById(id_usuario);
-        Integer id_empresa = Integer.parseInt(userDat.get("empresa_id"));
-        Integer id_sucursal = Integer.parseInt(userDat.get("sucursal_id"));
-        
-        //Aplicativo notas de credito
-        Integer app_selected = 70;
-        String command_selected = "cancelacion";
-        String extra_data_array = "'sin datos'";
         String succcess = "false";
         String serie_folio="";
-        String refId="";
-        String tipo_facturacion="";
         String valorRespuesta="false";
         String msjRespuesta="";
         
-        //obtener tipo de facturacion
-        tipo_facturacion = this.getFacdao().getTipoFacturacion(id_empresa);
-        tipo_facturacion = String.valueOf(tipo_facturacion);
-        
-        //Obtener el numero del PAC para el Timbrado de la Factura
-        String noPac = this.getFacdao().getNoPacFacturacion(id_empresa);
-        
-        //Obtener el Ambiente de Facturacion PRUEBAS ó PRODUCCION, solo aplica para Facturacion por Timbre FIscal(cfditf)
-        String ambienteFac = this.getFacdao().getAmbienteFacturacion(id_empresa);
-        
-        System.out.println("Tipo::"+tipo_facturacion+" | noPac::"+noPac+" | Ambiente::"+ambienteFac);
-        
-        tmov = StringHelper.verificarSelect(tmov);
-        
-        String data_string = app_selected+"___"+command_selected+"___"+id_usuario+"___"+id_nota+"___"+motivo_cancelacion.toUpperCase()+"___"+tipo_facturacion+"___"+tmov;
-        
-        if(tipo_facturacion.equals("cfdi") || tipo_facturacion.equals("cfd")){
-            succcess = this.getFacdao().selectFunctionForFacAdmProcesos(data_string, extra_data_array);
-        }
-        
         serie_folio = this.getFacdao().getSerieFolioNotaCredito(id_nota);
-        refId = this.getFacdao().getRefIdNotaCredito(id_nota);
         
-        if(tipo_facturacion.equals("cfd")){
-            if(succcess.split(":")[1].equals("true")){
-                valorRespuesta="true";
-                msjRespuesta="La Nota de Cr&eacute;dito "+serie_folio+", fue cancelada con &eacute;xito.";
-            }else{
-                valorRespuesta="false";
-                msjRespuesta="La Nota de Cr&eacute;dito "+serie_folio+", no fue posible cancelar.\nIntente de nuevo.";
-            }
-        }
-        
-        
-        
-        //tipo facturacion CFDI. Generar txt para buzon fiscal
-        if(tipo_facturacion.equals("cfdi")){
-            
-            //Pac 0=Sin PAC, 1=Diverza, 2=ServiSim
-            if(!noPac.equals("0") && !noPac.equals("2")){
-                //Solo se permite Cancelar Nota de Credito por Conector Fiscal con Diverza
-                
-                File toFile = new File(this.getGralDao().getCfdiSolicitudesDir() + "out/"+refId+".xml");
-                //System.out.println("FicheroXML: "+this.getGralDao().getCfdiSolicitudesDir() + "out/"+serie_folio+".xml");
-                
-                if (toFile.exists()) {
-                    if(succcess.split(":")[1].equals("true")){
-                        HashMap<String, String> data = new HashMap<String, String>();
-                        serie_folio = succcess.split(":")[0];
-                        
-                        String directorioSolicitudesCfdiOut=this.getGralDao().getCfdiSolicitudesDir() + "out/"+refId+".xml";
-                        BeanFromCfdiXml pop = new BeanFromCfdiXml(directorioSolicitudesCfdiOut);
-                        
-                        data.put("uuid", pop.getUuid());
-                        data.put("emisor_rfc", pop.getEmisor_rfc());
-                        data.put("receptor_rfc", pop.getReceptor_rfc());
-                        
-                        //generar archivo de texto para cfdi
-                        this.getBcancelafdi().init(data, serie_folio);
-                        this.getBcancelafdi().start();
-                        
-                        System.out.println("serie_folio:"+serie_folio + "    Cancelado:"+succcess.split(":")[1]);
-                    }else{
-                        valorRespuesta="false";
-                        msjRespuesta="No fue posible cancelar la Nota de Cr&eacute;dito "+serie_folio+".\nIntente de nuevo.";
-                    }
-                }else{                        
-                    valorRespuesta="false";
-                    msjRespuesta="No fue posible cancelar la Nota de Cr&eacute;dito "+serie_folio+". No se encuentra el archivo XML.";
-                }
-            }else{
-                valorRespuesta="false";
-                msjRespuesta="No se puede Cancelar la Nota de Cr&eacute;dito por Conector Fiscal con el PAC actual.\nVerifique la configuraci&oacute;n del tipo de Facturaci&oacute;n y del PAC.";
-            }
-        }
-        
-        if(tipo_facturacion.equals("cfditf")){
-            
-            //Pac 0=Sin PAC, 1=Diverza, 2=ServiSim
-            if(!String.valueOf(noPac).equals("0")){
-                //Solo se permite Cancelar Factura con Diverza y ServiSim
-                
-                String rfcEmpresaEmisora = this.getGralDao().getRfcEmpresaEmisora(id_empresa);
-                
-                String directorioEmitidosCfdiTimbre = this.getGralDao().getCfdiTimbreEmitidosDir() + rfcEmpresaEmisora +"/"+ refId+".xml";
-                
-                File toFile = new File(directorioEmitidosCfdiTimbre);
-                //System.out.println("FicheroXML: "+directorioEmitidosCfdiTimbre);
-                
-                if (toFile.exists()) {
-                    
-                    //:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
-                    //aqui inicia request al webservice
-                    //:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
-                    
-                    String rutaCanceladosDir = this.getGralDao().getCfdiTimbreCanceladosDir();
-                    String ruta_ejecutable_java = this.getGralDao().getJavaVmDir(id_empresa, id_sucursal);
-                    //String ruta_ejecutable_java = "/home/agnux/jdk/bin/java";
-                    String ruta_jarWebService = this.getGralDao().getCfdiTimbreJarWsDir()+"wscli.jar";
-                    String ruta_fichero_llave_pfx = this.getGralDao().getSslDir() + rfcEmpresaEmisora+ "/" +this.getGralDao().getFicheroPfxTimbradoCfdi(id_empresa,id_sucursal) ;
-                    String password_pfx = this.getGralDao().getPasswdFicheroPfxTimbradoCfdi(id_empresa, id_sucursal);
-                    String ruta_java_almacen_certificados = this.getGralDao().getJavaRutaCacerts(id_empresa, id_sucursal);
-                    //String ruta_ejecutable_java = "/home/agnux/jdk/bin/java";
-                    
-                    //Parsear el XML de la Nota de Crédito
-                    BeanFromCfdiXml pop = new BeanFromCfdiXml(directorioEmitidosCfdiTimbre);
-                    
-                    String uuid = pop.getUuid();
-                    String emisor_rfc = pop.getEmisor_rfc();
-                    String receptor_rfc = pop.getReceptor_rfc();
-                    String tipo_peticion = "cancelacfdi";
-                    
-                    String str_execute="";
-                    
-                    //Cancelacion con DIVERZA
-                    if(String.valueOf(noPac).equals("1")){
-                        /*
-                        //Datos para cancelacion
-                        args[0] = PAC proveedor
-                        args[1] = tipo de ambiente(pruebas, produccion)
-                        args[2] = tipo_peticion
-                        args[3] = FicheroPfxTimbradoCfdi
-                        args[4] = PasswdFicheroPfxTimbradoCfdi
-                        args[5] = JavaVmDir
-                        args[6] = getRfc_emisor
-                        args[7] = getRfc_receptor
-                        args[8] = uuid
-                        args[9] = DirCancelados
-                        args[10] = serie_folio
-                         */
-                        //str_execute = ruta_ejecutable_java+" -jar "+ruta_jarWebService+" cancelacfdi "+ruta_fichero_llave_pfx+" "+password_pfx+" "+ruta_java_almacen_certificados+" "+emisor_rfc+" "+receptor_rfc+" "+uuid;
-                        str_execute = ruta_ejecutable_java+" -jar "+ruta_jarWebService+" "+noPac+" "+ambienteFac+" "+tipo_peticion+" "+ruta_fichero_llave_pfx+" "+password_pfx+" "+ruta_java_almacen_certificados+" "+emisor_rfc+" "+receptor_rfc+" "+uuid+" "+rutaCanceladosDir+" "+serie_folio;
-                    }
-                    
-                    //Cancelacion con SERVISIM
-                    if(String.valueOf(noPac).equals("2")){
-                        /*
-                        //Datos para Cancelacion
-                        args[0] = PAC proveedor
-                        args[1] = tipo de ambiente(pruebas, produccion)
-                        args[2] = tipo_peticion(cancelacion, timbrado)
-                        args[3] = Usuario
-                        args[4] = Password
-                        args[5] = uuid
-                        args[6] = rfcEmisor
-                        args[7] = serieFolio
-                        args[8] = dirCancelados
-                        */
+        BbgumProxy bbgumProxy = new BbgumProxy();
+        LegacyRequest req = new LegacyRequest();
 
-                        String usuario = this.getGralDao().getUserContrato(id_empresa, id_sucursal);
-                        String contrasena = this.getGralDao().getPasswordUserContrato(id_empresa, id_sucursal);
+        req.sendTo("cxc");
+        req.from("webui");
+        req.action("undonota");
 
-                        //aqui se forma la cadena con los parametros que se le pasan a jar
-                        str_execute = ruta_ejecutable_java+" -jar "+ruta_jarWebService+" "+noPac+" "+ambienteFac+" "+tipo_peticion+" "+usuario+" "+contrasena+" "+uuid+" "+emisor_rfc+" "+serie_folio+" "+rutaCanceladosDir;
-                    }
-                    
-                    System.out.println("str_execute: "+str_execute);
-                    
-                    Process resultado = null; 
-                    resultado = Runtime.getRuntime().exec(str_execute);
-                    
-                    InputStream myInputStream=null;
-                    myInputStream= resultado.getInputStream();
-                    BufferedReader reader = new BufferedReader(new InputStreamReader(myInputStream));
-                    StringBuilder sb = new StringBuilder();
-                    String line = null;
-                    while ((line = reader.readLine()) != null) {
-                        sb.append(line);
-                    }
-                    myInputStream.close();
-                    
-                    System.out.println("Resultado: "+sb.toString());
-                    String arrayResult[] = sb.toString().split("___");
-                    
-                    //Toma el valor true o false
-                    valorRespuesta = arrayResult[0];
-                    
-                    //Toma el mensaje
-                    msjRespuesta = arrayResult[1];
-                    
-                    if(String.valueOf(valorRespuesta).equals("true")){
-                        succcess = this.getFacdao().selectFunctionForFacAdmProcesos(data_string, extra_data_array);
-                        if(String.valueOf(succcess).equals("true")){
-                            HashMap<String, String> data = new HashMap<String, String>();
-                            //serie_folio = succcess.split(":")[0];
-                            //System.out.println("serie_folio:"+serie_folio + "    Cancelado:"+succcess.split(":")[1]);
-                        }
-                    }
-                    
-                }else{
-                    valorRespuesta="false";
-                    msjRespuesta="No fue posible cancelar la Nota de Cr&eacute;dito "+serie_folio+". No se encuentra el archivo XML.";
-                }
-            }else{
-                valorRespuesta="false";
-                msjRespuesta="No se puede Cancelar la Nota de Cr&eacute;dito por Conector Fiscal con el PAC actual.\nVerifique la configuraci&oacute;n del tipo de Facturaci&oacute;n y del PAC.";
+        HashMap<String, String> kwargs = new HashMap<String, String>();
+        kwargs.put("usr_id", id_usuario.toString());
+        kwargs.put("ncr_id", id_nota.toString());
+        kwargs.put("reason", motivo_cancelacion.toUpperCase());
+        kwargs.put("mode", "1"); // Cancel without warehouse modification
+        req.args(kwargs);
+
+        try {
+            ServerReply reply = bbgumProxy.uploadBuff("localhost", 10080, req.getJson().getBytes());
+            String msg = "core reply code: " + reply.getReplyCode();
+            if (reply.getReplyCode() == 0) {
+                Logger.getLogger(NotasCreditoController.class.getName()).log(
+                        Level.INFO, msg);
+                msjRespuesta = "Se cancelo la Nota de Cr&eacute;dito: " + serie_folio;
+                valorRespuesta = "true";
+                succcess = "true";
+            } else {
+                Logger.getLogger(NotasCreditoController.class.getName()).log(
+                        Level.WARNING, msg);
+                valorRespuesta = "false";
+                msjRespuesta = msg;
             }
+        } catch (BbgumProxyError ex) {
+            Logger.getLogger(NotasCreditoController.class.getName()).log(
+                    Level.WARNING, ex.getMessage());
+            valorRespuesta = "false";
+            msjRespuesta = ex.getMessage();
         }
-        
+
+        HashMap<String, String> jsonretorno = new HashMap<String, String>();
         jsonretorno.put("success", succcess);
         jsonretorno.put("valor",valorRespuesta);
         jsonretorno.put("msj",msjRespuesta);

@@ -223,12 +223,26 @@
                                                                 <td width="10"></td>
                                                                 <td width="80">Razon&nbsp;social</td>
                                                                 <td colspan="8" width="405"><input type="text" name="razoncliente" style="width:420px;" ></td>
+                                                                <td width="10"></td>
+                                                               
+                                                                <td width="80">USO</td> 
+                                                                <td width="90">
+                                                                    <select name="select_uso" style="width:90px;" title="Uso de la factura"></select>
+                                                                    <select name="select_uso" style="display:none"></select>
+                                                                    </td>                                                           
                                                             </tr>
                                                             <tr><td colspan="9" height="5"></td></tr>
                                                             <tr>
                                                                 <td width="10"></td>
                                                                 <td width="80">Direcci&oacute;n</td>
                                                                 <td colspan="8" width="405"><input type="text" name="dircliente" style="width:420px;" readOnly="true"></td>
+                                                                <td width="10"></td>
+  
+                                                                <td width="80">Metodo</td> 
+                                                                <td width="90">
+                                                                    <select name="select_metodo" style="width:90px;" title="Metodo de Pago"></select>
+                                                                    <select name="select_metodo" style="display:none"></select>
+                                                                    </td>     
                                                             </tr>
                                                             
                                                         </table>
@@ -543,7 +557,7 @@
                                                     <div id="metodos">
                                                     <table border ="0">
 					            <tr>
-                                                      <td width="90">Metodo&nbsp;de&nbsp;pago</td>
+                                                      <td width="90">Forma&nbsp;de&nbsp;pago</td>
 						      <td width="190"><select id="select_metodo_pago00" name="select_metodo_pago00" style="width:100%"></select></td>
                                                       <td width="24">&nbsp;</td>
                                                       <td width="44">Importe</td>
@@ -554,7 +568,7 @@
 						      <td width="100"><input type="checkbox" id="amex00" name="amex00"></td>                                   
                                                     </tr>
                                                     <tr>
-                                                      <td width="90">Metodo&nbsp;de&nbsp;pago</td>
+                                                      <td width="90">Forma&nbsp;de&nbsp;pago</td>
 						      <td width="190"><select id="select_metodo_pago01" name="select_metodo_pago01" style="width:100%"></select></td>
                                                       <td width="24">&nbsp;</td>
                                                       <td width="44">Importe</td>
@@ -565,7 +579,7 @@
 						      <td width="100"><input type="checkbox"  id="amex01" name="amex01"></td>                                                                  
                                                     </tr>
                                                     <tr>
-                                                      <td width="90">Metodo&nbsp;de&nbsp;pago</td>
+                                                      <td width="90">Forma&nbsp;de&nbsp;pago</td>
 						      <td width="190"><select id="select_metodo_pago02" name="select_metodo_pago02" style="width:100%"></select></td>
                                                       <td width="24">&nbsp;</td>
                                                       <td width="44">Importe</td>

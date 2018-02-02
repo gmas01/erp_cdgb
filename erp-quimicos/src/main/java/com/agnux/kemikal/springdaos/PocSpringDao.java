@@ -1000,7 +1000,8 @@ public class PocSpringDao implements PocInterfaceDao{
         return hm;
     }
 
-@Override
+
+    @Override
     public ArrayList<HashMap<String, String>> getUsos() {
         String sql_to_query = "SELECT id,numero_control FROM cfdi_usos;";
         ArrayList<HashMap<String, String>> hm = (ArrayList<HashMap<String, String>>) this.jdbcTemplate.query(
@@ -1019,6 +1020,23 @@ public class PocSpringDao implements PocInterfaceDao{
         return hm;
     }
     
+    @Override
+    public ArrayList<HashMap<String, String>> getMetodos() {
+        String sql_to_query = "SELECT id,clave FROM cfdi_metodos_pago;";
+        ArrayList<HashMap<String, String>> hm = (ArrayList<HashMap<String, String>>) this.jdbcTemplate.query(
+            sql_to_query,
+            new Object[]{}, new RowMapper(){
+                @Override
+                public Object mapRow(ResultSet rs, int rowNum) throws SQLException {
+                    HashMap<String, String> row = new HashMap<String, String>();
+                    row.put("id",String.valueOf(rs.getInt("id"))  );
+                    row.put("clave",rs.getString("clave"));
+                    return row;
+                }
+            }
+        );
+        return hm;
+    }
     
     //obtiene el tipo de cambio actual
     @Override

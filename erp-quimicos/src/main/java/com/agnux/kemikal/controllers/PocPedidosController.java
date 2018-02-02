@@ -328,6 +328,8 @@ public class PocPedidosController {
         jsonretorno.put("Almacenes", this.getPocDao().getPocPedido_Almacenes(id_sucursal));
         jsonretorno.put("UM", this.getPocDao().getUnidadesMedida());
         jsonretorno.put("Ieps", this.getPocDao().getIeps(id_empresa, 0));
+        jsonretorno.put("Usos", this.getPocDao().getUsos());
+        jsonretorno.put("Metodos", this.getPocDao().getMetodos());
         return jsonretorno;
     }
     
@@ -500,6 +502,36 @@ public class PocPedidosController {
         return jsonretorno;
     }
     
+    
+    
+    //obtiene los USOS de
+    @RequestMapping(method = RequestMethod.POST,value="/getUsos.json")
+    public @ResponseBody HashMap<String,ArrayList<HashMap<String,String>>>getUsosJson(
+            @RequestParam(value="uso_cfid",required=true )Integer uso_cfdi,
+            Model model
+            ){
+            HashMap<String,ArrayList<HashMap<String, String>>> jsonretorno = new HashMap<String,ArrayList<HashMap<String, String>>>();
+        
+        ArrayList<HashMap<String, String>> arrayusocfdi = new ArrayList<HashMap<String, String>>();
+//        arrayusocfdi=this.getPocDao().getUsos(uso_cfdi);
+        jsonretorno.put("uso_cfdi", arrayusocfdi);
+        
+        return jsonretorno;
+    }
+    
+     //obtiene los METODOS DE PAGO de
+    @RequestMapping(method = RequestMethod.POST,value="/getMetodos.json")
+    public @ResponseBody HashMap<String,ArrayList<HashMap<String,String>>>getMetodosJson(
+            @RequestParam(value="metodo_cfid",required=true )Integer metodo_cfdi,
+            Model model
+            ){
+            HashMap<String,ArrayList<HashMap<String, String>>> jsonretorno = new HashMap<String,ArrayList<HashMap<String, String>>>();
+        
+        ArrayList<HashMap<String, String>> arraymetodocfdi = new ArrayList<HashMap<String, String>>();
+        jsonretorno.put("metodo_cfdi", arraymetodocfdi);
+        
+        return jsonretorno;
+    }
     
     //Obtiene los tipos de productos para el buscador de productos
     @RequestMapping(method = RequestMethod.POST, value="/getProductoTipos.json")
@@ -864,6 +896,9 @@ public class PocPedidosController {
             @RequestParam(value="pdescto", required=false) String permitir_descto,
             @RequestParam(value="motivo_descuento", required=false) String motivo_descuento,
             @RequestParam(value="valor_descto", required=false) String porcentaje_descto,
+            
+            @RequestParam(value="select_uso", required=true) String select_uso,
+            @RequestParam(value="select_metodo", required=true) String select_metodo,
             
             @RequestParam(value="eliminado", required=false) String[] eliminado,
             @RequestParam(value="iddetalle", required=false) String[] iddetalle,

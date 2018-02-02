@@ -1140,7 +1140,29 @@ $(function() {
 			$select_moneda.append(moneda_hmtl);
 			
 			
-			
+			$select_sat_usos.children().remove();
+			var hmtl_sat_usos;
+			$.each(array_sat_usos, function(entryIndex, i){
+				if( parseInt(i['id']) == parseInt(id_sat_uso) ){
+					hmtl_sat_usos += '<option value="' + i['id'] + '" selected="yes">' + i['numero_control'] + '</option>';
+				}else{
+					hmtl_sat_usos += '<option value="' + i['id'] + '" >' + i['numero_control'] + '</option>';
+				}
+			});
+			$select_sat_usos.append(hmtl_sat_usos);
+                        
+                       
+                       $select_sat_metodos.children().remove();
+			var hmtl_sat_metodos;
+			$.each(array_sat_metodos, function(entryIndex, metodo){
+				if( parseInt(metodo['id']) == parseInt(id_sat_metodo) ){
+					hmtl_sat_metodos += '<option value="' + metodo['id'] + '" selected="yes">' + metodo['clave'] + '</option>';
+				}else{
+					hmtl_sat_metodos += '<option value="' + metodo['id'] + '" >' + metodo['clave'] + '</option>';
+				}
+			});
+			$select_sat_metodos.append(hmtl_sat_metodos);
+
 			//carga select de condiciones con los dias de Credito default del Cliente
 			$select_condiciones.children().remove();
 			var hmtl_condiciones;
@@ -2662,7 +2684,9 @@ $(function() {
 		var $lugar_entrega = $('#forma-pocpedidos-window').find('input[name=lugar_entrega]');
 		var $fecha_compromiso = $('#forma-pocpedidos-window').find('input[name=fecha_compromiso]');
 		var $select_almacen = $('#forma-pocpedidos-window').find('select[name=select_almacen]');
-		
+		var $select_sat_usos = $('#forma-pocpedidos-window').find('select[name=select_uso]');
+                var $select_sat_metodos = $('#forma-pocpedidos-window').find('select[name=select_metodo]');
+                
 		var $no_cotizacion = $('#forma-pocpedidos-window').find('input[name=no_cotizacion]');
 		
 		var $sku_producto = $('#forma-pocpedidos-window').find('input[name=sku_producto]');
@@ -3025,6 +3049,22 @@ $(function() {
 				hmtl_alm += '<option value="' + alm['id'] + '"  >' + alm['titulo'] + '</option>';
 			});
 			$select_almacen.append(hmtl_alm);
+                        
+                        //carga select de usos
+			$select_sat_usos.children().remove();
+			var hmtl_i;
+			$.each(entry['Usos'],function(entryIndex,i){
+				hmtl_i += '<option value="' + i['id'] + '"  >' + i['numero_control'] + '</option>';
+			});
+			$select_sat_usos.append(hmtl_i);
+                        
+                        //carga select de metodos
+			$select_sat_metodos.children().remove();
+			var hmtl_met;
+			$.each(entry['Metodos'],function(entryIndex,met){
+				hmtl_met += '<option value="' + met['id'] + '"  >' + met['clave'] + '</option>';
+			});
+			$select_sat_metodos.append(hmtl_met);
 			
 			//Buscador de clientes
 			$busca_cliente.click(function(event){
