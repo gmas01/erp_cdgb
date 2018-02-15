@@ -228,7 +228,7 @@
                                                                 <td width="80">USO</td> 
                                                                 <td width="90">
                                                                     <select name="select_uso" style="width:90px;" title="Uso de la factura"></select>
-                                                                    <select name="select_uso" style="display:none"></select>
+                                                                  
                                                                     </td>                                                           
                                                             </tr>
                                                             <tr><td colspan="9" height="5"></td></tr>
@@ -241,7 +241,7 @@
                                                                 <td width="80">Metodo</td> 
                                                                 <td width="90">
                                                                     <select name="select_metodo" style="width:90px;" title="Metodo de Pago"></select>
-                                                                    <select name="select_metodo" style="display:none"></select>
+                                                                  
                                                                     </td>     
                                                             </tr>
                                                             

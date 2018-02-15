@@ -1042,6 +1042,21 @@ public class PocPedidosController {
                 pc.forma_pago_id = select_forma_pago.toString();
             }
             
+            if (select_uso==null) {
+                pc.uso_id = new Integer(0).toString();
+            }
+            else {
+                pc.uso_id = select_uso.toString();
+            }
+            
+            if (select_metodo==null) {
+                pc.met_pago_id = new Integer(0).toString();
+            }
+            else {
+                pc.met_pago_id = select_metodo.toString();
+            }
+            
+            
             //Verificar valores
             pc.warehouse_id = StringHelper.verificarSelect(select_almacen);
             pc.currency_id = StringHelper.verificarSelect(select_moneda);
