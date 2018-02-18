@@ -161,6 +161,8 @@ public class PocSpringDao implements PocInterfaceDao{
     public ArrayList<HashMap<String, String>> getPocPedido_Datos(Integer id_pedido) {
         String sql_query = ""
         + "SELECT poc_pedidos.id,"
+                + "poc_pedidos.cfdi_usos_id,"
+                + "poc_pedidos.cfdi_metodo_id,"
                 + "poc_pedidos.folio,"
                 + "erp_proceso.proceso_flujo_id,"
                 + "poc_pedidos.moneda_id,"
@@ -260,6 +262,8 @@ public class PocSpringDao implements PocInterfaceDao{
                     row.put("mdescto",rs.getString("mdescto"));
                     row.put("porcentaje_descto",StringHelper.roundDouble(rs.getDouble("porcentaje_descto"),4));
                     row.put("folio_cot",rs.getString("folio_cot"));
+                    row.put("cfdi_usos_id",rs.getString("cfdi_usos_id"));
+                    row.put("cfdi_metodo_id",rs.getString("cfdi_metodo_id"));
                     return row;
                 }
             }

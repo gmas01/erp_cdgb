@@ -3538,6 +3538,21 @@ $(function() {
 			});
 			
 		}else{
+                    var fullfill_select = function( $_s, _l, _c, _cap ) {
+                        var _t;
+
+                        $.each( _l, function( entryIndex, i ){
+                            if( _c == i[ 'id' ] ) {
+                                _t += '<option value="' + i[ 'id' ] + '" selected="yes" >' + i[ _cap ] + '</option>';
+                            }
+                            else {
+                                _t += '<option value="' + i[ 'id' ] + '"  >' + i[ _cap ] + '</option>';
+                            }
+                        });
+
+                        $_s.append( _t );
+                    };
+
 			//aqui  entra para editar un registro
 			$('#forma-pocpedidos-window').remove();
 			$('#forma-pocpedidos-overlay').remove();
@@ -3595,7 +3610,9 @@ $(function() {
 			var $select_vendedor = $('#forma-pocpedidos-window').find('select[name=vendedor]');
 			var $select_vendedor_original = $('#forma-pocpedidos-window').find('select[name=vendedor_original]');
 			var $select_almacen = $('#forma-pocpedidos-window').find('select[name=select_almacen]');
-			
+                        var $select_sat_usos = $('#forma-pocpedidos-window').find('select[name=select_uso]');
+                        var $select_sat_metodos = $('#forma-pocpedidos-window').find('select[name=select_metodo]');
+
 			var $select_metodo_pago = $('#forma-pocpedidos-window').find('select[name=select_metodo_pago]');
 			var $no_cuenta = $('#forma-pocpedidos-window').find('input[name=no_cuenta]');
 			var $etiqueta_digit = $('#forma-pocpedidos-window').find('input[name=etiqueta_digit]');
@@ -3987,7 +4004,10 @@ $(function() {
 					$cta_usd.val(entry['datosPedido'][0]['cta_pago_usd']);
 					
 					$check_ruta.attr('checked',  (entry['datosPedido'][0]['enviar_ruta'] == 'true')? true:false );
-					
+
+                                        fullfill_select( $select_sat_usos, entry['Usos'], entry['datosPedido'][0]['cfdi_usos_id'], "numero_control" );
+                                        fullfill_select( $select_sat_metodos, entry['Metodos'], entry['datosPedido'][0]['cfdi_metodo_id"'], "clave" );
+
 					//carga select denominacion con todas las monedas
 					$select_moneda.children().remove();
 					var moneda_hmtl = '';
