@@ -154,17 +154,17 @@ def create(conn, user_id, cust_id):
 def make_remain_prefacts_up(conn, user_id):
     """deals with the remain prefacts which are opened"""
 
-    q_upt = """UPDATE erp_proceso
-        SET proceso_flujo_id = 3, id_aux = 2
-        FROM gral_suc, gral_usr, gral_usr_suc
-        WHERE gral_suc.id = gral_usr_suc.gral_suc_id
-        AND gral_usr_suc.gral_usr_id = gral_usr.id
-        AND erp_proceso.sucursal_id = gral_usr_suc.gral_suc_id
-        AND erp_proceso.proceso_flujo_id = 2
-        AND gral_usr_suc.gral_usr_id = {}""".format(user_id)
+    q = """SELECT *
+        FROM fac_global_make_up( {}::integer )
+        AS result( rc integer, msg text )""".format(user_id)
 
-    nrowu = HelperPg.update(conn, q_upt)
-    return nrowu
+    res = HelperPg.query(conn, q, True)
+    if len(res) != 1:
+        raise Exception('unexpected result regarding execution of fac_global_make_up')
+
+    rcode, rmsg = res.pop()
+    if rcode != 0:
+        raise Exception(rmsg)
 
 
 def open_dbms_conn(logger, pgsql_conf):
