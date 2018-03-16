@@ -333,10 +333,10 @@
                                                                 <td width="60">Subtotal</td>
                                                                 <td width="120"><INPUT TYPE="text" name="subtotal" value="0" style="width:120px; text-align:right;" readOnly="true"></td>
                                                             </tr>
-                                                            <tr id="tr_ieps">
+                                                            <tr id="monto_descto">
 																<td width="80"></td>
-																<td width="60">IEPS</td>
-																<td width="120"><input type="text" name="ieps" value="0" style="width:120px; text-align:right;" readOnly="true"></td>
+																<td width="60">Descuento</td>
+																<td width="120"><input type="text" name="monto_descto" value="0" style="width:120px; text-align:right;" readOnly="true"></td>
 															</tr>
                                                             <tr>
                                                                 <td width="80"></td>

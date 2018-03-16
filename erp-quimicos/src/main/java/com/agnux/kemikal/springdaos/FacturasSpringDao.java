@@ -2056,51 +2056,46 @@ public class FacturasSpringDao implements FacturasInterfaceDao{
         //opcion = 1, Ventas Totales(Ventas a filiales y  y No filiales)
         //ventas a filiales
         if (opcion==2){
-            where=" AND LQ.filial = TRUE";
+            where=" AND cxc_clie.filial=TRUE";
         }
         
         //ventas Netas(vantas a No Filiales)
         if (opcion==3){
-            where=" AND LQ.filial = FALSE";
+            where=" AND cxc_clie.filial=FALSE";
         }
         
-        String sql_to_query = "SELECT LQ.id, LQ.razon_social, LQ.momento_creacion, LQ.serie_folio, LQ.orden_compra,"
-            + "\n LQ.fecha_factura, LQ.cliente, LQ.id_moneda, LQ.moneda_factura, LQ.simbolo_moneda, LQ.filial,"
-            + "\n LQ.tipo_cambio, LQ.proceso_id, LQ.cancelado,"
-            + "\n ( CASE WHEN LQ.cancelado = FALSE THEN EP.subtotal ELSE 0.0 END ) AS subtotal,"
-            + "\n ( CASE WHEN LQ.cancelado = FALSE THEN EP.subtotal * LQ.tipo_cambio ELSE 0.0 END ) AS subtotal_mn,"
-            + "\n ( CASE WHEN LQ.cancelado = FALSE THEN EP.monto_ieps ELSE 0.0 END ) AS monto_ieps,"
-            + "\n ( CASE WHEN LQ.cancelado = FALSE THEN EP.monto_ieps * LQ.tipo_cambio ELSE 0.0 END) AS monto_ieps_mn,"
-            + "\n ( CASE WHEN LQ.cancelado = FALSE THEN EP.impuesto ELSE 0.0 END ) AS impuesto,"
-            + "\n ( CASE WHEN LQ.cancelado = FALSE THEN EP.impuesto * LQ.tipo_cambio ELSE 0.0 END ) AS impuesto_mn,"
-            + "\n ( CASE WHEN LQ.cancelado = FALSE THEN EP.total ELSE 0.0 END) AS total,"
-            + "\n ( CASE WHEN LQ.cancelado = FALSE THEN EP.total * LQ.tipo_cambio ELSE 0.0 END ) AS total_mn"
-            + "\n FROM ( SELECT fac_docs.id,"
-            + "\n cxc_clie.razon_social,"
-            + "\n cxc_clie.filial,"
-            + "\n fac_docs.momento_creacion,"
-            + "\n fac_docs.serie_folio,"
-            + "\n fac_docs.orden_compra,"
-            + "\n to_char(fac_docs.momento_creacion,'dd/mm/yyyy') as fecha_factura,"
-            + "\n ( CASE WHEN fac_docs.cancelado=FALSE THEN cxc_clie.razon_social ELSE 'CANCELADA' END ) AS cliente,"
-            + "\n gral_mon.id AS id_moneda,"
-            + "\n gral_mon.descripcion_abr AS moneda_factura,"
-            + "\n gral_mon.simbolo AS simbolo_moneda,"
-            + "\n ( CASE WHEN fac_docs.moneda_id=1 THEN 1 ELSE fac_docs.tipo_cambio END) AS tipo_cambio,"
-            + "\n fac_docs.proceso_id,"
-            + "\n fac_docs.cancelado"
-            + "\n FROM fac_docs"
-            + "\n JOIN erp_proceso ON erp_proceso.id = fac_docs.proceso_id"
-            + "\n JOIN cxc_clie ON cxc_clie.id = fac_docs.cxc_clie_id"
-            + "\n JOIN gral_mon ON gral_mon.id = fac_docs.moneda_id"
-            + "\n WHERE erp_proceso.empresa_id = "+ id_empresa + ") as LQ"
-            + "\n JOIN erp_prefacturas as EP ON EP.proceso_id = LQ.proceso_id"
-            + "\n WHERE serie_folio ILIKE '"+factura+"' "
-            + "\n AND razon_social ILIKE '"+cliente+"'  "+where+" "
-            + "\n AND (to_char(LQ.momento_creacion,'yyyymmdd') BETWEEN  to_char('"+fecha_inicial+"'::timestamp with time zone,'yyyymmdd') AND to_char('"+fecha_final+"'::timestamp with time zone,'yyyymmdd')) "
-            + "\n ORDER BY LQ.id;";
+        String sql_to_query = ""
+                + "SELECT "
+                            + "fac_docs.id, "
+                            + "fac_docs.serie_folio, "
+                            + "fac_docs.orden_compra, "
+                            + "to_char(fac_docs.momento_creacion,'dd/mm/yyyy') as fecha_factura,"
+                            + "(CASE WHEN fac_docs.cancelado=FALSE THEN cxc_clie.razon_social ELSE 'CANCELADA' END) AS cliente, "
+                            + "gral_mon.id AS id_moneda, "
+                            + "gral_mon.descripcion_abr AS moneda_factura, "
+                            + "gral_mon.simbolo AS simbolo_moneda, "
+                            + "(CASE WHEN fac_docs.cancelado=FALSE THEN fac_docs.subtotal ELSE 0.0 END) AS subtotal, "
+                            + "(CASE WHEN fac_docs.cancelado=FALSE THEN fac_docs.subtotal*tipo_cambio ELSE 0.0 END) AS subtotal_mn, "
+                            + "(CASE WHEN fac_docs.cancelado=FALSE THEN fac_docs.monto_descto ELSE 0.0 END) AS monto_descto, "
+                            + "(CASE WHEN fac_docs.cancelado=FALSE THEN fac_docs.monto_descto*tipo_cambio ELSE 0.0 END) AS monto_descto_mn, "
+                            + "(CASE WHEN fac_docs.cancelado=FALSE THEN fac_docs.monto_ieps ELSE 0.0 END) AS monto_ieps, "
+                            + "(CASE WHEN fac_docs.cancelado=FALSE THEN fac_docs.monto_ieps*tipo_cambio ELSE 0.0 END) AS monto_ieps_mn, "
+                            + "(CASE WHEN fac_docs.cancelado=FALSE THEN fac_docs.impuesto ELSE 0.0 END) AS impuesto, "
+                            + "(CASE WHEN fac_docs.cancelado=FALSE THEN fac_docs.impuesto*tipo_cambio ELSE 0.0 END) AS impuesto_mn, "
+                            + "(CASE WHEN fac_docs.cancelado=FALSE THEN fac_docs.total ELSE 0.0 END) AS total, "
+                            + "(CASE WHEN fac_docs.cancelado=FALSE THEN fac_docs.total*tipo_cambio ELSE 0.0 END) AS total_mn,  "
+                            + "(CASE WHEN fac_docs.moneda_id=1 THEN 1 ELSE fac_docs.tipo_cambio END) AS tipo_cambio  "
+                    + "FROM fac_docs   "
+                    + "JOIN erp_proceso ON erp_proceso.id=fac_docs.proceso_id  "
+                    + "JOIN cxc_clie ON cxc_clie.id = fac_docs.cxc_clie_id   "
+                    + "JOIN gral_mon ON gral_mon.id = fac_docs.moneda_id  "
+                    + "WHERE erp_proceso.empresa_id ="+id_empresa + "  "
+                    + "AND fac_docs.serie_folio ILIKE '"+factura+"' "
+                    + "AND cxc_clie.razon_social ILIKE '"+cliente+"'  "+where+" "
+                    + "AND (to_char(fac_docs.momento_creacion,'yyyymmdd') BETWEEN  to_char('"+fecha_inicial+"'::timestamp with time zone,'yyyymmdd') AND to_char('"+fecha_final+"'::timestamp with time zone,'yyyymmdd')) "
+                    + "ORDER BY fac_docs.id;";
             
-        System.out.println("ReporteFacturacion:: "+sql_to_query);
+        //System.out.println("ReporteFacturacion:: "+sql_to_query);
         ArrayList<HashMap<String, String>> hm_facturas = (ArrayList<HashMap<String, String>>) this.jdbcTemplate.query(
             sql_to_query,
             new Object[]{}, new RowMapper(){
@@ -2123,6 +2118,8 @@ public class FacturasSpringDao implements FacturasInterfaceDao{
                     row.put("total_mn",StringHelper.roundDouble(rs.getDouble("total_mn"), 2));
                     row.put("monto_ieps",StringHelper.roundDouble(rs.getDouble("monto_ieps"), 2));
                     row.put("monto_ieps_mn",StringHelper.roundDouble(rs.getDouble("monto_ieps_mn"), 2));
+                    row.put("monto_descto",StringHelper.roundDouble(rs.getDouble("monto_descto"), 2));
+                    row.put("monto_descto_mn",StringHelper.roundDouble(rs.getDouble("monto_descto_mn"), 2));    
                     return row;
                 }
             }
