@@ -331,6 +331,9 @@ $(function() {
 		var $subtotal = $('#forma-repfacturacion-window').find('input[name=subtotal]');
 		//ieps
 		var $campo_ieps = $('#forma-repfacturacion-window').find('input[name=ieps]');
+                
+                var $campo_descto = $('#forma-repfacturacion-window').find('input[name=descto]');
+                
 		var $impuesto = $('#forma-repfacturacion-window').find('input[name=impuesto]');
 		var $impuesto_retenido = $('#forma-repfacturacion-window').find('input[name=impuesto_retenido]');
 		var $total = $('#forma-repfacturacion-window').find('input[name=total]');
@@ -375,7 +378,10 @@ $(function() {
 			$valor_impuesto.val(entry['iva']['0']['valor_impuesto']);
 			$subtotal.val( $(this).agregar_comas(entry['datosFactura']['0']['subtotal']));
 			//ieps monto
-			$campo_ieps.val( $(this).agregar_comas(entry['datosFactura']['0']['monto_ieps']));
+			//$campo_ieps.val( $(this).agregar_comas(entry['datosFactura']['0']['monto_ieps']));
+                        
+                        $campo_descto.val( $(this).agregar_comas(entry['datosFactura']['0']['monto_descto']));
+                        
 			$impuesto.val( $(this).agregar_comas( entry['datosFactura']['0']['impuesto']) );
 			$impuesto_retenido.val( $(this).agregar_comas(entry['datosFactura']['0']['monto_retencion']));
 			$total.val($(this).agregar_comas( entry['datosFactura']['0']['total']));
@@ -383,12 +389,20 @@ $(function() {
 			$tipo_cambio.val( entry['datosFactura']['0']['tipo_cambio'] );
 			//ieps suma
 			var sumaIeps = entry['datosFactura']['0']['monto_ieps'];
+                        
+                        var sumaDescto = entry['datosFactura']['0']['monto_descto'];
+                        
 			var impuestoRetenido = entry['datosFactura']['0']['monto_retencion'];
 			
 			//Ocultar campos si tienen valor menor o igual a cero
 			if(parseFloat(sumaIeps)<=0){
 				$('#forma-facconsultas-window').find('#tr_ieps').hide();
 			}
+                        
+                        if(parseFloat(sumaDescto)<=0){
+				$('#forma-facconsultas-window').find('#tr_descto').hide();
+			}
+                        
 			if(parseFloat(impuestoRetenido)<=0){
 				$('#forma-facconsultas-window').find('#tr_retencion').hide();
 			}
@@ -571,6 +585,7 @@ $(function() {
 				
 				$subtotal.attr('disabled','-1'); //deshabilitar
 				$campo_ieps.attr('disabled','-1'); //deshabilitar
+                                $campo_descto.attr('disabled','-1'); //deshabilitar
 				$impuesto.attr('disabled','-1'); //deshabilitar
 				$impuesto_retenido.attr('disabled','-1'); //deshabilitar
 				$total.attr('disabled','-1'); //deshabilitar
@@ -636,7 +651,8 @@ $(function() {
 					moneda_subtotal	:'',
 					subtotal  		:'Sub-Total',
 					moneda_ieps    	:'',
-					iepscampo  		:'IEPS',
+				//	iepscampo  		:'IEPS',
+                                        monto_descto  		:'Descuento',
 					moneda_iva    	:'',
 					impuesto  		:'IVA',
 					moneda_total    :'',
@@ -679,7 +695,7 @@ $(function() {
 					if(attrValue == "Sub-Total"){
 						html_reporte +='<td width="80px" align="left" id="monto">'+attrValue+'</td>'; 
 					}
-					if(attrValue == "IEPS"){
+					if(attrValue == "Descuento"){
 						html_reporte +='<td width="80px" align="left" id="monto">'+attrValue+'</td>'; 
 					}
 					if(attrValue == "IVA"){
@@ -712,7 +728,7 @@ $(function() {
 					html_reporte +='<td align="right" id="simbolo_moneda">'+simbolo_moneda+'</td>'; 
 					html_reporte +='<td align="right" id="monto">'+$(this).agregar_comas(parseFloat(body_tabla[i]["subtotal"]).toFixed(2))+'</td>';
 					html_reporte +='<td align="right" id="simbolo_moneda">'+simbolo_moneda+'</td>'; 
-					html_reporte +='<td align="right" id="monto">'+$(this).agregar_comas(parseFloat(body_tabla[i]["monto_ieps"]).toFixed(2))+'</td>'; 
+					html_reporte +='<td align="right" id="monto">'+$(this).agregar_comas(parseFloat(body_tabla[i]["monto_descto"]).toFixed(2))+'</td>'; 
 					html_reporte +='<td align="right" id="simbolo_moneda">'+simbolo_moneda+'</td>'; 
 					html_reporte +='<td align="right" id="monto">'+$(this).agregar_comas(parseFloat(body_tabla[i]["impuesto"]).toFixed(2))+'</td>'; 					
 					html_reporte +='<td align="right" id="simbolo_moneda">'+simbolo_moneda+'</td>'; 
@@ -730,7 +746,7 @@ $(function() {
 					html_reporte +='<td align="right" id="monto">'+$(this).agregar_comas(parseFloat(footer_tabla[0]["suma_pesos_subtotal"]).toFixed(2))+'</td>'; 
 					
 					html_reporte +='<td align="right" id="simbolo_moneda">$</td>'; 
-					html_reporte +='<td align="right" id="monto">'+$(this).agregar_comas(parseFloat(footer_tabla[0]["suma_pesos_monto_ieps"]).toFixed(2))+'</td>'; 
+					html_reporte +='<td align="right" id="monto">'+$(this).agregar_comas(parseFloat(footer_tabla[0]["suma_pesos_monto_descto"]).toFixed(2))+'</td>'; 
 					html_reporte +='<td align="right" id="simbolo_moneda">$</td>'; 
 					html_reporte +='<td align="right" id="monto">'+$(this).agregar_comas(parseFloat(footer_tabla[0]["suma_pesos_impuesto"]).toFixed(2))+'</td>'; 					
 					html_reporte +='<td align="right" id="simbolo_moneda">$</td>'; 
@@ -745,7 +761,7 @@ $(function() {
 					html_reporte +='<td align="right" id="simbolo_moneda">USD</td>'; 
 					html_reporte +='<td align="right" id="monto">'+$(this).agregar_comas(parseFloat(footer_tabla[0]["suma_dolares_subtotal"]).toFixed(2))+'</td>';
 					html_reporte +='<td align="right" id="simbolo_moneda">USD</td>'; 
-					html_reporte +='<td align="right" id="monto">'+$(this).agregar_comas(parseFloat(footer_tabla[0]["suma_dolares_monto_ieps"]).toFixed(2))+'</td>'; 
+					html_reporte +='<td align="right" id="monto">'+$(this).agregar_comas(parseFloat(footer_tabla[0]["suma_dolares_monto_descto"]).toFixed(2))+'</td>'; 
 					html_reporte +='<td align="right" id="simbolo_moneda">USD</td>'; 
 					html_reporte +='<td align="right" id="monto">'+$(this).agregar_comas(parseFloat(footer_tabla[0]["suma_dolares_impuesto"]).toFixed(2))+'</td>'; 					
 					html_reporte +='<td align="right" id="simbolo_moneda">USD</td>'; 
@@ -760,7 +776,7 @@ $(function() {
 					html_reporte +='<td align="right" id="simbolo_moneda">$</td>'; 
 					html_reporte +='<td align="right" id="monto">'+$(this).agregar_comas(parseFloat(footer_tabla[0]["suma_subtotal_mn"]).toFixed(2))+'</td>';
 					html_reporte +='<td align="right" id="simbolo_moneda">$</td>'; 
-					html_reporte +='<td align="right" id="monto">'+$(this).agregar_comas(parseFloat(footer_tabla[0]["suma_monto_ieps_mn"]).toFixed(2))+'</td>'; 
+					html_reporte +='<td align="right" id="monto">'+$(this).agregar_comas(parseFloat(footer_tabla[0]["suma_monto_descto_mn"]).toFixed(2))+'</td>'; 
 					html_reporte +='<td align="right" id="simbolo_moneda">$</td>'; 
 					html_reporte +='<td align="right" id="monto">'+$(this).agregar_comas(parseFloat(footer_tabla[0]["suma_impuesto_mn"]).toFixed(2))+'</td>'; 					
 					html_reporte +='<td align="right" id="simbolo_moneda">$</td>'; 
