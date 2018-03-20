@@ -1,8 +1,5 @@
 from pac.adapter import Adapter, AdapterError
-from suds.client import Client
-from suds.transport import TransportError
-import suds
-import urllib.error
+from zeep import Client
 
 
 class Servisim(Adapter):
@@ -19,26 +16,17 @@ class Servisim(Adapter):
             'PASSWD': kwargs.get('passwd', None),
         }
 
-    def __setup_req(self, m):
+    def __setup_req(self):
 
-        def connect():
-            try:
-                connection = Client(self.config['EP'])
-                self.logger.debug(
-                    "{0} adapter is up and ready to kick buttocks\n{1}".format(
-                        self.pac_name, connection))
-                return connection
-            except (TransportError, urllib.error.HTTPError) as e:
-                raise AdapterError(
-                    'can not connect with end point {}: {}'.format(
-                        self.config['EP'], e)
-                )
-
-        conn = connect()
-        req = conn.factory.create(m)
-        req.User = self.config['LOGIN']
-        req.Pass = self.config['PASSWD']
-        return req, conn
+        try:
+            connection = Client(self.config['EP'])
+            self.logger.debug(
+                "{0} adapter is up and ready to kick buttocks\n{1}".format(
+                    self.pac_name, connection))
+            return connection
+        except (Exception) as e:
+            raise AdapterError('can not connect with end point {}: {}'.format(
+                    self.config['EP'], e))
 
     def __check(self, r, usage):
         try:
@@ -59,17 +47,20 @@ class Servisim(Adapter):
             xid (str): mi identificador alternativo de cfdi
         """
         try:
-            req, conn = self.__setup_req('ns0:TimbradoCFDIRequest')
-            req.TipoPeticion = '1'  # SIGNED BY CUSTOMER
-            req.IdComprobante = xid
-            req.Xml = xml
-            self.logger.debug(
-                "The following request for stamp will be sent\n{0}".format(req)
+            conn = self.__setup_req()
+            return self.__check(
+                conn.service.timbrarCFDI({
+                    'User' : self.config['LOGIN'],
+                    'Pass' : self.config['PASSWD'],
+                    'TipoPeticion' : '1',  # SIGNED BY CUSTOMER
+                    'IdComprobante' : xid,
+                    'Xml' : xml
+                }),
+                'Stamp'
             )
-            return self.__check(conn.service.timbrarCFDI(req), 'Stamp')
         except AdapterError:
             raise
-        except (suds.WebFault, Exception) as e:
+        except (Exception) as e:
             raise AdapterError("Stamp experimenting problems: {}".format(e))
 
     def fetch(self, xid):
@@ -79,17 +70,7 @@ class Servisim(Adapter):
         Args:
             xid (str): mi identificador alternativo de cfdi
         """
-        try:
-            req, conn = self.__setup_req('ns0:ObtencionCFDIRequest')
-            req.TipoPeticion = '2'  # TO EXPECT CFDI ALTERNATIVE ID
-            req.Emisor = self.config['RFC']
-            req.Identificador = xid
-            self.logger.debug(
-                "The following request for fetch will be sent\n{0}".format(req)
-            )
-            return conn.service.obtenerCFDI(req)
-        except (suds.WebFault, Exception) as e:
-            raise AdapterError("Fetch experimenting problems: {}".format(e))
+        pass
 
     def cancel(self, xml, emisor):
         """
@@ -98,12 +79,18 @@ class Servisim(Adapter):
             xml (str): xml de cfdi firmado por cliente
         """
         try:
-            req, conn = self.__setup_req('ns0:CancelacionCFDIRequest')
-            req.TipoPeticion = '2'
-            req.Emisor = emisor     # RFC
-            req.Xml = xml
-            self.logger.debug(
-                "The following request for cancel will be sent\n{0}".format(req))
-            return self.__check(conn.service.cancelarCFDI(req), 'Cancel')
-        except (suds.WebFault, Exception) as e:
+            conn = self.__setup_req()
+            return self.__check(
+                conn.service.cancelarCFDI({
+                    'User' : self.config['LOGIN'],
+                    'Pass' : self.config['PASSWD'],
+                    'TipoPeticion' : '2',
+                    'Emisor' : emisor,     # RFC
+                    'Xml' : xml
+                }), 
+                'Cancel'
+            )
+        except AdapterError:
+            raise
+        except (Exception) as e:
             raise AdapterError("Cancel experimenting problems".format(e))
