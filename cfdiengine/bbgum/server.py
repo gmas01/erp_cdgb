@@ -89,10 +89,11 @@ class BbGumServer(object):
         while True:
             try:
                 conn = conns_queue.get()
-
+                logger.debug('Taking a connection from queue with {}'.format(conns_queue.qsize()))
+                logger.debug('File descriptor for this connection is {}'.format(conn.fileno()))
                 factory = ControllerFactory(logger, profile_path)
                 mon = Monitor(logger, conn, factory)
-
+                logger.debug("Monitor is ready")
                 while True:
                     mon.receive(Action(read_body(
                             Frame.decode_header(read_header()))))
@@ -108,6 +109,8 @@ class BbGumServer(object):
                 break
             except:
                 logger.error(dump_exception())
-
-            logger.debug("Closing socket")
-            conn.close()
+            finally:
+                if conn is not None:
+                    logger.debug("Closing socket")
+                    conn.close()
+                conns_queue.task_done()

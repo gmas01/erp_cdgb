@@ -65,7 +65,7 @@ class HelperStr(object):
                      makeup_intseg(int_seg), decimal_seg
                  )
         else:
-            raise Exception("input parameter is not an amount string")
+            raise Exception("input parameter {} is not an amount string".format(amount))
 
     @staticmethod
     def random_str(size=8):

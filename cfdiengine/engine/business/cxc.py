@@ -245,7 +245,7 @@ def facturar(logger, pt, req):
             xml_dat['RECEPTOR_NAME'],            # rs_custm       - Razon social customer
             '0000',                              # account_number - An account fake number invented by me
             xml_dat['TAXES']['TRAS']['TOTAL'],   # total_tras
-            '0',                                 # subtotal_with_desc
+            xml_dat['CFDI_SUBTOTAL'],            # _subtotal
             xml_dat['CFDI_TOTAL'],               # total
             'false'                              # refact
         )
