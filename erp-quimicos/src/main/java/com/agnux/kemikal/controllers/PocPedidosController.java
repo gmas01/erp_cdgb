@@ -1035,13 +1035,6 @@ public class PocPedidosController {
                 pc.account = no_cuenta;
             }
             
-            if (select_forma_pago==null) {
-                pc.forma_pago_id = new Integer(0).toString();
-            }
-            else {
-                pc.forma_pago_id = select_forma_pago.toString();
-            }
-            
             if (select_uso==null) {
                 pc.uso_id = new Integer(0).toString();
             }
@@ -1080,6 +1073,12 @@ public class PocPedidosController {
             pc.importe_01 = importe01;
             pc.importe_02 = importe02;
             
+            if (select_forma_pago==null) {
+                pc.forma_pago_id = new Integer(0).toString();
+            }
+            else {
+                pc.forma_pago_id = this.determineSmartFormaPago(pc);
+            }
             
             succes = this.getPocDao().poc_val_cusorder(
                 new Integer(id_usuario),
@@ -1209,6 +1208,23 @@ public class PocPedidosController {
         
         return null;
         
+    }
+
+    private String determineSmartFormaPago(final PotCatCusorder pc) {
+
+        double x = Double.parseDouble(pc.importe_00);
+        double y = Double.parseDouble(pc.importe_01);
+        double z = Double.parseDouble(pc.importe_02);
+
+        if (x > y && x > z) {
+            return pc.attrib_00;
+        } else if (y > x && y > z) {
+            return pc.attrib_01;
+        } else if (z > x && z > y) {
+            return pc.attrib_02;
+        } else {
+            return pc.attrib_00;
+        }
     }
    
 }
