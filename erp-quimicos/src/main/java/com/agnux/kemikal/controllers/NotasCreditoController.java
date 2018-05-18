@@ -414,7 +414,13 @@ public class NotasCreditoController {
             log.log(Level.INFO, "despues de validacion {0}", String.valueOf(succes.get("success")));
             
             if( String.valueOf(succes.get("success")).equals("true") ){
-                actualizo = this.getFacdao().selectFunctionForFacAdmProcesos(data_string, extra_data_array);
+
+                boolean r = this.getFacdao().ncr_exec_edit( id_nota_credito, id_usuario, Integer.parseInt(select_vendedor),
+                        Integer.parseInt(id_cliente), factura, observaciones.toUpperCase(),
+                        Integer.parseInt(select_moneda), tipo_cambio, concepto.toUpperCase(),
+                        valor_impuesto, total, retencion, importe, impuesto, Integer.parseInt(select_tmov));
+
+                actualizo = r ? "1" : "0";
                 jsonretorno.put("actualizo",String.valueOf(actualizo));
             }
             

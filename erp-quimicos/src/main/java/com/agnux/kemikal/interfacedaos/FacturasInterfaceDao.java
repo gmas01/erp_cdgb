@@ -1,19 +1,17 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 package com.agnux.kemikal.interfacedaos;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 
-/**
- *
- * @author agnux
- */
+
 public interface FacturasInterfaceDao {
     public int countAll(String data_string);
+    public boolean ncr_exec_edit(final int _ncr_id, final int _usr_id, final int _agen_id,
+            final int _customer_id, final String _serie_folio, final String _comments,
+            final int _currency_id, final String _currency_value, final String _concepto,
+            final String _valor_impuesto, final String _sum_total, final String _retencion_total,
+            final String _amount_subtotal, final String _amount_impuesto, final int _ctb_tmov_id);
     public String selectFunctionForFacAdmProcesos(String campos_data, String extra_data_array);
     public HashMap<String, String> selectFunctionValidateAaplicativo(String data, Integer idApp, String extra_data_array);
     public HashMap<String,String> getFac_Parametros(Integer id_emp, Integer id_suc);
@@ -63,11 +61,6 @@ public interface FacturasInterfaceDao {
     
     
     public ArrayList<LinkedHashMap<String, String>> getListaConceptosXmlCfdiTf(Integer id_prefactura, String permitir_descuento);
-    
-    //Actualizar campo de salidas de archivos en fac_docs
-    //public Boolean update_fac_docs_salidas(String serieFolio, String nombre_archivo);
-    //public String verifica_fac_docs_salidas(Integer id_factura);
-    
     public ArrayList<HashMap<String, String>> getListaConceptosPdfCfd(String serieFolio);
     public HashMap<String, String> getDatosExtrasPdfCfd(String serieFolio, String proposito, String cadena_original, String sello_digital, Integer id_sucursal);
     
@@ -152,10 +145,6 @@ public interface FacturasInterfaceDao {
     
     //este metodo es para buscar si la factura seleccionada ya tiene asociada una Nota de Credito que se haya generado desde Devoluciones
     public ArrayList<HashMap<String, Object>> getFacDevoluciones_DatosNotaCredito(String factura, String idCliente);
-    
-    
-    //public ArrayList<HashMap<String, String>> get_buscador_clientes(String cadena, Integer filtro, Integer id_empresa, Integer id_sucursal);
-    //public ArrayList<HashMap<String, String>> getBuscadorClientes(String cadena, Integer filtro,Integer id_empresa, Integer id_sucursal);
     
     
     /*Add by jpakoery, for nota de credito tf*/

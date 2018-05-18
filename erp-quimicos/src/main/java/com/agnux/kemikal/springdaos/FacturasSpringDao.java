@@ -18,12 +18,6 @@ import java.util.logging.Logger;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 
-/**
- *
- * @author Noé Martinez
- * gpmarsan@gmail.com
- * 
- */
 
 public class FacturasSpringDao implements FacturasInterfaceDao{
     private JdbcTemplate jdbcTemplate;
@@ -143,8 +137,44 @@ public class FacturasSpringDao implements FacturasInterfaceDao{
         return hm;
     }
     
-    
-    
+    public boolean ncr_exec_edit(final int _ncr_id, final int _usr_id, final int _agen_id,
+            final int _customer_id, final String _serie_folio, final String _comments,
+            final int _currency_id, final String _currency_value, final String _concepto,
+            final String _valor_impuesto, final String _sum_total, final String _retencion_total,
+            final String _amount_subtotal, final String _amount_impuesto, final int _ctb_tmov_id) {
+
+
+        String _sql = "select rc, rmsg from ncr_exec_edit("
+                + _ncr_id + "::integer,"
+                + _usr_id + "::integer,"
+                + _agen_id + "::integer,"
+                + _customer_id + "::integer,"
+                + "'" + _serie_folio + "'::character varying,"
+                + "'" + _comments + "'::text,"
+                + _currency_id + "::integer,"
+                + _currency_value + "::double precision,"
+                + "'" + _concepto + "'::text,"
+                + _valor_impuesto + "::double precision,"
+                + _sum_total + "::double precision,"
+                + _retencion_total + "::double precision,"
+                + _amount_subtotal + "::double precision,"
+                + _amount_impuesto + "::double precision,"
+                + _ctb_tmov_id + "::integer"
+                + ") as data_temp( rc integer, rmsg text )";
+
+        Map<String, Object> m = this.getJdbcTemplate().queryForMap(_sql);
+
+        System.out.println("editing nc :"+ _sql);
+
+        if ( ( (Integer) m.get("rc") ) == 0 ) return true;
+        else {
+
+            System.out.println( (String) m.get("rmsg") );
+
+            return false;
+        }
+    }
+
     //Ejecuta procesos relacionados a facturacion
     @Override
     public String selectFunctionForFacAdmProcesos(String campos_data, String extra_data_array) {
