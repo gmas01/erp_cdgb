@@ -567,6 +567,9 @@ $(function() {
 				if(parseInt(body_tabla.length)>0){
 					
 					for(var i=0; i<body_tabla.length; i++){
+                                            
+                                            if ((body_tabla[i]["saldo_inicial"])!=0){
+                                                
 						html_reporte +='<tr>';
 						html_reporte +='<td align="left">'+body_tabla[i]["cuenta"]+'</td>';
 						html_reporte +='<td align="left">'+body_tabla[i]["descripcion"]+'</td>';
@@ -575,6 +578,8 @@ $(function() {
 						html_reporte +='<td align="right">'+ ((body_tabla[i]["haber"].trim()=='')? '':$(this).agregar_comas(body_tabla[i]["haber"])) +'</td>';
 						html_reporte +='<td align="right">'+ ((body_tabla[i]["saldo_final"].trim()=='')? '':$(this).agregar_comas(body_tabla[i]["saldo_final"])) +'</td>';
 						html_reporte +='</tr>';
+                                                
+                                            }     
 					}
 					
 				}
