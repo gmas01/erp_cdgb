@@ -838,7 +838,7 @@ $(function() {
 		$grid_cuentas.find('tr').each(function (index){
 			if(parseInt($(this).find('input[name=id_cta]').val()) == parseInt(id_cta)){
 				//La cuenta ya se encuentra en el grid
-				encontrado=1;
+			//GAS-2018-08-16	encontrado=1;
 			}
 		});
 		
@@ -982,9 +982,10 @@ $(function() {
 			$('#forma-ctbpolizacontable-window').find('input[name=ssscuenta]').val('');
 			$('#forma-ctbpolizacontable-window').find('input[name=sssscuenta]').val('');
 		}else{
-			jAlert('La cuenta: '+cta+' ya se encuentra en el listado, ingrese otro diferente.', 'Atencion!', function(r) { 
-				$('#forma-ctbpolizacontable-window').find('input[name=cuenta]').focus();
-			});
+		//GAS-2018-08-16
+		//GAS-2018-08-16	jAlert('La cuenta: '+cta+' ya se encuentra en el listado, ingrese otro diferente.', 'Atencion!', function(r) { 
+		//GAS-2018-08-16		$('#forma-ctbpolizacontable-window').find('input[name=cuenta]').focus();
+		//GAS-2018-08-16	});
 		}
 		
 		$sumatoria_asientos($grid_cuentas);
