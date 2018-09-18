@@ -224,4 +224,6 @@ public interface CxcInterfaceDao {
     
     //Reporte de Ieps Cobrado por Cliente
     public ArrayList<HashMap<String, String>> getDatosCxcReporteIepsCobradoPorCliente(ArrayList<HashMap<String, String>> listaIeps, String ciente, String finicial, String ffinal, Integer id_empresa);
+
+    public String q_serie_folio(Integer id_usuario);
 }
