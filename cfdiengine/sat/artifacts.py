@@ -8,3 +8,4 @@ class CfdiType(enum.Enum):
     """
     FAC = 0
     NCR = 1
+    PAG = 2
