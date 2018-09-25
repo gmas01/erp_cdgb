@@ -112,6 +112,8 @@ class SaxReader(xml.sax.ContentHandler):
                     c[k.upper()] = v
                 if k == "Importe":
                     c[k.upper()] = v
+                if k == "ClaveProdServ":
+                    c[k.upper()] = v
                 if k == "NoIdentificacion":
                     c[k.upper()] = v
                 if k == "ClaveUnidad":
