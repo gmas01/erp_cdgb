@@ -120,6 +120,8 @@ class SaxReader(xml.sax.ContentHandler):
                     c[k.upper()] = v
                 if k == "ValorUnitario":
                     c[k.upper()] = v
+                if k == "IdDocumento":
+                    c[k.upper()] = v
             self.__ds['ARTIFACTS'].append(c)
 
         if name == "cfdi:Impuestos":
