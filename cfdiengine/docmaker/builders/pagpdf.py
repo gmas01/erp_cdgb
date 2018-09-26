@@ -164,7 +164,7 @@ class PagPdf(BuilderGen):
             row = [
                i['CLAVEPRODSERV'],
                 Paragraph(i['DESCRIPCION'], st),
-                i['CLAVEUNIDAD'].upper(),
+                i['IDDOCUMENTO'].upper(),
                 strtricks.HelperStr.format_currency(i['CANTIDAD']),
                 add_currency_simbol(strtricks.HelperStr.format_currency(i['VALORUNITARIO'])), 
                 add_currency_simbol(strtricks.HelperStr.format_currency(i['IMPORTE']))
