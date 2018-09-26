@@ -160,14 +160,14 @@ class PagPdf(BuilderGen):
         )
 
         cont_concepts = []
-        for i in dat['XML_PARSED']['ARTIFACTS']:
+        for i in dat['XML_PARSED']['PAYMENTS']:
             row = [
-               i['CLAVEPRODSERV'],
-                Paragraph(i['DESCRIPCION'], st),
-                i['IDDOCUMENTO'].upper(),
-                strtricks.HelperStr.format_currency(i['CANTIDAD']),
-                add_currency_simbol(strtricks.HelperStr.format_currency(i['VALORUNITARIO'])), 
-                add_currency_simbol(strtricks.HelperStr.format_currency(i['IMPORTE']))
+                i['IDDOCUMENTO'],
+                i['MONEDAP'],
+                i['FORMADEPAGO'],
+                strtricks.HelperStr.format_currency(i['NUMOPERACION']),
+                add_currency_simbol(strtricks.HelperStr.format_currency(i['MONTO'])), 
+                add_currency_simbol(strtricks.HelperStr.format_currency(i['TIPOCAMBIOP']))
             ]
             cont_concepts.append(row)
 
