@@ -199,7 +199,7 @@ class PagXml(BuilderGen):
                 'ISO_4217': row['moneda_p'],
                 'MONTO': row['monto'],
                 'IMP_PAGADO': row['imp_pagado'],
-                'TIME_STAMP' : "2017-08-22T14:37:50", #row['fecha_pago'],
+                'TIME_STAMP' : '{0:%Y-%m-%dT%H:%M:%S}'.format(datetime.datetime.now()), #"2017-08-22T14:37:50", 
                 'CLAVE': row['forma_de_pago_p'],
                 'MONEDA_DR': row['moneda_dr'],
                 'UUID_DOC': row['id_documento'],
@@ -276,7 +276,7 @@ class PagXml(BuilderGen):
             HelperStr.edit_pattern('Total="0.0"', 'Total="0"', tf)
             HelperStr.edit_pattern('SubTotal="0.0"', 'SubTotal="0"', tf)
 
-            for a in ['ImpSaldoInsoluto', 'ImpPagado', 'ImpSaldoAnt']:
+            for a in ['Monto', 'ImpSaldoInsoluto', 'ImpPagado', 'ImpSaldoAnt']:
                 two_dec_attr(a)
 
         def wrap_up(tf, of):
