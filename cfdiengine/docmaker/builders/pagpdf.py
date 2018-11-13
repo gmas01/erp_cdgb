@@ -369,7 +369,7 @@ class PagPdf(BuilderGen):
                 c,
                 [
                     8.6 * cm   # rowWitdhs
-		],
+		            ],
                  [0.35 * cm] * 10 # rowHeights
             )
             t.setStyle(TableStyle([

@@ -185,9 +185,9 @@ class PagXml(BuilderGen):
         """
         q = """ SELECT numero_transaccion::character varying AS numero_operacion,
                 monto_aplicado_mn::character varying as monto, moneda_p, forma_de_pago_p,
-                fecha_pago, tipo_cambio_p, serie_folio, imp_saldo_ant::character varying,
-                imp_pagado::character varying , imp_saldo_insoluto::character varying,
-                moneda_dr, id_documento
+                fecha_pago, tipo_cambio_p::character varying, serie_folio, imp_saldo_ant::character varying,
+                imp_pagado::character varying, imp_saldo_insoluto::character varying,
+                moneda_dr, id_documento, xxx::character varying
                 FROM pagos WHERE numero_transaccion = """
         rowset = []
         for row in self.pg_query(conn, "{0}{1}".format(q, pag_id)):
@@ -199,10 +199,12 @@ class PagXml(BuilderGen):
                 'ISO_4217': row['moneda_p'],
                 'MONTO': row['monto'],
                 'IMP_PAGADO': row['imp_pagado'],
-                'TIME_STAMP' : '{0:%Y-%m-%dT%H:%M:%S}'.format(row['fecha_pago']), #datetime.datetime.now()), # "2017-08-22T14:37:50",
+                'TIME_STAMP' : '{0:%Y-%m-%dT%H:%M:%S}'.format(row['fecha_pago']), #datetime.datetime.now()),  #"2017-08-22T14:37:50",
                 'CLAVE': row['forma_de_pago_p'],
+                'TIPO_DE_CAMBIO': row['tipo_cambio_p'],
                 'MONEDA_DR': row['moneda_dr'],
                 'UUID_DOC': row['id_documento'],
+                'TIPO_DE_CAMBIO_DR': row['xxx'],
             })
         return rowset
 
@@ -306,6 +308,11 @@ class PagXml(BuilderGen):
                 payment.setAttribute('NumOperacion', d['NUMERO_OPERACION'])
                 payment.setAttribute('Monto', d['MONTO'])
                 payment.setAttribute('MonedaP', d['ISO_4217'])
+               #GAS payment.setAttribute('TipoCambioP', d['TIPO_DE_CAMBIO'])
+
+                if (d['ISO_4217']) == 'USD':
+                   payment.setAttribute('TipoCambioP', d['TIPO_DE_CAMBIO'])
+
                 payment.setAttribute('FormaDePagoP', d['CLAVE'])
                 payment.setAttribute('FechaPago', d['TIME_STAMP'])
 
@@ -317,6 +324,10 @@ class PagXml(BuilderGen):
                 dr.setAttribute('MonedaDR', d['MONEDA_DR'])
                 dr.setAttribute('NumParcialidad', '1')
                 dr.setAttribute('MetodoDePagoDR', 'PPD')
+                if (d['MONEDA_DR']) == 'USD':
+                   if (d['ISO_4217']) == 'MXN':
+                      dr.setAttribute('TipoCambioDR',d[ 'TIPO_DE_CAMBIO_DR'])
+
                 payment.appendChild(dr)
 
                 pagos.appendChild(payment)
