@@ -154,20 +154,20 @@ class PagPdf(BuilderGen):
             leading=8
         )
         header_concepts = (
-            'CLAVE', 'DESCRIPCIÓN',
-            'UNIDAD', 'CANTIDAD',
-            'P. UNITARIO', 'IMPORTE'
+            'MONEDA', 'UUID',
+            '# PARC', 'SALDO ANT',
+            'IMP PAGADO', 'SALDO INS'
         )
 
         cont_concepts = []
-        for i in dat['XML_PARSED']['PAYMENTS']:
+        for i in dat['XML_PARSED']['DOCTOS']:
             row = [
+                i['MONEDADR'],
                 i['IDDOCUMENTO'],
-                i['MONEDAP'],
-                i['FORMADEPAGO'],
-                strtricks.HelperStr.format_currency(i['NUMOPERACION']),
-                add_currency_simbol(strtricks.HelperStr.format_currency(i['MONTO'])), 
-                add_currency_simbol(strtricks.HelperStr.format_currency(i['TIPOCAMBIOP']))
+                i['NUMPARCIALIDAD'],
+                strtricks.HelperStr.format_currency(i['IMPSALDOANT']),
+                add_currency_simbol(strtricks.HelperStr.format_currency(i['IMPPAGADO'])),
+                add_currency_simbol(strtricks.HelperStr.format_currency(i['IMPSALDOINSOLUTO']))
             ]
             cont_concepts.append(row)
 

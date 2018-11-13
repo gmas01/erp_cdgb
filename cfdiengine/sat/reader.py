@@ -160,8 +160,8 @@ class SaxReader(xml.sax.ContentHandler):
                 if k == "FechaPago":
                     c[k.upper()] = v
             self.__ds['PAYMENTS'].append(c)
-            
-            if name == "pago10:DoctoRelacionado":
+
+        if name == "pago10:DoctoRelacionado":
             c = {}
             for (k, v) in attrs.items():
                 if k == "IdDocumento":

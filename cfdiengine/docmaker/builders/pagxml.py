@@ -199,7 +199,7 @@ class PagXml(BuilderGen):
                 'ISO_4217': row['moneda_p'],
                 'MONTO': row['monto'],
                 'IMP_PAGADO': row['imp_pagado'],
-                'TIME_STAMP' : '{0:%Y-%m-%dT%H:%M:%S}'.format(datetime.datetime.now()), #"2017-08-22T14:37:50", 
+                'TIME_STAMP' : '{0:%Y-%m-%dT%H:%M:%S}'.format(row['fecha_pago']), #datetime.datetime.now()), # "2017-08-22T14:37:50",
                 'CLAVE': row['forma_de_pago_p'],
                 'MONEDA_DR': row['moneda_dr'],
                 'UUID_DOC': row['id_documento'],
