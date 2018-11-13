@@ -126,6 +126,7 @@ def dopago(logger, pt, req):
     filename = req.get('filename', None)
     usr_id = req.get('usr_id', None)
     pag_id = req.get('pag_id', None)
+
     if (pag_id is None) or (usr_id is None) or (filename is None):
         return ErrorCode.REQUEST_INCOMPLETE.value
 
@@ -136,6 +137,16 @@ def dopago(logger, pt, req):
 
     tmp_dir = tempfile.gettempdir()
     tmp_file = os.path.join(tmp_dir, HelperStr.random_str())
+
+    def update_filename():
+        q = """UPDATE erp_pagos set aux_no_fac = '{}'
+            WHERE erp_pagos.numero_transaccion = {}""".format(filename.replace('.xml', ''), pag_id)
+        try:
+            HelperPg.onfly_update(pt.dbms.pgsql_conn, q)
+        except:
+            logger.error(dump_exception())
+            return ErrorCode.DBMS_SQL_ISSUES
+        return ErrorCode.SUCCESS
 
     def update_consecutive_alpha(f_xmlin):
         parser = SaxReader()
@@ -156,7 +167,7 @@ def dopago(logger, pt, req):
         return ErrorCode.SUCCESS
 
     rc = __run_builder(logger, pt, tmp_file, resdir,
-           'pagxml', usr_id = usr_id, pag_id = pag_id)
+            'pagxml', usr_id = usr_id, pag_id = pag_id)
 
     if rc != ErrorCode.SUCCESS:
         pass
@@ -173,6 +184,9 @@ def dopago(logger, pt, req):
             out_dir = os.path.join(rdirs['cfdi_output'], _rfc)
             rc, signed_file = __pac_sign(logger, tmp_file, filename,
                                          out_dir, pt.tparty.pac)
+        if rc == ErrorCode.SUCCESS:
+            rc = update_filename()
+
         if rc == ErrorCode.SUCCESS:
             rc = update_consecutive_alpha(signed_file)
             if rc == ErrorCode.SUCCESS:
