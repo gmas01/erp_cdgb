@@ -8,7 +8,7 @@ import pyxb
 from decimal import Decimal
 from misc.helperstr import HelperStr
 from docmaker.error import DocBuilderStepError
-from misc.tricks import truncate
+from misc.tricks import tz_now, truncate
 from docmaker.gen import BuilderGen
 from sat.v33 import Comprobante
 from sat.requirement import writedom_cfdi, sign_cfdi
@@ -364,6 +364,16 @@ class FacXml(BuilderGen):
             # Just taking first row of query result
             return row['cert_file']
 
+    def __q_time_stamp(self, conn, usr_id):
+        SQL = """select fac_cfds_conf.time_zone
+            FROM gral_suc AS SUC
+            LEFT JOIN gral_usr_suc ON gral_usr_suc.gral_suc_id = SUC.id
+            LEFT JOIN fac_cfds_conf ON fac_cfds_conf.gral_suc_id = SUC.id
+            WHERE gral_usr_suc.gral_usr_id="""
+        for row in self.pg_query(conn, "{0}{1}".format(SQL, usr_id)):
+            # Just taking first row of query result
+            return tz_now(row['time_zone'])
+
     def data_acq(self, conn, d_rdirs, **kwargs):
 
         usr_id = kwargs.get('usr_id', None)
@@ -392,7 +402,7 @@ class FacXml(BuilderGen):
             self.__q_ieps(conn, usr_id), self.__q_ivas(conn))
 
         return {
-            'TIME_STAMP': '{0:%Y-%m-%dT%H:%M:%S}'.format(datetime.datetime.now()),
+            'TIME_STAMP': '{0:%Y-%m-%dT%H:%M:%S}'.format(self.__q_time_stamp(conn, usr_id)),
             'CONTROL': self.__q_serie_folio(conn, usr_id),
             'CERT_B64': certb64,
             'KEY_PRIVATE': os.path.join(sslrfc_dir, sp['PKNAME']),
