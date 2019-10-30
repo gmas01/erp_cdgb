@@ -1,5 +1,12 @@
 import sys
 import traceback
+import datetime
+import pytz
+
+
+def tz_now(zone):
+    t = pytz.timezone(zone)
+    return datetime.datetime.now(t)
 
 
 def dump_exception():

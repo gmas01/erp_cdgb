@@ -8,7 +8,7 @@ import pyxb
 from decimal import Decimal
 from misc.helperstr import HelperStr
 from docmaker.error import DocBuilderStepError
-from misc.tricks import truncate
+from misc.tricks import tz_now, truncate
 from docmaker.gen import BuilderGen
 from sat.v33 import Comprobante
 from sat.requirement import writedom_cfdi, sign_cfdi
@@ -364,6 +364,16 @@ class FacXml(BuilderGen):
             # Just taking first row of query result
             return row['cert_file']
 
+    def __q_time_stamp(self, conn, usr_id):
+        SQL = """select fac_cfds_conf.time_zone
+            FROM gral_suc AS SUC
+            LEFT JOIN gral_usr_suc ON gral_usr_suc.gral_suc_id = SUC.id
+            LEFT JOIN fac_cfds_conf ON fac_cfds_conf.gral_suc_id = SUC.id
+            WHERE gral_usr_suc.gral_usr_id="""
+        for row in self.pg_query(conn, "{0}{1}".format(SQL, usr_id)):
+            # Just taking first row of query result
+            return tz_now(row['time_zone'])
+
     def data_acq(self, conn, d_rdirs, **kwargs):
 
         usr_id = kwargs.get('usr_id', None)
@@ -392,7 +402,7 @@ class FacXml(BuilderGen):
             self.__q_ieps(conn, usr_id), self.__q_ivas(conn))
 
         return {
-            'TIME_STAMP': '{0:%Y-%m-%dT%H:%M:%S}'.format(datetime.datetime.now()),
+            'TIME_STAMP': '{0:%Y-%m-%dT%H:%M:%S}'.format(self.__q_time_stamp(conn, usr_id)),
             'CONTROL': self.__q_serie_folio(conn, usr_id),
             'CERT_B64': certb64,
             'KEY_PRIVATE': os.path.join(sslrfc_dir, sp['PKNAME']),
@@ -461,7 +471,7 @@ class FacXml(BuilderGen):
                 NoIdentificacion=i['SKU'],  # optional
                 Importe=truncate(i['IMPORTE'], self.__NDECIMALS),
                 Descuento=i['DESCTO'] if i['DESCTO'] > 0 else None,
-                Impuestos=self.__tag_impuestos(i) if i['TASA_IMPUESTO'] > 0 else None
+                Impuestos=self.__tag_impuestos(i) if i['TASA_IMPUESTO'] >= 0 else None    #GMAS
             ))
 
         def traslado(c, tc, imp):
@@ -475,7 +485,7 @@ class FacXml(BuilderGen):
             return float(z)
 
         c.Impuestos = pyxb.BIND(
-            TotalImpuestosRetenidos=0,
+            TotalImpuestosRetenidos=None,
             TotalImpuestosTrasladados=zigma(dat['TRASLADOS']),
             Traslados=pyxb.BIND(
                 *tuple([traslado(t['clave'], self.__place_tasa(t['tasa']), t['importe']) for t in dat['TRASLADOS']])
@@ -486,6 +496,7 @@ class FacXml(BuilderGen):
         HelperStr.edit_pattern('TipoCambio="1.0"', 'TipoCambio="1"', tmp_file)  # XXX: Horrible workaround
         HelperStr.edit_pattern('(Descuento=)"([0-9]*(\.[0-9]{0,1})?)"', lambda x: 'Descuento="%.2f"' % (float(x.group(2)),), tmp_file)
         HelperStr.edit_pattern('(Importe=)"([0-9]*(\.[0-9]{0,1})?)"', lambda x: 'Importe="%.2f"' % (float(x.group(2)),), tmp_file)
+        HelperStr.edit_pattern('(TasaOCuota=)"([0-9]*(\.[0-9]{0,2})?)"', lambda x: 'TasaOCuota="%.6f"' % (float(x.group(2)),), tmp_file)
         with open(output_file, 'w', encoding="utf-8") as a:
             a.write(sign_cfdi(dat['KEY_PRIVATE'], dat['XSLT_SCRIPT'], tmp_file))
         os.remove(tmp_file)
@@ -530,7 +541,7 @@ class FacXml(BuilderGen):
                 Impuesto=c, TasaOCuota=tc, Importe=imp)
 
         taxes = []
-        if i['IMPORTE_IMPUESTO'] > 0:
+        if i['IMPORTE_IMPUESTO'] >= 0:       #GMAS
             base = self.__calc_base(self.__abs_importe(i), self.__place_tasa(i['TASA_IEPS']))
             taxes.append(
                 traslado(
@@ -552,7 +563,7 @@ class FacXml(BuilderGen):
     def __tag_impuestos(self, i):
         notaxes = True
         kwargs = {}
-        if i['IMPORTE_IMPUESTO'] > 0 or i['IMPORTE_IEPS'] > 0:
+        if i['IMPORTE_IMPUESTO'] >= 0 or i['IMPORTE_IEPS'] > 0:       #GMAS
             notaxes = False
             kwargs['Traslados'] = self.__tag_traslados(i)
         return pyxb.BIND() if notaxes else pyxb.BIND(**kwargs)
