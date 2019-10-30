@@ -461,7 +461,7 @@ class FacXml(BuilderGen):
                 NoIdentificacion=i['SKU'],  # optional
                 Importe=truncate(i['IMPORTE'], self.__NDECIMALS),
                 Descuento=i['DESCTO'] if i['DESCTO'] > 0 else None,
-                Impuestos=self.__tag_impuestos(i) if i['TASA_IMPUESTO'] > 0 else None
+                Impuestos=self.__tag_impuestos(i) if i['TASA_IMPUESTO'] >= 0 else None    #GMAS
             ))
 
         def traslado(c, tc, imp):
@@ -475,7 +475,7 @@ class FacXml(BuilderGen):
             return float(z)
 
         c.Impuestos = pyxb.BIND(
-            TotalImpuestosRetenidos=0,
+            TotalImpuestosRetenidos=None,
             TotalImpuestosTrasladados=zigma(dat['TRASLADOS']),
             Traslados=pyxb.BIND(
                 *tuple([traslado(t['clave'], self.__place_tasa(t['tasa']), t['importe']) for t in dat['TRASLADOS']])
@@ -486,6 +486,7 @@ class FacXml(BuilderGen):
         HelperStr.edit_pattern('TipoCambio="1.0"', 'TipoCambio="1"', tmp_file)  # XXX: Horrible workaround
         HelperStr.edit_pattern('(Descuento=)"([0-9]*(\.[0-9]{0,1})?)"', lambda x: 'Descuento="%.2f"' % (float(x.group(2)),), tmp_file)
         HelperStr.edit_pattern('(Importe=)"([0-9]*(\.[0-9]{0,1})?)"', lambda x: 'Importe="%.2f"' % (float(x.group(2)),), tmp_file)
+        HelperStr.edit_pattern('(TasaOCuota=)"([0-9]*(\.[0-9]{0,2})?)"', lambda x: 'TasaOCuota="%.6f"' % (float(x.group(2)),), tmp_file)
         with open(output_file, 'w', encoding="utf-8") as a:
             a.write(sign_cfdi(dat['KEY_PRIVATE'], dat['XSLT_SCRIPT'], tmp_file))
         os.remove(tmp_file)
@@ -530,7 +531,7 @@ class FacXml(BuilderGen):
                 Impuesto=c, TasaOCuota=tc, Importe=imp)
 
         taxes = []
-        if i['IMPORTE_IMPUESTO'] > 0:
+        if i['IMPORTE_IMPUESTO'] >= 0:       #GMAS
             base = self.__calc_base(self.__abs_importe(i), self.__place_tasa(i['TASA_IEPS']))
             taxes.append(
                 traslado(
@@ -552,7 +553,7 @@ class FacXml(BuilderGen):
     def __tag_impuestos(self, i):
         notaxes = True
         kwargs = {}
-        if i['IMPORTE_IMPUESTO'] > 0 or i['IMPORTE_IEPS'] > 0:
+        if i['IMPORTE_IMPUESTO'] >= 0 or i['IMPORTE_IEPS'] > 0:       #GMAS
             notaxes = False
             kwargs['Traslados'] = self.__tag_traslados(i)
         return pyxb.BIND() if notaxes else pyxb.BIND(**kwargs)

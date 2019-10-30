@@ -416,6 +416,7 @@ class NcrXml(BuilderGen):
                 '(Importe=)"([0-9]*(\.[0-9]{0,1})?)"',
                 lambda x: 'Importe="%.2f"' % (float(x.group(2)),), tf
             )
+            HelperStr.edit_pattern('(TasaOCuota=)"([0-9]*(\.[0-9]{0,2})?)"', lambda x: 'TasaOCuota="%.6f"' % (float(x.group(2)),), tmp_file)
 
         def wrap_up(tf, of):
             with open(of, 'w', encoding="utf-8") as a:
@@ -483,7 +484,7 @@ class NcrXml(BuilderGen):
             return z
 
         c.Impuestos = pyxb.BIND(
-            TotalImpuestosRetenidos=0,
+            TotalImpuestosRetenidos=None,
             TotalImpuestosTrasladados=zigma(dat['TRASLADOS']),
             Traslados=pyxb.BIND(
                 *tuple([traslado(t['clave'], self.__place_tasa(t['tasa']), t['importe']) for t in dat['TRASLADOS']])
